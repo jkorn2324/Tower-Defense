@@ -18,7 +18,7 @@ namespace TowerDefense
 	public:
 		virtual void OnSpawn();
 		virtual void OnDespawn();
-		virtual void Update(float deltaTime)=0;
+		virtual void Update(float deltaTime);
 
 	private:
 		bool mEnabled;

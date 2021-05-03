@@ -16,7 +16,7 @@ namespace TowerDefense
 		mActorManager = game->GetActorManager();
 		mTransform = Transform();
 
-		// TODO: Add Actor to Actor Manager
+		mActorManager->AddActor(this);
 	}
 
 	Actor::~Actor()
@@ -80,7 +80,7 @@ namespace TowerDefense
 			component->OnDespawn();
 		}
 		OnDespawn();
-		// TODO: Queue for despawn.
+		mActorManager->RemoveActor(this);
 	}
 
 	void Actor::Despawn(float maxDespawnTime)

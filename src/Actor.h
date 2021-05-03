@@ -52,7 +52,11 @@ namespace TowerDefense
 	private:
 		class ActorManager* mActorManager;
 		class Game* mGame;
+
+	private:
 		std::vector<class Component*> mComponents;
+
+	private:
 		bool mQueuedForDespawn;
 		float mDespawnTime, mMaxDespawnTime;
 	};
