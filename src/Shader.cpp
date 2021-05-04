@@ -11,6 +11,7 @@ namespace TowerDefense
 		mVertexShader = 0;
 		mFragShader = 0;
 		mShaderProgram = 0;
+		mUniformData = std::vector<ShaderUniformData*>();
 	}
 
 	Shader::~Shader()
@@ -40,6 +41,15 @@ namespace TowerDefense
 
 	void Shader::UnLoad()
 	{
+		if (mUniformData.size() > 0)
+		{
+			for (ShaderUniformData* data : mUniformData)
+			{
+				delete data;
+			}
+		}
+		mUniformData.clear();
+
 		glDeleteProgram(mShaderProgram);
 		glDeleteShader(mVertexShader);
 		glDeleteShader(mFragShader);
@@ -98,5 +108,41 @@ namespace TowerDefense
 			return false;
 		}
 		return true;
+	}
+
+	void Shader::SetMatrix4Uniform(const std::string& name, const Matrix4& matrix)
+	{
+		ShaderUniformData* uniformData = GetUniformData(name);
+		glUniformMatrix4fv(uniformData->mLocation, 1, GL_TRUE, matrix.FloatPointer());
+	}
+
+	void Shader::SetMatrix3Uniform(const std::string& name, const Matrix3& matrix)
+	{
+		ShaderUniformData* uniformData = GetUniformData(name);
+		glUniformMatrix3fv(uniformData->mLocation, 1, GL_TRUE, matrix.FloatPointer());
+	}
+
+	void Shader::SetVec2Uniform(const std::string& name, const Vector2& vec)
+	{
+		ShaderUniformData* uniformData = GetUniformData(name);
+		glUniformMatrix3fv(uniformData->mLocation, 1, GL_TRUE, vec.FloatPointer());
+	}
+
+	ShaderUniformData* Shader::GetUniformData(const std::string& name)
+	{
+		const auto& found = std::find_if(mUniformData.begin(), mUniformData.end(),
+			[name](ShaderUniformData* uniformData) -> bool
+			{
+				return uniformData->mUniformName == name;
+			});
+		if (found != mUniformData.end())
+		{
+			return *found;
+		}
+		ShaderUniformData* uniformData = new ShaderUniformData();
+		uniformData->mUniformName = name;
+		uniformData->mLocation = glGetUniformLocation(mShaderProgram, name.c_str());
+		mUniformData.push_back(uniformData);
+		return uniformData;
 	}
 }

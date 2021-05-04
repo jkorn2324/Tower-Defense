@@ -12,6 +12,11 @@ namespace TowerDefense
 		std::memcpy(mMatrix, mat, 9 * sizeof(float));
 	}
 
+	const float* Matrix3::FloatPointer() const
+	{
+		return reinterpret_cast<const float*>(&mMatrix[0][0]);
+	}
+
 	Matrix3 Matrix3::CreateScale(float x, float y)
 	{
 		float mat[3][3] =

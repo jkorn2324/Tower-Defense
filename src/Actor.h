@@ -17,6 +17,7 @@ namespace TowerDefense
 		void OnActorSpawn();
 
 	public:
+		void UpdateTransform();
 		void Update(float deltaTime);
 		void Despawn();
 		void Despawn(float despawnTime);

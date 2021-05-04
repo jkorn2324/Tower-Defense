@@ -23,4 +23,6 @@ namespace TowerDefense
 	void Component::OnSpawn() { }
 
 	void Component::OnDespawn() { }
+
+	void Component::Update(float deltaTime) { }
 }

@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Vector2.h"
-#include "Matrix3.h"
+#include "Matrix4.h"
 
 namespace TowerDefense
 {
 
+	/**
+	 * Represents a 2D Transform. 
+	 */
 	class Transform
 	{
 	public:
@@ -17,6 +20,7 @@ namespace TowerDefense
 		void SetPosition(float x, float y);
 
 	public:
+		void LookAt(const Vector2& position);
 		void MovePosition(const Vector2& position);
 
 	public:
@@ -30,11 +34,13 @@ namespace TowerDefense
 		float GetRotation() const;
 
 	public:
-		Matrix3 GetTranslation() const;
+		void CalculateTransformMatrix();
+		const Matrix4& GetTransformMatrix() const;
 
 	private:
 		Vector2 mPosition;
 		Vector2 mScale;
 		float mRotation;
+		Matrix4 mTransformMatrix;
 	};
 }

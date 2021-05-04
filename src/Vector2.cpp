@@ -21,6 +21,11 @@ namespace TowerDefense
 		this->y = vec.y;
 	}
 
+	const float* Vector2::FloatPointer() const
+	{
+		return reinterpret_cast<const float*>(&(this->x));
+	}
+
 	void Vector2::Normalize()
 	{
 		float len = Length();

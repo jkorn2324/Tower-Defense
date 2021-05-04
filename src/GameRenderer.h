@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include "Matrix4.h"
 #include <string>
 
 namespace TowerDefense
@@ -29,5 +30,8 @@ namespace TowerDefense
 	private:
 		unsigned int mWindowSizeX, mWindowSizeY;
 		std::string mWindowName;
+
+	private:
+		Matrix4 mViewProjection;
 	};
 }

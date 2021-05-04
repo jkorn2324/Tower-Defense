@@ -107,6 +107,11 @@ namespace TowerDefense
 		UpdateDespawn(deltaTime);
 	}
 
+	void Actor::UpdateTransform()
+	{
+		mTransform.CalculateTransformMatrix();
+	}
+
 	void Actor::OnUpdate(float deltaTime) { }
 
 	void Actor::UpdateDespawn(float deltaTime)

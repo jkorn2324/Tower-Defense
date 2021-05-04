@@ -8,6 +8,7 @@ namespace TowerDefense
 {
 	Transform::Transform()
 	{
+		mTransformMatrix = Matrix4::Identity();
 		mScale = Vector2::One();
 		mPosition = Vector2::Zero();
 		mRotation = 0.0f;
@@ -16,6 +17,13 @@ namespace TowerDefense
 	const Vector2& Transform::GetPosition() const
 	{
 		return mPosition;
+	}
+
+	void Transform::LookAt(const Vector2& position)
+	{
+		Vector2 directionVector = position - mPosition;
+		directionVector.Normalize();
+		mRotation = std::atan2f(directionVector.y, directionVector.x);
 	}
 
 	void Transform::MovePosition(const Vector2& position)
@@ -67,11 +75,16 @@ namespace TowerDefense
 		mRotation = inRadians ? rotation : deg2Rad * rotation;
 	}
 
-	Matrix3 Transform::GetTranslation() const
+	void Transform::CalculateTransformMatrix()
 	{
-		Matrix3 scale = Matrix3::CreateScale(mScale.x, mScale.y);
-		Matrix3 rotation = Matrix3::CreateRotation(mRotation);
-		Matrix3 position = Matrix3::CreatePosition(mPosition.x, mPosition.y);
-		return scale * rotation * position;
+		Matrix4 scale = Matrix4::CreateScale(mScale.x, mScale.y, 1.0f);
+		Matrix4 rotation = Matrix4::CreateRotation2D(mRotation);
+		Matrix4 position = Matrix4::CreatePosition(mPosition.x, mPosition.y, 0.0f);
+		mTransformMatrix = scale * rotation * position;
+	}
+
+	const Matrix4& Transform::GetTransformMatrix() const
+	{
+		return mTransformMatrix;
 	}
 }

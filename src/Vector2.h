@@ -11,6 +11,7 @@ namespace TowerDefense
 		Vector2(const Vector2& vec);
 
 	public:
+		const float* FloatPointer() const;
 		void Normalize();
 		float Length() const;
 

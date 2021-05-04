@@ -15,6 +15,8 @@ namespace TowerDefense
 		mWindowSizeX = WINDOW_SIZE_X;
 		mWindowSizeY = WINDOW_SIZE_Y;
 		mWindowName = WINDOW_NAME;
+		mViewProjection = Matrix4::CreateSimpleViewProjection(
+			mWindowSizeX, mWindowSizeY);
 	}
 
 	bool GameRenderer::Initialize()

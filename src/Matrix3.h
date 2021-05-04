@@ -10,6 +10,9 @@ namespace TowerDefense
 		explicit Matrix3(float mat[3][3]);
 
 	public:
+		const float* FloatPointer() const;
+
+	public:
 		friend Matrix3 operator*(const Matrix3& a, const Matrix3& b);
 		Matrix3& operator*=(const Matrix3& mat);
 
