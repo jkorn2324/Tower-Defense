@@ -6,12 +6,19 @@
 namespace TowerDefense
 {
 
-	Shader::Shader()
+	Shader::Shader(const std::string& shaderName)
 	{
+		mLoaded = false;
+		mShaderName = shaderName;
 		mVertexShader = 0;
 		mFragShader = 0;
 		mShaderProgram = 0;
 		mUniformData = std::vector<ShaderUniformData*>();
+	}
+
+	const std::string& Shader::GetShaderName() const
+	{
+		return mShaderName;
 	}
 
 	Shader::~Shader()
@@ -19,13 +26,23 @@ namespace TowerDefense
 		UnLoad();
 	}
 
-	void Shader::SetActiveShader()
+	void Shader::Bind()
 	{
+		if (!mLoaded)
+		{
+			return;
+		}
 		glUseProgram(mShaderProgram);
 	}
 
 	bool Shader::Load(const std::string& vertexShader, const std::string& fragShader)
 	{
+		if (mLoaded)
+		{
+			SDL_Log("Shader is already loaded.");
+			return true;
+		}
+
 		if (!CompileShader(vertexShader, GL_VERTEX_SHADER, mVertexShader)
 			|| !CompileShader(fragShader, GL_FRAGMENT_SHADER, mFragShader))
 		{
@@ -66,7 +83,8 @@ namespace TowerDefense
 
 		std::stringstream shaderString;
 		shaderString << shaderFile.rdbuf();
-		char* shadersChar = (char*)shaderString.str().c_str();
+		std::string contents = shaderString.str();
+		const char* shadersChar = contents.c_str();
 		outShader = glCreateShader(shaderType);
 		glShaderSource(outShader, 1, &(shadersChar), nullptr);
 		glCompileShader(outShader);
@@ -107,29 +125,63 @@ namespace TowerDefense
 			SDL_Log("GLSL Program Failed: \n%s", buffer);
 			return false;
 		}
+
+		SDL_Log("Successfully loaded the shader: %s", mShaderName.c_str());
+		mLoaded = true;
 		return true;
 	}
 
 	void Shader::SetMatrix4Uniform(const std::string& name, const Matrix4& matrix)
 	{
+		if (!mLoaded)
+		{
+			return;
+		}
+
 		ShaderUniformData* uniformData = GetUniformData(name);
 		glUniformMatrix4fv(uniformData->mLocation, 1, GL_TRUE, matrix.FloatPointer());
 	}
 
 	void Shader::SetMatrix3Uniform(const std::string& name, const Matrix3& matrix)
 	{
+		if (!mLoaded)
+		{
+			return;
+		}
+
 		ShaderUniformData* uniformData = GetUniformData(name);
 		glUniformMatrix3fv(uniformData->mLocation, 1, GL_TRUE, matrix.FloatPointer());
 	}
 
 	void Shader::SetVec2Uniform(const std::string& name, const Vector2& vec)
 	{
+		if (!mLoaded)
+		{
+			return;
+		}
+
+		ShaderUniformData* uniformData = GetUniformData(name);
+		glUniformMatrix2fv(uniformData->mLocation, 1, GL_TRUE, vec.FloatPointer());
+	}
+
+	void Shader::SetVec3Uniform(const std::string& name, const Vector3& vec)
+	{
+		if (!mLoaded)
+		{
+			return;
+		}
+
 		ShaderUniformData* uniformData = GetUniformData(name);
 		glUniformMatrix3fv(uniformData->mLocation, 1, GL_TRUE, vec.FloatPointer());
 	}
 
 	ShaderUniformData* Shader::GetUniformData(const std::string& name)
 	{
+		if (!mLoaded)
+		{
+			return nullptr;
+		}
+
 		const auto& found = std::find_if(mUniformData.begin(), mUniformData.end(),
 			[name](ShaderUniformData* uniformData) -> bool
 			{

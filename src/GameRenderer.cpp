@@ -1,8 +1,13 @@
 #include "GameRenderer.h"
-#include "Game.h"
 #include <GL/glew.h>
 #include <SDL2/SDL_opengl.h>
+
+#include "Game.h"
 #include "GameParameters.h"
+#include "ShaderManager.h"
+#include "Shader.h"
+#include "VertexArray.h"
+#include "SpriteComponent.h"
 
 namespace TowerDefense
 {
@@ -12,11 +17,20 @@ namespace TowerDefense
 		mWindow = nullptr;
 		mGLContext = SDL_GLContext();
 		mGame = game;
+		mSpriteVertices = nullptr;
 		mWindowSizeX = WINDOW_SIZE_X;
 		mWindowSizeY = WINDOW_SIZE_Y;
 		mWindowName = WINDOW_NAME;
+		mSpriteComponents = std::vector<SpriteComponent*>();
+		mShaderManager = new ShaderManager(game);
 		mViewProjection = Matrix4::CreateSimpleViewProjection(
 			mWindowSizeX, mWindowSizeY);
+	}
+
+	GameRenderer::~GameRenderer()
+	{
+		mSpriteComponents.clear();
+		delete mShaderManager, mSpriteVertices;
 	}
 
 	bool GameRenderer::Initialize()
@@ -49,6 +63,9 @@ namespace TowerDefense
 		}
 
 		glGetError();
+
+		LoadShaders();
+		LoadSpriteVertices();
 		return true;
 	}
 
@@ -68,13 +85,67 @@ namespace TowerDefense
 		return mWindowSizeY;
 	}
 
+	ShaderManager* GameRenderer::GetShaderManager() const
+	{
+		return mShaderManager;
+	}
+
+	void GameRenderer::AddSpriteComponent(SpriteComponent* spriteComponent)
+	{
+		const auto& spriteSearched = std::find(mSpriteComponents.begin(), 
+			mSpriteComponents.end(), spriteComponent);
+		if (spriteSearched != mSpriteComponents.end())
+		{
+			return;
+		}
+		mSpriteComponents.push_back(spriteComponent);
+	}
+
+	void GameRenderer::RemoveSpriteComponent(SpriteComponent* spriteComponent)
+	{
+		const auto& spriteSearched = std::find(mSpriteComponents.begin(), 
+			mSpriteComponents.end(), spriteComponent);
+		mSpriteComponents.erase(spriteSearched);
+	}
+
+	void GameRenderer::LoadShaders()
+	{
+		mShaderManager->AddShader("sprite", 
+			"Assets/Shaders/Sprite.frag", "Assets/Shaders/Sprite.vert", true);
+	}
+
+	void GameRenderer::LoadSpriteVertices()
+	{
+		float vertices[] = 
+		{
+			-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f, -0.5f, 0.0f, 0.0f, 1.0f
+		};
+
+		unsigned int indices[] = 
+		{
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		mSpriteVertices = new VertexArray(vertices, 4, indices, 6);
+	}
+
 	void GameRenderer::Render()
 	{
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		// TODO: Draw Scene
+		mSpriteVertices->Bind();
 
+		for (SpriteComponent* spriteComponent : mSpriteComponents)
+		{
+			spriteComponent->Draw();
+		}
 		SDL_GL_SwapWindow(mWindow);
 	}
 }

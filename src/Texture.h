@@ -12,6 +12,8 @@ namespace TowerDefense
 		~Texture();
 
 	public:
+		bool IsLoaded() const;
+		const std::string& GetFileName() const;
 		bool Load(const std::string& file);
 		void UnLoad();
 		void Bind();
@@ -24,5 +26,9 @@ namespace TowerDefense
 		unsigned int mTextureID;
 		unsigned int mWidth;
 		unsigned int mHeight;
+
+	private:
+		bool mLoaded;
+		std::string mFileName;
 	};
 }

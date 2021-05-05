@@ -20,5 +20,8 @@ namespace TowerDefense
 		unsigned int mIndexBuffer;
 		unsigned int mNumIndices;
 		unsigned int mVertexArray;
+
+	private:
+		const unsigned int NUM_INDICIES = 5;
 	};
 }

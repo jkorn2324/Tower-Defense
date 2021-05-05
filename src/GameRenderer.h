@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include "Matrix4.h"
+#include <vector>
 #include <string>
 
 namespace TowerDefense
@@ -12,6 +13,7 @@ namespace TowerDefense
 
 	public:
 		GameRenderer(class Game* game);
+		~GameRenderer();
 
 	public:
 		bool Initialize();
@@ -19,8 +21,17 @@ namespace TowerDefense
 		void Uninitialize();
 
 	public:
+		void AddSpriteComponent(class SpriteComponent* spriteComponent);
+		void RemoveSpriteComponent(class SpriteComponent* spriteComponent);
+
+	public:
+		class ShaderManager* GetShaderManager() const;
 		unsigned int GetWindowSizeX() const;
 		unsigned int GetWindowSizeY() const;
+
+	private:
+		void LoadSpriteVertices();
+		void LoadShaders();
 
 	private:
 		class Game* mGame;
@@ -28,10 +39,15 @@ namespace TowerDefense
 		SDL_GLContext mGLContext;
 
 	private:
+		class ShaderManager* mShaderManager;
+		std::vector<class SpriteComponent*> mSpriteComponents;
+
+	private:
 		unsigned int mWindowSizeX, mWindowSizeY;
 		std::string mWindowName;
 
 	private:
 		Matrix4 mViewProjection;
+		class VertexArray* mSpriteVertices;
 	};
 }

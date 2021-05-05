@@ -8,6 +8,8 @@ namespace TowerDefense
 
 	Texture::Texture()
 	{
+		mFileName = "";
+		mLoaded = false;
 		mTextureID = 0;
 		mWidth = 0;
 		mHeight = 0;
@@ -18,8 +20,20 @@ namespace TowerDefense
 		UnLoad();
 	}
 
+	bool Texture::IsLoaded() const
+	{
+		return mLoaded;
+	}
+
+	const std::string& Texture::GetFileName() const { return mFileName; }
+
 	bool Texture::Load(const std::string& file)
 	{
+		if (mLoaded)
+		{
+			return true;
+		}
+
 		int numChannels = 0;
 		int localWidth, localHeight;
 		unsigned char* image = SOIL_load_image(file.c_str(), 
@@ -39,16 +53,27 @@ namespace TowerDefense
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		mWidth = static_cast<unsigned int>(localWidth);
 		mHeight = static_cast<unsigned int>(localHeight);
+		mLoaded = true;
 		return true;
 	}
 
 	void Texture::UnLoad()
 	{
+		if (!mLoaded)
+		{
+			return;
+		}
+
+		mLoaded = false;
 		glDeleteTextures(1, &mTextureID);
 	}
 
 	void Texture::Bind()
 	{
+		if (!mLoaded) 
+		{
+			return;
+		}
 		glBindTexture(GL_TEXTURE_2D, mTextureID);
 	}
 

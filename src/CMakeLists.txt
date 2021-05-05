@@ -18,6 +18,9 @@ if (WIN32)
 			COMMENT "Copy dll file to ${CMAKE_CURRENT_BINARY_DIR} directory" VERBATIM
 		)
 	endforeach()
+
+	file(COPY Assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 elseif (APPLE)
 	target_link_libraries(${GAMENAME} SDL2-2.0.0 SDL2_image-2.0.0 SDL2_mixer-2.0.0 SDL2_ttf-2.0.0 GLEW.1.12.0 SOIL ${COREFOUNDATION_LIBRARY} ${OPENGL_LIBRARY})
 	set_target_properties(
@@ -50,7 +53,7 @@ elseif (APPLE)
 
 	add_custom_command(TARGET ${GAMENAME}
 		POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/${GAMENAME}/Resources" "${COPY_DESTINATION}/Resources"
-		COMMENT "Copy Resources directory" VERBATIM
+		COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/${GAMENAME}/Assets" "${COPY_DESTINATION}/Assets"
+		COMMENT "Copy Assets directory" VERBATIM
 	)
 endif()

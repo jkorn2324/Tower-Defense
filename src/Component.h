@@ -20,8 +20,10 @@ namespace TowerDefense
 		virtual void OnDespawn();
 		virtual void Update(float deltaTime);
 
+	protected:
+		class Actor* mOwner;
+
 	private:
 		bool mEnabled;
-		class Actor* mOwner;
 	};
 }

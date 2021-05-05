@@ -2,10 +2,12 @@
 
 #include <string>
 #include <GL/glew.h>
+#include <vector>
+
 #include "Matrix4.h"
 #include "Matrix3.h"
 #include "Vector2.h"
-#include <vector>
+#include "Vector3.h"
 
 namespace TowerDefense
 {
@@ -20,11 +22,14 @@ namespace TowerDefense
 	{
 
 	public:
-		Shader();
+		Shader(const std::string& name);
 		~Shader();
 
 	public:
-		void SetActiveShader();
+		const std::string& GetShaderName() const;
+
+	public:
+		void Bind();
 		void UnLoad();
 		bool Load(const std::string& vertFile, const std::string& fragFile);
 
@@ -32,6 +37,7 @@ namespace TowerDefense
 		void SetMatrix4Uniform(const std::string& name, const Matrix4& matrix);
 		void SetMatrix3Uniform(const std::string& name, const Matrix3& matrix);
 		void SetVec2Uniform(const std::string& name, const Vector2& vec);
+		void SetVec3Uniform(const std::string& name, const Vector3& vec);
 
 	private:
 		bool CompileShader(const std::string& fileName, GLenum shaderType, GLuint& outShader);
@@ -48,5 +54,7 @@ namespace TowerDefense
 
 	private:
 		std::vector<ShaderUniformData*> mUniformData;
+		bool mLoaded;
+		std::string mShaderName;
 	};
 }

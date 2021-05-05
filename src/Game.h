@@ -26,6 +26,7 @@ namespace TowerDefense
 	public:
 		class GameRenderer* GetRenderer() const;
 		class ActorManager* GetActorManager() const;
+		class TexturesManager* GetTexturesManager() const;
 
 	private:
 		bool mRunning;
@@ -33,6 +34,7 @@ namespace TowerDefense
 
 	private:
 		class GameRenderer* mRenderer;
+		class TexturesManager* mTextureManager;
 		class ActorManager* mActorManager;
 	};
 }

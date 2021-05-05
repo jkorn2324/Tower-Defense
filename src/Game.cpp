@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "GameRenderer.h"
 #include "ActorManager.h"
+#include "TexturesManager.h"
 #include "GameParameters.h"
 
 namespace TowerDefense
@@ -10,6 +11,7 @@ namespace TowerDefense
 	{
 		mRenderer = new GameRenderer(this);
 		mActorManager = new ActorManager(this);
+		mTextureManager = new TexturesManager(this);
 		mRunning = false;
 		mPrevGameTick = SDL_GetTicks();
 	}
@@ -18,10 +20,9 @@ namespace TowerDefense
 
 	GameRenderer* Game::GetRenderer() const { return mRenderer; }
 
-	ActorManager* Game::GetActorManager() const
-	{
-		return mActorManager;
-	}
+	ActorManager* Game::GetActorManager() const { return mActorManager; }
+
+	TexturesManager* Game::GetTexturesManager() const { return mTextureManager; }
 
 	bool Game::InitializeGame()
 	{
@@ -53,6 +54,24 @@ namespace TowerDefense
 
 	void Game::ProcessInput()
 	{
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_QUIT:
+				mRunning = false;
+				return;
+			}
+		}
+
+		const Uint8* state = SDL_GetKeyboardState(NULL);
+		if (state[SDL_SCANCODE_ESCAPE])
+		{
+			mRunning = false;
+			return;
+		}
+		// TODO: Process input for actors
 	}
 
 	void Game::UpdateGame()
@@ -76,6 +95,6 @@ namespace TowerDefense
 			mRunning = false;
 		}
 		mRenderer->Uninitialize();
-		delete mRenderer, mActorManager;
+		delete mRenderer, mActorManager, mTextureManager;
 	}
 }
