@@ -18,8 +18,6 @@ namespace TowerDefense
 		mRenderer = actor->GetGame()->GetRenderer();
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
-		mTextureWidth = 0;
-		mTextureHeight = 0;
 		mRenderer->AddSpriteComponent(this);
 	}
 
@@ -69,8 +67,8 @@ namespace TowerDefense
 		mTexture->Bind();
 
 		Matrix4 scaleMatrix = Matrix4::CreateScale(
-			static_cast<float>(mTextureWidth),
-			static_cast<float>(mTextureHeight), 1.0f);
+			static_cast<float>(mTexture->GetWidth()),
+			static_cast<float>(mTexture->GetHeight()), 1.0f);
 		Matrix4 worldTransform = scaleMatrix * mOwner->GetTransform().GetTransformMatrix();
 
 		mShader->SetMatrix4Uniform("uWorldTransform", worldTransform);

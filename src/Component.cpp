@@ -24,5 +24,7 @@ namespace TowerDefense
 
 	void Component::OnDespawn() { }
 
+	void Component::ProcessInput(const Uint8* keyState) { }
+
 	void Component::Update(float deltaTime) { }
 }

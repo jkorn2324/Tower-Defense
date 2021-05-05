@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <SDL2/SDL.h>
+
 #include "Transform.h"
 
 namespace TowerDefense
@@ -18,11 +20,13 @@ namespace TowerDefense
 
 	public:
 		void UpdateTransform();
+		void ProcessInput(const Uint8* keyState);
 		void Update(float deltaTime);
 		void Despawn();
 		void Despawn(float despawnTime);
 
 	protected:
+		virtual void OnProcessInput(const Uint8* keyState);
 		virtual void OnSpawn();
 		virtual void OnUpdate(float deltaTime);
 		virtual void OnDespawn();

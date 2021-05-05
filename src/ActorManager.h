@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <SDL2/SDL.h>
 
 namespace TowerDefense
 {
@@ -14,6 +15,7 @@ namespace TowerDefense
 		~ActorManager();
 
 	public:
+		void ProcessInput(const Uint8* keyboardState);
 		void Update(float deltaTime);
 		void AddActor(class Actor* actor);
 		void RemoveActor(class Actor* actor);

@@ -27,6 +27,5 @@ namespace TowerDefense
 		class TexturesManager* mTexturesManager;
 		class GameRenderer* mRenderer;
 		class Texture* mTexture;
-		unsigned int mTextureWidth, mTextureHeight;
 	};
 }

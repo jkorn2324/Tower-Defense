@@ -41,6 +41,14 @@ namespace TowerDefense
 		return mGame;
 	}
 
+	void ActorManager::ProcessInput(const Uint8* keyState)
+	{
+		for (const auto& actor : mActors)
+		{
+			actor->ProcessInput(keyState);
+		}
+	}
+
 	void ActorManager::Update(float deltaTime)
 	{
 		for (const auto& despawnedActor : mDespawnActors)
