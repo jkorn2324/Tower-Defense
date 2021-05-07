@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Component.h"
 #include "Vector2.h"
 
@@ -20,6 +22,13 @@ namespace TowerDefense
 		Vector2 mCollisionOffset;
 	};
 
+	struct MinCollisionDiffData
+	{
+		float mAbsDiff;
+		float mDiff;
+		CollisionSide collisionSide;
+	};
+
 	class CollisionComponent : public Component
 	{
 	public:
@@ -28,6 +37,9 @@ namespace TowerDefense
 	public:
 		void SetSize(float x, float y);
 		void SetSize(const Vector2& size);
+		const Vector2& GetSize() const;
+
+	public:
 		Vector2 GetMin() const;
 		Vector2 GetMax() const;
 
@@ -37,6 +49,7 @@ namespace TowerDefense
 
 	private:
 		void CalculateCollisionData(CollisionComponent* other, CollisionData& collisionData);
+		void AddMinimumValue(float value, float maxValue, CollisionSide side, std::vector<MinCollisionDiffData>& minValues);
 
 	private:
 		Vector2 mColliderSize;
