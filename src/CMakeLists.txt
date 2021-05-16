@@ -1,6 +1,6 @@
 set(GAMENAME towerdefense)
 # This grabs all files in this directory that end with .cpp, .h, and .hpp
-file(GLOB source_files CONFIGURE_DEPENDS "*.cpp" "*.h" "*.hpp")
+file(GLOB_RECURSE source_files CONFIGURE_DEPENDS "*.cpp" "*.h" "*.hpp")
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${source_files})
 
 # Don't change this

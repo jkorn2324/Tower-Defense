@@ -2,3 +2,4 @@
 # Ignores the build folder.
 build
 .vs
+LocalAssets

@@ -1,5 +1,6 @@
 #version 330
 
+// TODO: Add color multiplier
 uniform sampler2D uTexture;
 
 in vec2 fragTexCoord;

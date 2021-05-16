@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+
 #include <string>
 
 namespace TowerDefense
@@ -20,12 +21,19 @@ namespace TowerDefense
 		class Shader* GetShader() const;
 
 	public:
+		void SetRotationOffset(float rotation, bool inRadians = false);
+		float GetRotationOffset() const;
+
+	public:
 		void Draw();
 
-	private:
-		class Shader* mShader;
+	protected:
 		class TexturesManager* mTexturesManager;
 		class GameRenderer* mRenderer;
 		class Texture* mTexture;
+
+	private:
+		class Shader* mShader;
+		float mRotationOffset;
 	};
 }
