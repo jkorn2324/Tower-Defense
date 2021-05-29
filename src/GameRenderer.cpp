@@ -7,6 +7,7 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "VertexArray.h"
+#include "VertexArrayManager.h"
 #include "SpriteComponent.h"
 
 namespace TowerDefense
@@ -17,12 +18,12 @@ namespace TowerDefense
 		mWindow = nullptr;
 		mGLContext = SDL_GLContext();
 		mGame = game;
-		mSpriteVertices = nullptr;
 		mWindowSizeX = WINDOW_SIZE_X;
 		mWindowSizeY = WINDOW_SIZE_Y;
 		mWindowName = WINDOW_NAME;
 		mSpriteComponents = std::vector<SpriteComponent*>();
 		mShaderManager = new ShaderManager(game);
+		mVertexArrayManager = new VertexArrayManager();
 		mViewProjection = Matrix4::CreateSimpleViewProjection(
 			mWindowSizeX, mWindowSizeY);
 	}
@@ -30,7 +31,7 @@ namespace TowerDefense
 	GameRenderer::~GameRenderer()
 	{
 		mSpriteComponents.clear();
-		delete mShaderManager, mSpriteVertices;
+		delete mShaderManager, mVertexArrayManager;
 	}
 
 	bool GameRenderer::Initialize()
@@ -61,9 +62,7 @@ namespace TowerDefense
 			SDL_Log("Failed to initialize GLEW.");
 			return false;
 		}
-
 		glGetError();
-
 		LoadShaders();
 		LoadSpriteVertices();
 		return true;
@@ -83,6 +82,11 @@ namespace TowerDefense
 	unsigned int GameRenderer::GetWindowSizeY() const
 	{
 		return mWindowSizeY;
+	}
+
+	VertexArrayManager* GameRenderer::GetVertexArrayManager() const
+	{
+		return mVertexArrayManager;
 	}
 
 	ShaderManager* GameRenderer::GetShaderManager() const
@@ -116,21 +120,28 @@ namespace TowerDefense
 
 	void GameRenderer::LoadSpriteVertices()
 	{
-		float vertices[] = 
+		float vertices[] =
 		{
-			-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-			0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-			0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-			-0.5f, -0.5f, 0.0f, 0.0f, 1.0f
+			-0.5, 0.5, 0.0f,
+			0.5, 0.5, 0.0f,
+			0.5, -0.5f, 0.0f,
+			-0.5f, -0.5f, 0.0f
 		};
-
+		float texVertices[] =
+		{
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f
+		};
 		unsigned int indices[] = 
 		{
 			0, 1, 2,
 			2, 3, 0
 		};
-
-		mSpriteVertices = new VertexArray(vertices, 4, indices, 6);
+		VertexArray* defaultVertexArray = new VertexArray(
+			vertices, texVertices, 4, indices, 6);
+		mVertexArrayManager->SetDefaultVertexArray(defaultVertexArray);
 	}
 
 	void GameRenderer::Render()
@@ -140,7 +151,7 @@ namespace TowerDefense
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		mSpriteVertices->Bind();
+		mVertexArrayManager->GetDefaultVertexArray()->Bind();
 
 		for (SpriteComponent* spriteComponent : mSpriteComponents)
 		{

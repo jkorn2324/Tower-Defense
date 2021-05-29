@@ -25,9 +25,11 @@ namespace TowerDefense
 		void RemoveSpriteComponent(class SpriteComponent* spriteComponent);
 
 	public:
+		class VertexArrayManager* GetVertexArrayManager() const;
 		class ShaderManager* GetShaderManager() const;
 		unsigned int GetWindowSizeX() const;
 		unsigned int GetWindowSizeY() const;
+
 
 	private:
 		void LoadSpriteVertices();
@@ -40,6 +42,7 @@ namespace TowerDefense
 
 	private:
 		class ShaderManager* mShaderManager;
+		class VertexArrayManager* mVertexArrayManager;
 		std::vector<class SpriteComponent*> mSpriteComponents;
 
 	private:
@@ -48,6 +51,5 @@ namespace TowerDefense
 
 	private:
 		Matrix4 mViewProjection;
-		class VertexArray* mSpriteVertices;
 	};
 }

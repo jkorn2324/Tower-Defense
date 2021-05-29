@@ -5,8 +5,10 @@
 #include "Game.h"
 #include "GameRenderer.h"
 #include "ShaderManager.h"
-#include "TexturesManager.h"
+#include "VertexArray.h"
+#include "VertexArrayManager.h"
 #include "Texture.h"
+#include "TexturesManager.h"
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
@@ -20,12 +22,26 @@ namespace TowerDefense
 	SpriteComponent::SpriteComponent(Actor* actor)
 		: Component(actor)
 	{
+		mRenderer = actor->GetGame()->GetRenderer();
+		mTexturesManager = actor->GetGame()->GetTexturesManager();
+		mVertexArrayManager = mRenderer->GetVertexArrayManager();
+		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
+		mVertexArray = mVertexArrayManager->GetDefaultVertexArray();
+		mTexture = nullptr;
+		mRotationOffset = 0.0f;
+		mRenderer->AddSpriteComponent(this);
+	}
+
+	SpriteComponent::SpriteComponent(const std::string& textureFile, Actor* actor)
+		: Component(actor)
+	{
+		mVertexArray = mVertexArrayManager->GetDefaultVertexArray();
 		mTexture = nullptr;
 		mRenderer = actor->GetGame()->GetRenderer();
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
 		mRotationOffset = 0.0f;
-		mRenderer->AddSpriteComponent(this);
+		SetTexture(textureFile);
 	}
 
 	SpriteComponent::~SpriteComponent() 
@@ -80,6 +96,7 @@ namespace TowerDefense
 			return;
 		}
 
+		mVertexArray->Bind();
 		mShader->Bind();
 		mTexture->Bind();
 
@@ -90,6 +107,7 @@ namespace TowerDefense
 		Matrix4 spriteTransformMatrix = scaleMatrix * rotationMatrix;
 		Matrix4 worldTransform = spriteTransformMatrix * mOwner->GetTransform().GetTransformMatrix();
 
+		// TODO: Add the texture coordinates.
 		mShader->SetMatrix4Uniform("uWorldTransform", worldTransform);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}

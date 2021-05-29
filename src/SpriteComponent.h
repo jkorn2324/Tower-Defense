@@ -11,6 +11,7 @@ namespace TowerDefense
 	{
 	public:
 		SpriteComponent(class Actor* owner);
+		SpriteComponent(const std::string& textureFile, class Actor* owner);
 		virtual ~SpriteComponent();
 
 	public:
@@ -19,6 +20,8 @@ namespace TowerDefense
 		class Texture* GetTexture() const;
 		void SetShader(class Shader* shader);
 		class Shader* GetShader() const;
+
+		// TODO: Vertex Array Integration
 
 	public:
 		void SetRotationOffset(float rotation, bool inRadians = false);
@@ -29,10 +32,12 @@ namespace TowerDefense
 
 	protected:
 		class TexturesManager* mTexturesManager;
+		class VertexArrayManager* mVertexArrayManager;
 		class GameRenderer* mRenderer;
 		class Texture* mTexture;
 
 	private:
+		class VertexArray* mVertexArray;
 		class Shader* mShader;
 		float mRotationOffset;
 	};
