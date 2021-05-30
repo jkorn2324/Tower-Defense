@@ -15,6 +15,7 @@ namespace TowerDefense
 	{
 		for(Texture* texture : mTextures)
 		{
+			texture->UnLoad();
 			delete texture;
 		}
 		mTextures.clear();

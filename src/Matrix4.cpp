@@ -81,7 +81,7 @@ namespace TowerDefense
 				float outputValue = 0.0f;
 				for (unsigned int column = 0; column < size; column++)
 				{
-					outputValue += a.mMatrix[outRow][column] * b.mMatrix[column][outCol];
+					outputValue += (a.mMatrix[outRow][column] * b.mMatrix[column][outCol]);
 				}
 				output.mMatrix[outRow][outCol] = outputValue;
 			}

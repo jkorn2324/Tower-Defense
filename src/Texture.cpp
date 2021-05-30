@@ -43,6 +43,7 @@ namespace TowerDefense
 			SDL_Log("Failed to load image %s: %s", file.c_str(), SOIL_last_result());
 			return false;
 		}
+		SDL_Log("Successfully loaded image %s", file.c_str());
 		int format = numChannels == 4 ? GL_RGBA : GL_RGB;
 		glGenTextures(1, &mTextureID);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);

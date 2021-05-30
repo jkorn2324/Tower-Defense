@@ -53,7 +53,12 @@ namespace TowerDefense
 		glAttachShader(mShaderProgram, mVertexShader);
 		glAttachShader(mShaderProgram, mFragShader);
 		glLinkProgram(mShaderProgram);
-		return IsValidProgram();
+		if (!IsValidProgram())
+		{
+			return false;
+		}
+		mLoaded = true;
+		return true;
 	}
 
 	void Shader::UnLoad()
@@ -66,7 +71,6 @@ namespace TowerDefense
 			}
 		}
 		mUniformData.clear();
-
 		glDeleteProgram(mShaderProgram);
 		glDeleteShader(mVertexShader);
 		glDeleteShader(mFragShader);
@@ -94,7 +98,6 @@ namespace TowerDefense
 			SDL_Log("Failed to compile shader %s", fileName.c_str());
 			return false;
 		}
-
 		return true;
 	}
 
@@ -125,9 +128,7 @@ namespace TowerDefense
 			SDL_Log("GLSL Program Failed: \n%s", buffer);
 			return false;
 		}
-
 		SDL_Log("Successfully loaded the shader: %s", mShaderName.c_str());
-		mLoaded = true;
 		return true;
 	}
 
@@ -137,7 +138,6 @@ namespace TowerDefense
 		{
 			return;
 		}
-
 		ShaderUniformData* uniformData = GetUniformData(name);
 		glUniformMatrix4fv(uniformData->mLocation, 1, GL_TRUE, matrix.FloatPointer());
 	}
@@ -148,7 +148,6 @@ namespace TowerDefense
 		{
 			return;
 		}
-
 		ShaderUniformData* uniformData = GetUniformData(name);
 		glUniformMatrix3fv(uniformData->mLocation, 1, GL_TRUE, matrix.FloatPointer());
 	}
@@ -159,9 +158,8 @@ namespace TowerDefense
 		{
 			return;
 		}
-
 		ShaderUniformData* uniformData = GetUniformData(name);
-		glUniformMatrix2fv(uniformData->mLocation, 1, GL_TRUE, vec.FloatPointer());
+		glUniform2fv(uniformData->mLocation, 1, vec.FloatPointer());
 	}
 
 	void Shader::SetVec3Uniform(const std::string& name, const Vector3& vec)
@@ -170,9 +168,18 @@ namespace TowerDefense
 		{
 			return;
 		}
-
 		ShaderUniformData* uniformData = GetUniformData(name);
-		glUniformMatrix3fv(uniformData->mLocation, 1, GL_TRUE, vec.FloatPointer());
+		glUniform3fv(uniformData->mLocation, 1, vec.FloatPointer());
+	}
+
+	void Shader::SetFloatUniform(const std::string& name, float f)
+	{
+		if (!mLoaded)
+		{
+			return;
+		}
+		ShaderUniformData* uniformData = GetUniformData(name);
+		glUniform1f(uniformData->mLocation, f);
 	}
 
 	ShaderUniformData* Shader::GetUniformData(const std::string& name)

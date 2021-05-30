@@ -38,6 +38,7 @@ namespace TowerDefense
 		void SetMatrix3Uniform(const std::string& name, const Matrix3& matrix);
 		void SetVec2Uniform(const std::string& name, const Vector2& vec);
 		void SetVec3Uniform(const std::string& name, const Vector3& vec);
+		void SetFloatUniform(const std::string& name, float f);
 
 	private:
 		bool CompileShader(const std::string& fileName, GLenum shaderType, GLuint& outShader);

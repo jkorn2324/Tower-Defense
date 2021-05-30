@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "Actor.h"
 
+#include "Tower.h"
+
 namespace TowerDefense
 {
 
@@ -34,6 +36,13 @@ namespace TowerDefense
 		mActors.clear();
 		mSpawnActors.clear();
 		mDespawnActors.clear();
+	}
+
+	void ActorManager::InitActors()
+	{
+		Tower* tower = new Tower(mGame);
+		Transform& transform = (Transform&)tower->GetTransform();
+		transform.SetPosition(0.0f, 0.0f);
 	}
 
 	Game* ActorManager::GetGame() const

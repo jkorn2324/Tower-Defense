@@ -15,7 +15,6 @@ namespace TowerDefense
 		mGame = game;
 		mActorManager = game->GetActorManager();
 		mTransform = Transform();
-
 		mActorManager->AddActor(this);
 	}
 

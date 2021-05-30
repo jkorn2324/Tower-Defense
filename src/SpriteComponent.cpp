@@ -6,7 +6,6 @@
 #include "GameRenderer.h"
 #include "ShaderManager.h"
 #include "VertexArray.h"
-#include "VertexArrayManager.h"
 #include "Texture.h"
 #include "TexturesManager.h"
 
@@ -18,15 +17,53 @@
 
 namespace TowerDefense
 {
+	SpriteTexCoords::SpriteTexCoords()
+	{
+		min = Vector2(0.0f, 0.0f);
+		max = Vector2(1.0f, 1.0f);
+	}
+	
+	Vector2 SpriteTexCoords::GetCenterPoint() const
+	{
+		return Vector2(
+			(min.x + max.x) / 2.0f, 
+			(min.y + max.y) / 2.0f);
+	}
+
+	void SpriteTexCoords::SetTexCoords(VertexArray* texCoords)
+	{
+		float texVertices[] =
+		{
+			min.x, min.y,
+			max.x, min.y,
+			max.x, max.y,
+			min.x, max.y
+		};
+		texCoords->SetTexVerts(texVertices);
+	}
+
+	SpriteTexCoords SpriteTexCoords::CreateTexCoords(const Vector2& centerPoint, const Vector2& size, Texture* texture)
+	{
+		float halfSizeX = size.x * 0.5f;
+		float halfSizeY = size.y * 0.5f;
+		SpriteTexCoords coords;
+		coords.min.x = (centerPoint.x - halfSizeX) / texture->GetWidth();
+		coords.min.y = (centerPoint.y - halfSizeY) / texture->GetHeight();
+		coords.max.x = (centerPoint.x + halfSizeX) / texture->GetWidth();
+		coords.max.y = (centerPoint.x + halfSizeY) / texture->GetHeight();
+		return coords;
+	}
+
+	// ------------------- The Sprite Component Definition -------------------
 
 	SpriteComponent::SpriteComponent(Actor* actor)
 		: Component(actor)
 	{
 		mRenderer = actor->GetGame()->GetRenderer();
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
-		mVertexArrayManager = mRenderer->GetVertexArrayManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
-		mVertexArray = mVertexArrayManager->GetDefaultVertexArray();
+		mVertexArray = nullptr;
+		mTexCoords = SpriteTexCoords();
 		mTexture = nullptr;
 		mRotationOffset = 0.0f;
 		mRenderer->AddSpriteComponent(this);
@@ -35,13 +72,15 @@ namespace TowerDefense
 	SpriteComponent::SpriteComponent(const std::string& textureFile, Actor* actor)
 		: Component(actor)
 	{
-		mVertexArray = mVertexArrayManager->GetDefaultVertexArray();
-		mTexture = nullptr;
 		mRenderer = actor->GetGame()->GetRenderer();
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
+		mVertexArray = nullptr;
+		mTexCoords = SpriteTexCoords();
+		mTexture = nullptr;
 		mRotationOffset = 0.0f;
 		SetTexture(textureFile);
+		mRenderer->AddSpriteComponent(this);
 	}
 
 	SpriteComponent::~SpriteComponent() 
@@ -59,8 +98,38 @@ namespace TowerDefense
 		return mRotationOffset;
 	}
 
+	void SpriteComponent::SetTexCoords(const SpriteTexCoords& coords)
+	{
+		mTexCoords = coords;
+	}
+
+	void SpriteComponent::SetTexCoords(const Vector2& min, const Vector2& max)
+	{
+		mTexCoords.min = min;
+		mTexCoords.max = max;
+	}
+
+	const SpriteTexCoords& SpriteComponent::GetTexCoords() const
+	{
+		return mTexCoords;
+	}
+
+	VertexArray* SpriteComponent::GetVertexArray() const
+	{
+		if (mVertexArray != nullptr)
+		{
+			return mVertexArray;
+		}
+		return mRenderer->GetDefaultVertexArray();
+	}
+
 	void SpriteComponent::SetTexture(Texture* texture)
 	{
+		if (texture == nullptr)
+		{
+			return;
+		}
+		SetTexCoords(Vector2(0.0f, 0.0f), Vector2(1.0f, 1.0f));
 		mTexture = texture;
 	}
 
@@ -95,20 +164,22 @@ namespace TowerDefense
 		{
 			return;
 		}
-
-		mVertexArray->Bind();
-		mShader->Bind();
-		mTexture->Bind();
-
 		Matrix4 scaleMatrix = Matrix4::CreateScale(
 			static_cast<float>(mTexture->GetWidth()),
 			static_cast<float>(mTexture->GetHeight()), 1.0f);
 		Matrix4 rotationMatrix = Matrix4::CreateRotation2D(mRotationOffset);
 		Matrix4 spriteTransformMatrix = scaleMatrix * rotationMatrix;
 		Matrix4 worldTransform = spriteTransformMatrix * mOwner->GetTransform().GetTransformMatrix();
-
-		// TODO: Add the texture coordinates.
 		mShader->SetMatrix4Uniform("uWorldTransform", worldTransform);
+		mShader->SetMatrix4Uniform("uViewProjection", 
+			mRenderer->GetViewProjectionMatrix());
+
+		VertexArray* vertexArray = GetVertexArray();
+		mTexCoords.SetTexCoords(vertexArray);
+		vertexArray->Bind();
+		mShader->Bind();
+		mTexture->Bind();
+		
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}
 }

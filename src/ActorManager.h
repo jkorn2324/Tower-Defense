@@ -15,6 +15,7 @@ namespace TowerDefense
 		~ActorManager();
 
 	public:
+		void InitActors();
 		void ProcessInput(const Uint8* keyboardState);
 		void Update(float deltaTime);
 		void AddActor(class Actor* actor);

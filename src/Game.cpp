@@ -39,6 +39,7 @@ namespace TowerDefense
 	void Game::LoadGame()
 	{
 		mPrevGameTick = SDL_GetTicks();
+		mActorManager->InitActors();
 		// TODO: Implementation
 	}
 

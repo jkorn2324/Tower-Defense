@@ -1,9 +1,10 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "Matrix4.h"
 #include <vector>
 #include <string>
+
+#include "Matrix4.h"
 
 namespace TowerDefense
 {
@@ -25,24 +26,24 @@ namespace TowerDefense
 		void RemoveSpriteComponent(class SpriteComponent* spriteComponent);
 
 	public:
-		class VertexArrayManager* GetVertexArrayManager() const;
+		class VertexArray* GetDefaultVertexArray() const;
 		class ShaderManager* GetShaderManager() const;
 		unsigned int GetWindowSizeX() const;
 		unsigned int GetWindowSizeY() const;
-
+		const Matrix4& GetViewProjectionMatrix() const;
 
 	private:
 		void LoadSpriteVertices();
-		void LoadShaders();
+		bool LoadShaders();
 
 	private:
 		class Game* mGame;
 		SDL_Window* mWindow;
 		SDL_GLContext mGLContext;
+		class VertexArray* mDefaultVertexArray;
 
 	private:
 		class ShaderManager* mShaderManager;
-		class VertexArrayManager* mVertexArrayManager;
 		std::vector<class SpriteComponent*> mSpriteComponents;
 
 	private:

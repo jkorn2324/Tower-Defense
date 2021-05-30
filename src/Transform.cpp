@@ -79,7 +79,7 @@ namespace TowerDefense
 	{
 		Matrix4 scale = Matrix4::CreateScale(mScale.x, mScale.y, 1.0f);
 		Matrix4 rotation = Matrix4::CreateRotation2D(mRotation);
-		Matrix4 position = Matrix4::CreatePosition(mPosition.x, mPosition.y, 0.0f);
+		Matrix4 position = Matrix4::CreatePosition(mPosition.x, mPosition.y, -1.0f);
 		mTransformMatrix = scale * rotation * position;
 	}
 

@@ -7,7 +7,6 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "VertexArray.h"
-#include "VertexArrayManager.h"
 #include "SpriteComponent.h"
 
 namespace TowerDefense
@@ -23,7 +22,7 @@ namespace TowerDefense
 		mWindowName = WINDOW_NAME;
 		mSpriteComponents = std::vector<SpriteComponent*>();
 		mShaderManager = new ShaderManager(game);
-		mVertexArrayManager = new VertexArrayManager();
+		mDefaultVertexArray = nullptr;
 		mViewProjection = Matrix4::CreateSimpleViewProjection(
 			mWindowSizeX, mWindowSizeY);
 	}
@@ -31,7 +30,7 @@ namespace TowerDefense
 	GameRenderer::~GameRenderer()
 	{
 		mSpriteComponents.clear();
-		delete mShaderManager, mVertexArrayManager;
+		delete mDefaultVertexArray;
 	}
 
 	bool GameRenderer::Initialize()
@@ -47,15 +46,15 @@ namespace TowerDefense
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 		mWindow = SDL_CreateWindow(mWindowName.c_str(),
-			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWindowSizeX, mWindowSizeY, SDL_WINDOW_OPENGL);
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+			mWindowSizeX, mWindowSizeY, SDL_WINDOW_OPENGL);
 		if (mWindow == nullptr)
 		{
 			SDL_Log("Failed to create SDL Window. Error: %s", SDL_GetError());
 			return false;
 		}
-
 		mGLContext = SDL_GL_CreateContext(mWindow);
-
+		SDL_GL_SetSwapInterval(1);
 		glewExperimental = GL_TRUE;
 		if (glewInit() != GLEW_OK)
 		{
@@ -63,7 +62,10 @@ namespace TowerDefense
 			return false;
 		}
 		glGetError();
-		LoadShaders();
+		if (!LoadShaders())
+		{
+			return false;
+		}
 		LoadSpriteVertices();
 		return true;
 	}
@@ -84,9 +86,9 @@ namespace TowerDefense
 		return mWindowSizeY;
 	}
 
-	VertexArrayManager* GameRenderer::GetVertexArrayManager() const
+	const Matrix4& GameRenderer::GetViewProjectionMatrix() const
 	{
-		return mVertexArrayManager;
+		return mViewProjection;
 	}
 
 	ShaderManager* GameRenderer::GetShaderManager() const
@@ -96,12 +98,6 @@ namespace TowerDefense
 
 	void GameRenderer::AddSpriteComponent(SpriteComponent* spriteComponent)
 	{
-		const auto& spriteSearched = std::find(mSpriteComponents.begin(), 
-			mSpriteComponents.end(), spriteComponent);
-		if (spriteSearched != mSpriteComponents.end())
-		{
-			return;
-		}
 		mSpriteComponents.push_back(spriteComponent);
 	}
 
@@ -112,36 +108,39 @@ namespace TowerDefense
 		mSpriteComponents.erase(spriteSearched);
 	}
 
-	void GameRenderer::LoadShaders()
+	VertexArray* GameRenderer::GetDefaultVertexArray() const
 	{
-		mShaderManager->AddShader("sprite", 
-			"Assets/Shaders/Sprite.frag", "Assets/Shaders/Sprite.vert", true);
+		return mDefaultVertexArray;
+	}
+
+	bool GameRenderer::LoadShaders()
+	{
+		if (!mShaderManager->AddShader("sprite",
+			"Assets/Shaders/Sprite.frag", "Assets/Shaders/Sprite.vert", true))
+		{
+			return false;
+		}
+
+		Shader* spriteShader = mShaderManager->GetShader("sprite");
+		spriteShader->SetMatrix4Uniform("uViewProjection", mViewProjection);
+		return true;
 	}
 
 	void GameRenderer::LoadSpriteVertices()
 	{
 		float vertices[] =
 		{
-			-0.5, 0.5, 0.0f,
-			0.5, 0.5, 0.0f,
-			0.5, -0.5f, 0.0f,
-			-0.5f, -0.5f, 0.0f
-		};
-		float texVertices[] =
-		{
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 1.0f
+			-0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f, -0.5f, 0.0f, 0.0f, 1.0f
 		};
 		unsigned int indices[] = 
 		{
 			0, 1, 2,
 			2, 3, 0
 		};
-		VertexArray* defaultVertexArray = new VertexArray(
-			vertices, texVertices, 4, indices, 6);
-		mVertexArrayManager->SetDefaultVertexArray(defaultVertexArray);
+		mDefaultVertexArray = new VertexArray(vertices, 4, indices, 6);
 	}
 
 	void GameRenderer::Render()
@@ -150,8 +149,6 @@ namespace TowerDefense
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		mVertexArrayManager->GetDefaultVertexArray()->Bind();
 
 		for (SpriteComponent* spriteComponent : mSpriteComponents)
 		{

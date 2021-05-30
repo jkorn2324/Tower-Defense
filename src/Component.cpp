@@ -8,7 +8,6 @@ namespace TowerDefense
 	{
 		mOwner = actor;
 		mEnabled = true;
-
 		mOwner->AddComponent(this);
 	}
 
