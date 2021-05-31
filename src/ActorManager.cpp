@@ -77,12 +77,6 @@ namespace TowerDefense
 		
 		mSpawnActors.clear();
 		mDespawnActors.clear();
-
-		// Updates the transformation Matrix on each actor.
-		for (const auto& actor : mActors)
-		{
-			actor->UpdateTransform();
-		}
 	}
 
 	void ActorManager::HandleSpawn(Actor* actor)

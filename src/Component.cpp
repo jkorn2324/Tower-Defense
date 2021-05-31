@@ -8,6 +8,7 @@ namespace TowerDefense
 	{
 		mOwner = actor;
 		mEnabled = true;
+		mTransform = (Transform*)&actor->GetTransform();
 		mOwner->AddComponent(this);
 	}
 

@@ -62,10 +62,22 @@ namespace TowerDefense
 	{
 		float mat[4][4] =
 		{
+			{ 2.0f / width, 0.0f, 0.0f, 0.0f },
+			{ 0.0f, 2.0f / height, 0.0f, 0.0f },
+			{ 0.0f, 0.0f, 1.0f, 0.0f },
+			{ 0.0f, 0.0f, 1.0f, 1.0f }
+		};
+		return Matrix4(mat);
+	}
+
+	Matrix4 Matrix4::CreateOrthoViewProjection(float width, float height, float near, float far)
+	{
+		float mat[4][4] =
+		{
 			{2.0f / width, 0.0f, 0.0f, 0.0f},
 			{0.0f, 2.0f / height, 0.0f, 0.0f},
-			{0.0f, 0.0f, 1.0f, 0.0f},
-			{0.0f, 0.0f, 1.0f, 1.0f}
+			{0.0f, 0.0f, 1.0f / (far - near), 0.0f},
+			{0.0f, 0.0f, near / (near - far), 1.0f}
 		};
 		return Matrix4(mat);
 	}

@@ -1,5 +1,6 @@
 #include "SpriteComponent.h"
 #include "Matrix4.h"
+#include "Vector2.h"
 #include "Shader.h"
 #include "Actor.h"
 #include "Game.h"
@@ -90,7 +91,8 @@ namespace TowerDefense
 
 	void SpriteComponent::SetRotationOffset(float rotationOffset, bool inRadians)
 	{
-		mRotationOffset = inRadians ? rotationOffset : M_PI / 180.0f * rotationOffset;
+		mRotationOffset = inRadians ? rotationOffset : 
+			(M_PI / 180.0f) * rotationOffset;
 	}
 
 	float SpriteComponent::GetRotationOffset() const
@@ -164,22 +166,28 @@ namespace TowerDefense
 		{
 			return;
 		}
-		Matrix4 scaleMatrix = Matrix4::CreateScale(
-			static_cast<float>(mTexture->GetWidth()),
-			static_cast<float>(mTexture->GetHeight()), 1.0f);
-		Matrix4 rotationMatrix = Matrix4::CreateRotation2D(mRotationOffset);
-		Matrix4 spriteTransformMatrix = scaleMatrix * rotationMatrix;
-		Matrix4 worldTransform = spriteTransformMatrix * mOwner->GetTransform().GetTransformMatrix();
-		mShader->SetMatrix4Uniform("uWorldTransform", worldTransform);
-		mShader->SetMatrix4Uniform("uViewProjection", 
-			mRenderer->GetViewProjectionMatrix());
 
 		VertexArray* vertexArray = GetVertexArray();
 		mTexCoords.SetTexCoords(vertexArray);
+		
 		vertexArray->Bind();
 		mShader->Bind();
-		mTexture->Bind();
+
+		const Vector2& scale = mTransform->GetScale();
+		const Vector2& position = mTransform->GetPosition();
+		Matrix4 scaleMatrix = Matrix4::CreateScale(
+			static_cast<float>(mTexture->GetWidth()) * scale.x,
+			static_cast<float>(mTexture->GetHeight()) * scale.y, 1.0f);
+		Matrix4 rotationMatrix = Matrix4::CreateRotation2D(
+			mTransform->GetRotation() + mRotationOffset);
+		Matrix4 positionMatrix = Matrix4::CreatePosition(
+			position.x, position.y, 0.0f);
+		Matrix4 worldTransform = scaleMatrix * rotationMatrix * positionMatrix;
+
+		mShader->SetMatrix4Uniform("uWorldTransform", worldTransform);
+		mShader->SetMatrix4Uniform("uViewProjection", mRenderer->GetViewProjectionMatrix());
 		
+		mTexture->Bind();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}
 }

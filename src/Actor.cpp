@@ -106,11 +106,6 @@ namespace TowerDefense
 		UpdateDespawn(deltaTime);
 	}
 
-	void Actor::UpdateTransform()
-	{
-		mTransform.CalculateTransformMatrix();
-	}
-
 	void Actor::ProcessInput(const Uint8* keyState)
 	{
 		for (Component* component : mComponents)

@@ -148,12 +148,14 @@ namespace TowerDefense
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
 		for (SpriteComponent* spriteComponent : mSpriteComponents)
 		{
 			spriteComponent->Draw();
 		}
+		glDisable(GL_BLEND);
 		SDL_GL_SwapWindow(mWindow);
 	}
 }

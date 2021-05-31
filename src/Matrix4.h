@@ -24,6 +24,7 @@ namespace TowerDefense
 
 	public:
 		static Matrix4 CreateSimpleViewProjection(float width, float height);
+		static Matrix4 CreateOrthoViewProjection(float width, float height, float near, float far);
 
 	public:
 		static Matrix4 Identity();

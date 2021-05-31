@@ -25,6 +25,7 @@ namespace TowerDefense
 
 	protected:
 		class Actor* mOwner;
+		class Transform* mTransform;
 
 	private:
 		bool mEnabled;

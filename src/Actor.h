@@ -19,7 +19,6 @@ namespace TowerDefense
 		void OnActorSpawn();
 
 	public:
-		void UpdateTransform();
 		void ProcessInput(const Uint8* keyState);
 		void Update(float deltaTime);
 		void Despawn();

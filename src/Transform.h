@@ -33,14 +33,9 @@ namespace TowerDefense
 		void SetRotation(float rotation, bool inRadians = false);
 		float GetRotation() const;
 
-	public:
-		void CalculateTransformMatrix();
-		const Matrix4& GetTransformMatrix() const;
-
 	private:
 		Vector2 mPosition;
 		Vector2 mScale;
 		float mRotation;
-		Matrix4 mTransformMatrix;
 	};
 }

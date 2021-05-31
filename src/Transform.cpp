@@ -8,7 +8,6 @@ namespace TowerDefense
 {
 	Transform::Transform()
 	{
-		mTransformMatrix = Matrix4::Identity();
 		mScale = Vector2::One();
 		mPosition = Vector2::Zero();
 		mRotation = 0.0f;
@@ -73,18 +72,5 @@ namespace TowerDefense
 	{
 		float deg2Rad = (float)M_PI / 180.0f;
 		mRotation = inRadians ? rotation : deg2Rad * rotation;
-	}
-
-	void Transform::CalculateTransformMatrix()
-	{
-		Matrix4 scale = Matrix4::CreateScale(mScale.x, mScale.y, 1.0f);
-		Matrix4 rotation = Matrix4::CreateRotation2D(mRotation);
-		Matrix4 position = Matrix4::CreatePosition(mPosition.x, mPosition.y, -1.0f);
-		mTransformMatrix = scale * rotation * position;
-	}
-
-	const Matrix4& Transform::GetTransformMatrix() const
-	{
-		return mTransformMatrix;
 	}
 }
