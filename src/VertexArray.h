@@ -10,13 +10,14 @@ namespace TowerDefense
 	{
 
 	public:
-		VertexArray(const float* verts, unsigned int numVerts, const unsigned int* indices,
-			unsigned int numIndices);
+		VertexArray(const float* verts, unsigned int numVerts);
 		virtual ~VertexArray();
 
 	public:
-		void SetTexVerts(const float* verts);
 		void Bind();
+
+	public:
+		void SetIndexBuffer(class IndexBuffer* indexBuffer);
 
 	protected:
 		// Holds the buffer for the vertex coordinates.
@@ -24,10 +25,11 @@ namespace TowerDefense
 
 	private:
 		unsigned int mNumVertices;
-		unsigned int mIndexBuffer;
-		unsigned int mNumIndices;
 		// The vertex array.
 		unsigned int mVertexArray;
+
+	private:
+		class IndexBuffer* mIndexBuffer;
 
 	protected:
 		const unsigned int NUM_VERTEX_INDICES = 3;

@@ -40,6 +40,9 @@ namespace TowerDefense
 		class Game* mGame;
 		SDL_Window* mWindow;
 		SDL_GLContext mGLContext;
+
+	private:
+		class IndexBuffer* mDefaultIndexBuffer;
 		class VertexArray* mDefaultVertexArray;
 
 	private:

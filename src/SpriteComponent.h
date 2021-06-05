@@ -9,27 +9,6 @@ namespace TowerDefense
 {
 
 	/**
-	 * Sets the sprite texture coords. 
-	 */
-	struct SpriteTexCoords
-	{
-	public:
-		SpriteTexCoords();
-
-	public:
-		Vector2 GetCenterPoint() const;
-		void SetTexCoords(class VertexArray* vertexArray);
-
-	public:
-		static SpriteTexCoords CreateTexCoords(const Vector2& centerPoint, 
-			const Vector2& size, class Texture* texture);
-
-	public:
-		Vector2 min;
-		Vector2 max;
-	};
-
-	/**
 	 * The sprite component. 
 	 */
 	class SpriteComponent : public Component
@@ -45,11 +24,8 @@ namespace TowerDefense
 		class Texture* GetTexture() const;
 		void SetShader(class Shader* shader);
 		class Shader* GetShader() const;
-
-	public:
-		const SpriteTexCoords& GetTexCoords() const;
-		void SetTexCoords(const SpriteTexCoords& texCoords);
-		void SetTexCoords(const Vector2& min, const Vector2& max);
+		float GetWidth() const;
+		float GetHeight() const;
 
 	public:
 		void SetRotationOffset(float rotation, bool inRadians = false);
@@ -63,11 +39,9 @@ namespace TowerDefense
 		class GameRenderer* mRenderer;
 		class Texture* mTexture;
 
-	protected:
-		SpriteTexCoords mTexCoords;
-
 	private:
 		class Shader* mShader;
+		float mWidth, mHeight;
 		float mRotationOffset;
 	};
 }

@@ -7,6 +7,7 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "VertexArray.h"
+#include "GLBuffers.h"
 #include "SpriteComponent.h"
 
 namespace TowerDefense
@@ -23,6 +24,7 @@ namespace TowerDefense
 		mSpriteComponents = std::vector<SpriteComponent*>();
 		mShaderManager = new ShaderManager(game);
 		mDefaultVertexArray = nullptr;
+		mDefaultIndexBuffer = nullptr;
 		mViewProjection = Matrix4::CreateSimpleViewProjection(
 			static_cast<float>(mWindowSizeX), static_cast<float>(mWindowSizeY));
 	}
@@ -30,6 +32,7 @@ namespace TowerDefense
 	GameRenderer::~GameRenderer()
 	{
 		mSpriteComponents.clear();
+		delete mDefaultIndexBuffer;
 		delete mDefaultVertexArray;
 	}
 
@@ -136,12 +139,15 @@ namespace TowerDefense
 			0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
 			-0.5f, -0.5f, 0.0f, 0.0f, 1.0f
 		};
+
 		unsigned int indices[] = 
 		{
 			0, 1, 2,
 			2, 3, 0
 		};
-		mDefaultVertexArray = new VertexArray(vertices, 4, indices, 6);
+
+		mDefaultIndexBuffer = new IndexBuffer(indices, 6);
+		mDefaultVertexArray = new VertexArray(vertices, 4);
 	}
 
 	void GameRenderer::Render()
@@ -150,6 +156,8 @@ namespace TowerDefense
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		mDefaultVertexArray->SetIndexBuffer(mDefaultIndexBuffer);
 
 		for (SpriteComponent* spriteComponent : mSpriteComponents)
 		{
