@@ -24,7 +24,7 @@ namespace TowerDefense
 		mShaderManager = new ShaderManager(game);
 		mDefaultVertexArray = nullptr;
 		mViewProjection = Matrix4::CreateSimpleViewProjection(
-			mWindowSizeX, mWindowSizeY);
+			static_cast<float>(mWindowSizeX), static_cast<float>(mWindowSizeY));
 	}
 
 	GameRenderer::~GameRenderer()
@@ -122,6 +122,7 @@ namespace TowerDefense
 		}
 
 		Shader* spriteShader = mShaderManager->GetShader("sprite");
+		spriteShader->Bind();
 		spriteShader->SetMatrix4Uniform("uViewProjection", mViewProjection);
 		return true;
 	}
@@ -148,14 +149,12 @@ namespace TowerDefense
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_BLEND);
-		glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		for (SpriteComponent* spriteComponent : mSpriteComponents)
 		{
 			spriteComponent->Draw();
 		}
-		glDisable(GL_BLEND);
 		SDL_GL_SwapWindow(mWindow);
 	}
 }

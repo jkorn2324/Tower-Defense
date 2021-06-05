@@ -54,7 +54,6 @@ namespace TowerDefense
 	public:
 		void SetRotationOffset(float rotation, bool inRadians = false);
 		float GetRotationOffset() const;
-		class VertexArray* GetVertexArray() const;
 
 	public:
 		void Draw();
@@ -68,7 +67,6 @@ namespace TowerDefense
 		SpriteTexCoords mTexCoords;
 
 	private:
-		class VertexArray* mVertexArray;
 		class Shader* mShader;
 		float mRotationOffset;
 	};

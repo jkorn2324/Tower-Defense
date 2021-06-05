@@ -63,7 +63,6 @@ namespace TowerDefense
 		mRenderer = actor->GetGame()->GetRenderer();
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
-		mVertexArray = nullptr;
 		mTexCoords = SpriteTexCoords();
 		mTexture = nullptr;
 		mRotationOffset = 0.0f;
@@ -76,7 +75,6 @@ namespace TowerDefense
 		mRenderer = actor->GetGame()->GetRenderer();
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
-		mVertexArray = nullptr;
 		mTexCoords = SpriteTexCoords();
 		mTexture = nullptr;
 		mRotationOffset = 0.0f;
@@ -116,15 +114,6 @@ namespace TowerDefense
 		return mTexCoords;
 	}
 
-	VertexArray* SpriteComponent::GetVertexArray() const
-	{
-		if (mVertexArray != nullptr)
-		{
-			return mVertexArray;
-		}
-		return mRenderer->GetDefaultVertexArray();
-	}
-
 	void SpriteComponent::SetTexture(Texture* texture)
 	{
 		if (texture == nullptr)
@@ -137,7 +126,7 @@ namespace TowerDefense
 
 	void SpriteComponent::SetTexture(const std::string& file)
 	{
-		mTexture = mTexturesManager->GetTexture(file);
+		SetTexture(mTexturesManager->GetTexture(file));
 	}
 
 	Texture* SpriteComponent::GetTexture() const
@@ -167,23 +156,14 @@ namespace TowerDefense
 			return;
 		}
 
-		VertexArray* vertexArray = GetVertexArray();
-		mTexCoords.SetTexCoords(vertexArray);
-		
-		vertexArray->Bind();
+		float width = static_cast<float>(mTexture->GetWidth());
+		float height = static_cast<float>(mTexture->GetHeight());
+		Matrix4 scaleMatrix = Matrix4::CreateScale(width, height, 1.0f);
+		Matrix4 rotationMatrix = Matrix4::CreateRotation2D(mRotationOffset);
+		Matrix4 worldTransform = scaleMatrix * rotationMatrix 
+			* mTransform->CreateTransformMatrix();
+
 		mShader->Bind();
-
-		const Vector2& scale = mTransform->GetScale();
-		const Vector2& position = mTransform->GetPosition();
-		Matrix4 scaleMatrix = Matrix4::CreateScale(
-			static_cast<float>(mTexture->GetWidth()) * scale.x,
-			static_cast<float>(mTexture->GetHeight()) * scale.y, 1.0f);
-		Matrix4 rotationMatrix = Matrix4::CreateRotation2D(
-			mTransform->GetRotation() + mRotationOffset);
-		Matrix4 positionMatrix = Matrix4::CreatePosition(
-			position.x, position.y, 0.0f);
-		Matrix4 worldTransform = scaleMatrix * rotationMatrix * positionMatrix;
-
 		mShader->SetMatrix4Uniform("uWorldTransform", worldTransform);
 		mShader->SetMatrix4Uniform("uViewProjection", mRenderer->GetViewProjectionMatrix());
 		

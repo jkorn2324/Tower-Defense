@@ -30,6 +30,9 @@ namespace TowerDefense
 		void SetScale(const Vector2& scale);
 
 	public:
+		Matrix4 CreateTransformMatrix();
+
+	public:
 		void SetRotation(float rotation, bool inRadians = false);
 		float GetRotation() const;
 
@@ -37,5 +40,6 @@ namespace TowerDefense
 		Vector2 mPosition;
 		Vector2 mScale;
 		float mRotation;
+
 	};
 }

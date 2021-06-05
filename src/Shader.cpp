@@ -57,6 +57,7 @@ namespace TowerDefense
 		{
 			return false;
 		}
+
 		mLoaded = true;
 		return true;
 	}

@@ -64,7 +64,6 @@ namespace TowerDefense
 		{
 			return;
 		}
-
 		mLoaded = false;
 		glDeleteTextures(1, &mTextureID);
 	}

@@ -32,8 +32,8 @@ namespace TowerDefense
 		// Sets up the texture coords.
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
-			sizeof(float) * NUM_UV_INDICES, reinterpret_cast<void*>(
-				sizeof(float) * NUM_VERTEX_INDICES));
+			sizeof(float) * (NUM_VERTEX_INDICES + NUM_UV_INDICES), 
+			reinterpret_cast<void*>(sizeof(float) * NUM_VERTEX_INDICES));
 	}
 
 	VertexArray::~VertexArray()
