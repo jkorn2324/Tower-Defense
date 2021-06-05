@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GLBufferAttribute.h"
+
 namespace TowerDefense
 {
 
@@ -11,18 +13,23 @@ namespace TowerDefense
 
 	public:
 		VertexBuffer(unsigned int numVerts);
-		VertexBuffer(const float* verts, unsigned int numVerts);
-		VertexBuffer(const float* verts, unsigned int numVerts, bool isStatic);
+		VertexBuffer(const float* verts, unsigned int sizeOfVerts, unsigned int numVerts);
+		VertexBuffer(const float* verts, unsigned int sizeOfVerts, unsigned int numVerts, bool isStatic);
 		~VertexBuffer();
 
 	public:
 		void Bind();
 		void UnBind();
-		void SetVertices(const float* verts, unsigned int numVerts);
+		void SetVertices(const float* verts, unsigned int sizeOfVerts, unsigned int numVerts);
 		bool IsStatic() const;
+
+	public:
+		void SetLayout(std::initializer_list<BufferAttribute> layout);
+		const BufferAttributeLayout& GetLayout() const;
 
 	private:
 		bool mStatic;
+		BufferAttributeLayout mLayout;
 		unsigned int mBufferID;
 		unsigned int mNumVerts;
 	};

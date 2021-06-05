@@ -1,6 +1,7 @@
 #include "GLBuffers.h"
 
 #include <GL/glew.h>
+#include <SDL2/SDL_log.h>
 
 namespace TowerDefense
 {
@@ -11,30 +12,34 @@ namespace TowerDefense
 	{
 		mStatic = false;
 		mNumVerts = numVerts;
+		mLayout = BufferAttributeLayout();
 
 		glGenBuffers(1, &mBufferID);
 		glBindBuffer(GL_ARRAY_BUFFER, mBufferID);
-		glBufferData(GL_ARRAY_BUFFER, numVerts, nullptr, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 	}
 	
-	VertexBuffer::VertexBuffer(const float* verts, unsigned int numVerts)
+	VertexBuffer::VertexBuffer(const float* verts, unsigned int sizeOfVerts, unsigned int numVerts)
 	{
 		mStatic = false;
 		mNumVerts = numVerts;
+		mLayout = BufferAttributeLayout();
 
 		glGenBuffers(1, &mBufferID);
 		glBindBuffer(GL_ARRAY_BUFFER, mBufferID);
-		glBufferData(GL_ARRAY_BUFFER, numVerts, verts, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeOfVerts, verts, GL_DYNAMIC_DRAW);
 	}
 
-	VertexBuffer::VertexBuffer(const float* verts, unsigned int numVerts, bool isStatic)
+	VertexBuffer::VertexBuffer(const float* verts, unsigned int sizeOfVerts, unsigned int numVerts, bool isStatic)
 	{
 		mStatic = isStatic;
 		mNumVerts = numVerts;
+		mLayout = BufferAttributeLayout();
 
 		glGenBuffers(1, &mBufferID);
 		glBindBuffer(GL_ARRAY_BUFFER, mBufferID);
-		glBufferData(GL_ARRAY_BUFFER, numVerts, nullptr, mStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeOfVerts, verts, 
+			mStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 	}
 	
 	VertexBuffer::~VertexBuffer()
@@ -44,7 +49,7 @@ namespace TowerDefense
 	
 	void VertexBuffer::Bind()
 	{
-		glBindBuffer(1, mBufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, mBufferID);
 	}
 	
 	void VertexBuffer::UnBind()
@@ -52,20 +57,31 @@ namespace TowerDefense
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void VertexBuffer::SetVertices(const float* verts, unsigned int numVerts)
+	void VertexBuffer::SetVertices(const float* verts, unsigned int sizeOfVerts, unsigned int numVerts)
 	{
 		if (mStatic)
 		{
 			return;
 		}
 
-		glBindBuffer(1, mBufferID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, numVerts, reinterpret_cast<const void*>(verts));
+		mNumVerts = numVerts;
+		glBindBuffer(GL_ARRAY_BUFFER, mBufferID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeOfVerts, reinterpret_cast<const void*>(verts));
 	}
 
 	bool VertexBuffer::IsStatic() const
 	{
 		return mStatic;
+	}
+
+	void VertexBuffer::SetLayout(std::initializer_list<BufferAttribute> layout)
+	{
+		mLayout.SetAttributes(layout);
+	}
+
+	const BufferAttributeLayout& VertexBuffer::GetLayout() const
+	{
+		return mLayout;
 	}
 
 	// ---------------------------- The Index Buffer Data Structure -----------------------

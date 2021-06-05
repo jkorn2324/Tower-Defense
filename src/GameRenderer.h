@@ -43,6 +43,8 @@ namespace TowerDefense
 
 	private:
 		class IndexBuffer* mDefaultIndexBuffer;
+		class VertexBuffer* mDefaultVertexBuffer;
+		class VertexBuffer* mDefaultUVBuffer;
 		class VertexArray* mDefaultVertexArray;
 
 	private:

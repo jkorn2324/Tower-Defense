@@ -1,8 +1,10 @@
 #pragma once
 
+#include <vector>
+
 namespace TowerDefense
 {
-	
+
 	/**
 	 * The vertex Array Object. 
      */
@@ -10,7 +12,7 @@ namespace TowerDefense
 	{
 
 	public:
-		VertexArray(const float* verts, unsigned int numVerts);
+		VertexArray();
 		virtual ~VertexArray();
 
 	public:
@@ -18,17 +20,15 @@ namespace TowerDefense
 
 	public:
 		void SetIndexBuffer(class IndexBuffer* indexBuffer);
-
-	protected:
-		// Holds the buffer for the vertex coordinates.
-		unsigned int mVertexBuffer;
+		void AddVertexBuffer(class VertexBuffer* vertexBuffer);
 
 	private:
-		unsigned int mNumVertices;
+		std::vector<class VertexBuffer*> mVertexBuffers;
+		unsigned int mVertexBufferIndex;
+
+	private:
 		// The vertex array.
 		unsigned int mVertexArray;
-
-	private:
 		class IndexBuffer* mIndexBuffer;
 
 	protected:
