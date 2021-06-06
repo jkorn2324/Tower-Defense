@@ -136,6 +136,11 @@ namespace TowerDefense
 		return mDefaultVertexArray;
 	}
 
+	VertexBuffer* GameRenderer::GetDefaultUVBuffer() const
+	{
+		return mDefaultUVBuffer;
+	}
+
 	bool GameRenderer::LoadShaders()
 	{
 		if (!mShaderManager->AddShader("sprite",
@@ -176,7 +181,6 @@ namespace TowerDefense
 
 		mDefaultVertexArray = new VertexArray();
 		mDefaultIndexBuffer = new IndexBuffer(indices, 6);
-
 		mDefaultVertexBuffer = new VertexBuffer(vertices, sizeof(vertices), 4);
 		mDefaultVertexBuffer->SetLayout({
 			{ShaderDataType::FLOAT3, "inPosition"}
@@ -191,17 +195,29 @@ namespace TowerDefense
 		mDefaultVertexArray->SetIndexBuffer(mDefaultIndexBuffer);
 	}
 
+	void GameRenderer::SetDefaultUVs()
+	{
+		float uvs[2 * 4] =
+		{
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f
+		};
+		mDefaultUVBuffer->SetVertices(uvs, sizeof(uvs), 4);
+	}
+
 	void GameRenderer::Render()
 	{
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		mDefaultVertexArray->Bind();
 
 		for (SpriteComponent* spriteComponent : mSpriteComponents)
 		{
+			SetDefaultUVs();
 			spriteComponent->Draw();
 		}
 		SDL_GL_SwapWindow(mWindow);

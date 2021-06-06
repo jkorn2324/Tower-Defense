@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "GameRenderer.h"
 #include "ShaderManager.h"
-#include "VertexArray.h"
+#include "GLBuffers.h"
 #include "Texture.h"
 #include "TexturesManager.h"
 
@@ -19,6 +19,48 @@
 namespace TowerDefense
 {
 
+	// ---------------------------- The Sprite Texture Coords Implementation -------------------------
+
+	SpriteTexCoords::SpriteTexCoords()
+	{
+		min = Vector2(0.0f, 0.0f);
+		max = Vector2(1.0f, 1.0f);
+	}
+
+	Vector2 SpriteTexCoords::GetCenterPoint() const
+	{
+		return Vector2(
+			(min.x + max.x) / 2.0f,
+			(min.y + max.y) / 2.0f);
+	}
+
+	void SpriteTexCoords::SetTexCoords(VertexBuffer* buffer)
+	{
+		float texVertices[] =
+		{
+			min.x, min.y,
+			max.x, min.y,
+			max.x, max.y,
+			min.x, max.y
+		};
+		buffer->SetVertices(texVertices, sizeof(texVertices), 4);
+	}
+
+	SpriteTexCoords SpriteTexCoords::CreateTexCoords(const Vector2& centerPoint, const Vector2& size, Texture* texture)
+	{
+		float halfSizeX = size.x * 0.5f;
+		float halfSizeY = size.y * 0.5f;
+		SpriteTexCoords coords;
+		coords.min.x = (centerPoint.x - halfSizeX) / texture->GetWidth();
+		coords.min.y = (centerPoint.y - halfSizeY) / texture->GetHeight();
+		coords.max.x = (centerPoint.x + halfSizeX) / texture->GetWidth();
+		coords.max.y = (centerPoint.x + halfSizeY) / texture->GetHeight();
+		return coords;
+	}
+
+	// ------------------- The Sprite Component Definition -------------------
+
+
 	SpriteComponent::SpriteComponent(Actor* actor)
 		: Component(actor)
 	{
@@ -26,9 +68,9 @@ namespace TowerDefense
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
 		mTexture = nullptr;
-		mWidth = 0.0f;
-		mHeight = 0.0f;
+		mSize = Vector2::Zero();
 		mRotationOffset = 0.0f;
+		mTexCoords = SpriteTexCoords();
 		mRenderer->AddSpriteComponent(this);
 	}
 
@@ -39,8 +81,8 @@ namespace TowerDefense
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
 		mTexture = nullptr;
-		mWidth = 0.0f;
-		mHeight = 0.0f;
+		mSize = Vector2::Zero();
+		mTexCoords = SpriteTexCoords();
 		mRotationOffset = 0.0f;
 		SetTexture(textureFile);
 		mRenderer->AddSpriteComponent(this);
@@ -51,14 +93,9 @@ namespace TowerDefense
 		mRenderer->RemoveSpriteComponent(this);
 	}
 
-	float SpriteComponent::GetHeight() const
+	const Vector2& SpriteComponent::GetSize() const
 	{
-		return mHeight;
-	}
-
-	float SpriteComponent::GetWidth() const
-	{
-		return mWidth;
+		return mSize;
 	}
 
 	void SpriteComponent::SetRotationOffset(float rotationOffset, bool inRadians)
@@ -72,6 +109,17 @@ namespace TowerDefense
 		return mRotationOffset;
 	}
 
+	void SpriteComponent::SetTexCoords(const Vector2& center, const Vector2& size)
+	{
+		mSize = size;
+		mTexCoords = SpriteTexCoords::CreateTexCoords(center, size, mTexture);
+	}
+
+	const SpriteTexCoords& SpriteComponent::GetTexCoords() const
+	{
+		return mTexCoords;
+	}
+
 	void SpriteComponent::SetTexture(Texture* texture)
 	{
 		if (texture == nullptr)
@@ -79,9 +127,9 @@ namespace TowerDefense
 			return;
 		}
 		mTexture = texture;
-
-		mWidth = static_cast<float>(texture->GetWidth());
-		mHeight = static_cast<float>(texture->GetHeight());
+		mSize.x = static_cast<float>(texture->GetWidth());
+		mSize.y = static_cast<float>(texture->GetHeight());
+		mTexCoords = SpriteTexCoords();
 	}
 
 	void SpriteComponent::SetTexture(const std::string& file)
@@ -116,11 +164,12 @@ namespace TowerDefense
 			return;
 		}
 
-		Matrix4 scaleMatrix = Matrix4::CreateScale(mWidth, mHeight, 1.0f);
+		Matrix4 scaleMatrix = Matrix4::CreateScale(mSize.x, mSize.y, 1.0f);
 		Matrix4 rotationMatrix = Matrix4::CreateRotation2D(mRotationOffset);
 		Matrix4 worldTransform = scaleMatrix * rotationMatrix 
 			* mTransform->CreateTransformMatrix();
 
+		mTexCoords.SetTexCoords(mRenderer->GetDefaultUVBuffer());
 		mShader->Bind();
 		mShader->SetMatrix4Uniform("uWorldTransform", worldTransform);
 		mShader->SetMatrix4Uniform("uViewProjection", mRenderer->GetViewProjectionMatrix());

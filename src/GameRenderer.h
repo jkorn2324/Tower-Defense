@@ -27,6 +27,7 @@ namespace TowerDefense
 
 	public:
 		class VertexArray* GetDefaultVertexArray() const;
+		class VertexBuffer* GetDefaultUVBuffer() const;
 		class ShaderManager* GetShaderManager() const;
 		unsigned int GetWindowSizeX() const;
 		unsigned int GetWindowSizeY() const;
@@ -34,6 +35,7 @@ namespace TowerDefense
 
 	private:
 		void LoadSpriteVertices();
+		void SetDefaultUVs();
 		bool LoadShaders();
 
 	private:
