@@ -101,7 +101,7 @@ namespace TowerDefense
 	void SpriteComponent::SetRotationOffset(float rotationOffset, bool inRadians)
 	{
 		mRotationOffset = inRadians ? rotationOffset : 
-			(M_PI / 180.0f) * rotationOffset;
+			(float)(M_PI / 180.0f) * rotationOffset;
 	}
 
 	float SpriteComponent::GetRotationOffset() const

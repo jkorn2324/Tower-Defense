@@ -60,7 +60,7 @@ namespace TowerDefense
 		class TexturesManager* mTexturesManager;
 		class GameRenderer* mRenderer;
 		class Texture* mTexture;
-		class SpriteTexCoords mTexCoords;
+		SpriteTexCoords mTexCoords;
 
 	private:
 		class Shader* mShader;
