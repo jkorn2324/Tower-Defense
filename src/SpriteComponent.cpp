@@ -54,7 +54,7 @@ namespace TowerDefense
 		coords.min.x = (centerPoint.x - halfSizeX) / texture->GetWidth();
 		coords.min.y = (centerPoint.y - halfSizeY) / texture->GetHeight();
 		coords.max.x = (centerPoint.x + halfSizeX) / texture->GetWidth();
-		coords.max.y = (centerPoint.x + halfSizeY) / texture->GetHeight();
+		coords.max.y = (centerPoint.y + halfSizeY) / texture->GetHeight();
 		return coords;
 	}
 
@@ -71,6 +71,7 @@ namespace TowerDefense
 		mSize = Vector2::Zero();
 		mRotationOffset = 0.0f;
 		mTexCoords = SpriteTexCoords();
+		mSizeChanged = nullptr;
 		mRenderer->AddSpriteComponent(this);
 	}
 
@@ -84,6 +85,7 @@ namespace TowerDefense
 		mSize = Vector2::Zero();
 		mTexCoords = SpriteTexCoords();
 		mRotationOffset = 0.0f;
+		mSizeChanged = nullptr;
 		SetTexture(textureFile);
 		mRenderer->AddSpriteComponent(this);
 	}
@@ -109,8 +111,17 @@ namespace TowerDefense
 		return mRotationOffset;
 	}
 
+	void SpriteComponent::SetSizeChangedCallback(std::function<void(const Vector2&)> func)
+	{
+		mSizeChanged = func;
+	}
+
 	void SpriteComponent::SetTexCoords(const Vector2& center, const Vector2& size)
 	{
+		if (mSize != size && mSizeChanged != nullptr)
+		{
+			mSizeChanged(size);
+		}
 		mSize = size;
 		mTexCoords = SpriteTexCoords::CreateTexCoords(center, size, mTexture);
 	}
@@ -127,8 +138,15 @@ namespace TowerDefense
 			return;
 		}
 		mTexture = texture;
-		mSize.x = static_cast<float>(texture->GetWidth());
-		mSize.y = static_cast<float>(texture->GetHeight());
+
+		Vector2 newSize;
+		newSize.x = static_cast<float>(texture->GetWidth());
+		newSize.y = static_cast<float>(texture->GetHeight());
+		if (newSize != mSize && mSizeChanged != nullptr)
+		{
+			mSizeChanged(newSize);
+		}
+		mSize = newSize;
 		mTexCoords = SpriteTexCoords();
 	}
 

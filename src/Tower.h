@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Actor.h"
+#include "Vector2.h"
 
 namespace TowerDefense
 {
@@ -14,6 +15,10 @@ namespace TowerDefense
 		virtual ~Tower();
 
 	private:
-		class SpriteComponent* mSpriteComponent;
+		void OnSizeChanged(const Vector2& vec);
+
+	private:
+		class TileSpriteComponent* mSpriteComponent;
+		class CollisionComponent* mCollisionComponent;
 	};
 }

@@ -4,6 +4,7 @@
 #include "Vector2.h"
 
 #include <string>
+#include <functional>
 
 namespace TowerDefense
 {
@@ -40,11 +41,14 @@ namespace TowerDefense
 		virtual ~SpriteComponent();
 
 	public:
-		void SetTexture(class Texture* texture);
+		virtual void SetTexture(class Texture* texture);
 		void SetTexture(const std::string& file);
 		class Texture* GetTexture() const;
 		void SetShader(class Shader* shader);
 		class Shader* GetShader() const;
+
+	public:
+		void SetSizeChangedCallback(std::function<void(const Vector2&)> func);
 		const Vector2& GetSize() const;
 
 	public:
@@ -59,10 +63,13 @@ namespace TowerDefense
 	protected:
 		class TexturesManager* mTexturesManager;
 		class GameRenderer* mRenderer;
-		class Texture* mTexture;
 		SpriteTexCoords mTexCoords;
 
 	private:
+		std::function<void(const Vector2&)> mSizeChanged;
+
+	private:
+		class Texture* mTexture;
 		class Shader* mShader;
 		Vector2 mSize;
 		float mRotationOffset;

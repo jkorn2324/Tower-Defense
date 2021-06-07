@@ -1,8 +1,11 @@
 #include "Tower.h"
 #include "Game.h"
-#include "SpriteComponent.h"
+#include "TileSpriteComponent.h"
 #include "Texture.h"
 #include "GameParameters.h"
+#include "CollisionComponent.h"
+
+#include <functional>
 
 namespace TowerDefense
 {
@@ -10,13 +13,19 @@ namespace TowerDefense
 	Tower::Tower(Game* game)
 		: Actor(game)
 	{
-		mSpriteComponent = new SpriteComponent(
-			"Assets/Sprites/towerDefense_tilesheet.png", this);
-		mSpriteComponent->SetTexCoords(Vector2(64.0f, 64.0f), Vector2(32.0f, 32.0f));
+		mCollisionComponent = new CollisionComponent(this);
+		mCollisionComponent->SetSize(1.0f, 1.0f);
+
+		mSpriteComponent = new TileSpriteComponent(0, this,
+			std::bind(&Tower::OnSizeChanged, this, std::placeholders::_1));
 	}
 
 	Tower::~Tower()
 	{
-		// TODO: Implementation
+	}
+
+	void Tower::OnSizeChanged(const Vector2& vec)
+	{
+		mCollisionComponent->SetSize(vec);
 	}
 }
