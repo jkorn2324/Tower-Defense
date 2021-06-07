@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "Actor.h"
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
 #endif
@@ -40,6 +41,16 @@ namespace TowerDefense
 		mPosition.x = x;
 		mPosition.y = y;
 	}
+
+	const Vector2& Transform::GetWorldPosition() const
+	{
+		if (!HasParent())
+		{
+			return GetPosition();
+		}
+		const Transform& transform = mParentData.parent->GetTransform();
+		return transform.GetWorldPosition() + GetPosition();
+	}
 	
 	const Vector2& Transform::GetScale() const
 	{
@@ -74,11 +85,31 @@ namespace TowerDefense
 		mRotation = inRadians ? rotation : deg2Rad * rotation;
 	}
 
-	Matrix4 Transform::CreateTransformMatrix()
+	bool Transform::HasParent() const
 	{
-		Matrix4 scaleMat = Matrix4::CreateScale(mScale.x, mScale.y, 1.0f);
+		return mParentData.parent != nullptr;
+	}
+
+	void Transform::SetParent(Actor* parent, bool useScale)
+	{
+		mParentData.parent = parent;
+		mParentData.useScale = useScale;
+	}
+
+	Matrix4 Transform::CreateTransformMatrix(bool useScale) const
+	{
+		Matrix4 scaleMat = useScale ? Matrix4::CreateScale(
+			mScale.x, mScale.y, 1.0f) : Matrix4::Identity();
 		Matrix4 rotMat = Matrix4::CreateRotation2D(mRotation);
 		Matrix4 posMat = Matrix4::CreatePosition(mPosition.x, mPosition.y, 0.0f);
-		return scaleMat * rotMat * posMat;
+		Matrix4 transformMatrix = scaleMat * rotMat * posMat;
+
+		if (HasParent())
+		{
+			Transform& parentTransform = (Transform&)mParentData.parent->GetTransform();
+			Matrix4 parentMatrix = parentTransform.CreateTransformMatrix(mParentData.useScale);
+			transformMatrix *= parentMatrix;
+		}
+		return transformMatrix;
 	}
 }

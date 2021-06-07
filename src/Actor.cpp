@@ -8,6 +8,7 @@ namespace TowerDefense
 
 	Actor::Actor(Game* game)
 	{
+		mChildren = std::vector<Actor*>();
 		mComponents = std::vector<Component*>();
 		mActive = true;
 		mDespawnTime = mMaxDespawnTime = 0.0f;
@@ -27,6 +28,18 @@ namespace TowerDefense
 				delete component;
 			}
 		}
+
+		Actor* parent = mTransform.mParentData.parent;
+		if (parent != nullptr)
+		{
+			parent->RemoveChild(this);
+		}
+
+		for (const auto& children : mChildren)
+		{
+			children->SetParent(nullptr);
+		}
+		mChildren.clear();
 		mComponents.clear();
 	}
 
@@ -52,6 +65,51 @@ namespace TowerDefense
 	ActorManager* Actor::GetActorManager() const
 	{
 		return mActorManager;
+	}
+
+	Actor* Actor::GetParent() const
+	{
+		return mTransform.mParentData.parent;
+	}
+
+	bool Actor::HasParent() const
+	{
+		return mTransform.HasParent();
+	}
+
+	void Actor::SetParent(Actor* actor, bool useScale)
+	{
+		if (HasParent())
+		{
+			GetParent()->RemoveChild(this);
+		}
+		mTransform.SetParent(actor, useScale);
+	}
+
+	bool Actor::IsChild(Actor* actor) const
+	{
+		const auto& searchedChild = std::find(mChildren.begin(), mChildren.end(), actor);
+		return searchedChild != mChildren.end();
+	}
+
+	const std::vector<Actor*> Actor::GetChildren() const
+	{
+		return mChildren;
+	}
+
+	void Actor::AddChild(Actor* actor)
+	{
+		if (!IsChild(actor))
+		{
+			mChildren.push_back(actor);
+		}
+	}
+
+	void Actor::RemoveChild(Actor* child)
+	{
+		const auto& searchedChild = std::find(mChildren.begin(), 
+			mChildren.end(), child);
+		mChildren.erase(searchedChild);
 	}
 
 	const Transform& Actor::GetTransform() const { return mTransform;  }

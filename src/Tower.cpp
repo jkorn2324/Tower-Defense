@@ -18,10 +18,8 @@ namespace TowerDefense
 
 		mSpriteComponent = new TileSpriteComponent(0, this,
 			std::bind(&Tower::OnSizeChanged, this, std::placeholders::_1));
-	}
-
-	Tower::~Tower()
-	{
+		((SpriteComponent*)mSpriteComponent)->SetTexture(TILESHEET_PATH);
+		mSpriteComponent->SetTilesData(TILE_SIZE_X, TILE_SIZE_Y);
 	}
 
 	void Tower::OnSizeChanged(const Vector2& vec)

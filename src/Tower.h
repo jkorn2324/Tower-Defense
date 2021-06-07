@@ -12,7 +12,6 @@ namespace TowerDefense
 
 	public:
 		Tower(class Game* game);
-		virtual ~Tower();
 
 	private:
 		void OnSizeChanged(const Vector2& vec);

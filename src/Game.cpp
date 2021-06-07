@@ -1,8 +1,10 @@
 #include "Game.h"
 #include "GameRenderer.h"
 #include "ActorManager.h"
+#include "LevelManager.h"
 #include "TexturesManager.h"
 #include "GameParameters.h"
+#include "JSONHelper.h"
 
 namespace TowerDefense
 {
@@ -12,11 +14,17 @@ namespace TowerDefense
 		mRenderer = new GameRenderer(this);
 		mActorManager = new ActorManager(this);
 		mTextureManager = new TexturesManager(this);
+		mLevelManager = new LevelManager(this);
 		mRunning = false;
 		mPrevGameTick = SDL_GetTicks();
 	}
 
 	Game::~Game() { }
+
+	LevelManager* Game::GetLevelManager() const
+	{
+		return mLevelManager;
+	}
 
 	GameRenderer* Game::GetRenderer() const { return mRenderer; }
 
@@ -37,16 +45,30 @@ namespace TowerDefense
 			return false;
 		}
 
-		LoadGame();
+		if (!LoadGame())
+		{
+			return false;
+		}
+		mPrevGameTick = SDL_GetTicks();
 		mRunning = true;
 		return true;
 	}
 
-	void Game::LoadGame()
+	bool Game::LoadGame()
 	{
-		mPrevGameTick = SDL_GetTicks();
+		if (!mLevelManager->InitLevels())
+		{
+			return false;
+		}
 		mActorManager->InitActors();
-		// TODO: Implementation
+
+		// TODO: Remove
+		rapidjson::Document document;
+		if (!ParseFile("Assets/Maps/map.json", document))
+		{
+			return true;
+		}
+		return true;
 	}
 
 	void Game::RunGame()

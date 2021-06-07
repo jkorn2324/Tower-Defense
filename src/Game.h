@@ -18,12 +18,13 @@ namespace TowerDefense
 		void ShutdownGame();
 
 	private:
-		void LoadGame();
+		bool LoadGame();
 		void ProcessInput();
 		void UpdateGame();
 		void GenerateOutput();
 
 	public:
+		class LevelManager* GetLevelManager() const;
 		class GameRenderer* GetRenderer() const;
 		class ActorManager* GetActorManager() const;
 		class TexturesManager* GetTexturesManager() const;
@@ -36,5 +37,6 @@ namespace TowerDefense
 		class GameRenderer* mRenderer;
 		class TexturesManager* mTextureManager;
 		class ActorManager* mActorManager;
+		class LevelManager* mLevelManager;
 	};
 }

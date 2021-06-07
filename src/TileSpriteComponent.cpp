@@ -10,7 +10,7 @@ namespace TowerDefense
 	{
 		mTileIndex = 0;
 		mTileSize = Vector2();
-		SpriteComponent::SetTexture("Assets/Sprites/towerDefense_tilesheet.png");
+		mTilesData = TilesData();
 		SetTileIndex(index);
 	}
 
@@ -19,7 +19,7 @@ namespace TowerDefense
 	{
 		mTileIndex = 0;
 		mTileSize = Vector2();
-		SpriteComponent::SetTexture("Assets/Sprites/towerDefense_tilesheet.png");
+		mTilesData = TilesData();
 		SetSizeChangedCallback(func);
 		SetTileIndex(index);
 	}
@@ -29,8 +29,7 @@ namespace TowerDefense
 	void TileSpriteComponent::SetTexture(Texture* texture)
 	{
 		SpriteComponent::SetTexture(texture);
-		mTileSize.x = GetSize().x / static_cast<float>(TILES_PER_ROW);
-		mTileSize.y = GetSize().y / static_cast<float>(TILES_PER_COLUMN);
+		SetTilesData(1, 1);
 	}
 
 	void TileSpriteComponent::SetTileIndex(unsigned int index)
@@ -42,8 +41,8 @@ namespace TowerDefense
 			return;
 		}
 
-		unsigned int col = index % TILES_PER_COLUMN;
-		unsigned int row = index / TILES_PER_COLUMN;
+		unsigned int col = index % mTilesData.mTilesPerColumn;
+		unsigned int row = index / mTilesData.mTilesPerRow;
 		float xPos = static_cast<float>(row) * mTileSize.x + mTileSize.x * 0.5f;
 		float yPos = static_cast<float>(col) * mTileSize.y + mTileSize.y * 0.5f;
 		SetTexCoords(Vector2(xPos, yPos), mTileSize);
@@ -52,5 +51,31 @@ namespace TowerDefense
 	unsigned int TileSpriteComponent::GetTileIndex() const
 	{
 		return mTileIndex;
+	}
+
+	void TileSpriteComponent::SetTilesData(unsigned int tilesPerCol, unsigned int tilesPerRow)
+	{
+		TilesData tilesData;
+		tilesData.mTilesPerColumn = tilesPerCol;
+		tilesData.mTilesPerRow = tilesPerRow;
+		SetTilesData(tilesData);
+	}
+	
+	void TileSpriteComponent::SetTilesData(const TilesData& tilesData)
+	{
+		Texture* currentTexture = GetTexture();
+		if (currentTexture == nullptr)
+		{
+			return;
+		}
+		mTileSize.x = currentTexture->GetWidth() / static_cast<float>(tilesData.mTilesPerRow);
+		mTileSize.y = currentTexture->GetHeight() / static_cast<float>(tilesData.mTilesPerColumn);
+		mTilesData = tilesData;
+		SetTileIndex(mTileIndex);
+	}
+	
+	const TilesData& TileSpriteComponent::GetTilesData() const
+	{
+		return mTilesData;
 	}
 }

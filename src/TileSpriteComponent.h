@@ -5,12 +5,12 @@
 namespace TowerDefense
 {
 
-#pragma region constants
-
-	const unsigned int TILES_PER_COLUMN = 13;
-	const unsigned int TILES_PER_ROW = 23;
-
-#pragma endregion
+	struct TilesData
+	{
+	public:
+		unsigned int mTilesPerColumn = 1;
+		unsigned int mTilesPerRow = 1;
+	};
 
 	class TileSpriteComponent : public SpriteComponent
 	{
@@ -24,10 +24,14 @@ namespace TowerDefense
 		void SetTileIndex(unsigned int tileIndex);
 		unsigned int GetTileIndex() const;
 
+	public:
+		void SetTilesData(unsigned int tilesPerCol, unsigned int tilesPerRow);
+		void SetTilesData(const TilesData& tilesData);
+		const TilesData& GetTilesData() const;
+		
 	private:
 		unsigned int mTileIndex;
-	
-	private:
 		Vector2 mTileSize;
+		TilesData mTilesData;
 	};
 }

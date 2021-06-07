@@ -10,7 +10,6 @@ namespace TowerDefense
 
 	class Actor
 	{
-
 	public:
 		Actor(class Game* game);
 		~Actor();
@@ -47,6 +46,17 @@ namespace TowerDefense
 		class Game* GetGame() const;
 		class ActorManager* GetActorManager() const;
 
+	public:
+		Actor* GetParent() const;
+		bool HasParent() const;
+		void SetParent(Actor* actor, bool useScale = false);
+		bool IsChild(Actor* actor) const;
+		const std::vector<Actor*> GetChildren() const;
+
+	private:
+		void AddChild(class Actor* actor);
+		void RemoveChild(class Actor* actor);
+
 	protected:
 		Transform mTransform;
 
@@ -58,6 +68,7 @@ namespace TowerDefense
 		class Game* mGame;
 
 	private:
+		std::vector<class Actor*> mChildren;
 		std::vector<class Component*> mComponents;
 
 	private:
