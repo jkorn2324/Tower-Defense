@@ -14,6 +14,7 @@
 #define _USE_MATH_DEFINES
 #endif
 #include <cmath>
+#include <utility>
 
 
 namespace TowerDefense
@@ -71,7 +72,7 @@ namespace TowerDefense
 		mSize = Vector2::Zero();
 		mRotationOffset = 0.0f;
 		mTexCoords = SpriteTexCoords();
-		mSizeChanged = nullptr;
+		mSizeChanged = EventCallback<const Vector2&>();
 		mRenderer->AddSpriteComponent(this);
 	}
 
@@ -85,7 +86,7 @@ namespace TowerDefense
 		mSize = Vector2::Zero();
 		mTexCoords = SpriteTexCoords();
 		mRotationOffset = 0.0f;
-		mSizeChanged = nullptr;
+		mSizeChanged = EventCallback<const Vector2&>();
 		SetTexture(textureFile);
 		mRenderer->AddSpriteComponent(this);
 	}
@@ -113,14 +114,14 @@ namespace TowerDefense
 
 	void SpriteComponent::SetSizeChangedCallback(std::function<void(const Vector2&)> func)
 	{
-		mSizeChanged = func;
+		mSizeChanged.SetCallback(std::move(func));
 	}
 
 	void SpriteComponent::SetTexCoords(const Vector2& center, const Vector2& size)
 	{
-		if (mSize != size && mSizeChanged != nullptr)
+		if (mSize != size)
 		{
-			mSizeChanged(size);
+			mSizeChanged.Invoke(size);
 		}
 		mSize = size;
 		mTexCoords = SpriteTexCoords::CreateTexCoords(center, size, mTexture);
@@ -142,9 +143,9 @@ namespace TowerDefense
 		Vector2 newSize;
 		newSize.x = static_cast<float>(texture->GetWidth());
 		newSize.y = static_cast<float>(texture->GetHeight());
-		if (newSize != mSize && mSizeChanged != nullptr)
+		if (newSize != mSize)
 		{
-			mSizeChanged(newSize);
+			mSizeChanged.Invoke(newSize);
 		}
 		mSize = newSize;
 		mTexCoords = SpriteTexCoords();

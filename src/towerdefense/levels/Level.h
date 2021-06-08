@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace TowerDefense
 {
@@ -11,7 +12,9 @@ namespace TowerDefense
 		Level(const std::string& name, const std::string& levelPath, class LevelManager* mLevelManager);
 
 	public:
-		bool LoadLevel();
+	    bool Load();
+	    void UnLoad();
+	    bool IsLoaded() const;
 
 	public:
 		const std::string& GetName() const;
@@ -20,5 +23,9 @@ namespace TowerDefense
 		class LevelManager* mLevelManager;
 		std::string mName;
 		std::string mLevelPath;
+		bool mLoaded;
+
+	private:
+	    std::vector<class Actor*> mActors;
 	};
 }

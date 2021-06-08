@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "Vector2.h"
+#include "EventCallback.h"
 
 #include <string>
 #include <functional>
@@ -66,9 +67,7 @@ namespace TowerDefense
 		SpriteTexCoords mTexCoords;
 
 	private:
-		std::function<void(const Vector2&)> mSizeChanged;
-
-	private:
+	    EventCallback<const Vector2&> mSizeChanged;
 		class Texture* mTexture;
 		class Shader* mShader;
 		Vector2 mSize;

@@ -42,7 +42,7 @@ namespace TowerDefense
 		mPosition.y = y;
 	}
 
-	const Vector2& Transform::GetWorldPosition() const
+	Vector2 Transform::GetWorldPosition() const
 	{
 		if (!HasParent())
 		{

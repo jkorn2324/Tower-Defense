@@ -31,7 +31,7 @@ namespace TowerDefense
 		void SetPosition(float x, float y);
 
 	public:
-		const Vector2& GetWorldPosition() const;
+		Vector2 GetWorldPosition() const;
 
 	private:
 		bool HasParent() const;

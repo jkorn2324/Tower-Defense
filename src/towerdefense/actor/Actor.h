@@ -11,7 +11,7 @@ namespace TowerDefense
 	class Actor
 	{
 	public:
-		Actor(class Game* game);
+		explicit Actor(class Game* game);
 		~Actor();
 
 	public:
