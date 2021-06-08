@@ -35,25 +35,10 @@ namespace TowerDefense
 	{
 		mSpriteComponents.clear();
 		
-		if (mDefaultIndexBuffer != nullptr)
-		{
-			delete mDefaultIndexBuffer;
-		}
-
-		if (mDefaultUVBuffer != nullptr)
-		{
-			delete mDefaultUVBuffer;
-		}
-
-		if (mDefaultVertexBuffer != nullptr)
-		{
-			delete mDefaultVertexBuffer;
-		}
-
-		if (mDefaultVertexArray != nullptr)
-		{
-			delete mDefaultVertexArray;
-		}
+		delete mDefaultIndexBuffer;
+		delete mDefaultUVBuffer;
+		delete mDefaultVertexBuffer;
+		delete mDefaultVertexArray;
 	}
 
 	bool GameRenderer::Initialize()
@@ -70,7 +55,7 @@ namespace TowerDefense
 
 		mWindow = SDL_CreateWindow(mWindowName.c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
-			mWindowSizeX, mWindowSizeY, SDL_WINDOW_OPENGL);
+			static_cast<int>(mWindowSizeX), static_cast<int>(mWindowSizeY), SDL_WINDOW_OPENGL);
 		if (mWindow == nullptr)
 		{
 			SDL_Log("Failed to create SDL Window. Error: %s", SDL_GetError());

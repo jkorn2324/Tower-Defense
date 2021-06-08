@@ -1,9 +1,8 @@
 #include "ShaderManager.h"
-#include "ShaderManager.h"
-#include "ShaderManager.h"
-#include "ShaderManager.h"
+
 #include "Shader.h"
 #include <SDL2/SDL.h>
+#include <algorithm>
 
 namespace TowerDefense
 {

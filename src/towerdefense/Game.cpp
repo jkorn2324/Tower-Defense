@@ -19,8 +19,6 @@ namespace TowerDefense
 		mPrevGameTick = SDL_GetTicks();
 	}
 
-	Game::~Game() { }
-
 	LevelManager* Game::GetLevelManager() const
 	{
 		return mLevelManager;
@@ -64,7 +62,7 @@ namespace TowerDefense
 
 		// TODO: Remove
 		rapidjson::Document document;
-		if (!ParseFile("Assets/Maps/map.json", document))
+		if (!ParseFile("Assets/Levels/level1.json", document))
 		{
 			return true;
 		}

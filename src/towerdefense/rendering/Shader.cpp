@@ -1,5 +1,7 @@
 #include "Shader.h"
+
 #include <SDL2/SDL.h>
+#include <algorithm>
 #include <sstream>
 #include <fstream>
 
@@ -64,7 +66,7 @@ namespace TowerDefense
 
 	void Shader::UnLoad()
 	{
-		if (mUniformData.size() > 0)
+		if (!mUniformData.empty())
 		{
 			for (ShaderUniformData* data : mUniformData)
 			{
@@ -199,7 +201,7 @@ namespace TowerDefense
 		{
 			return *found;
 		}
-		ShaderUniformData* uniformData = new ShaderUniformData();
+        ShaderUniformData* uniformData = new ShaderUniformData();
 		uniformData->mUniformName = name;
 		uniformData->mLocation = glGetUniformLocation(mShaderProgram, name.c_str());
 		mUniformData.push_back(uniformData);

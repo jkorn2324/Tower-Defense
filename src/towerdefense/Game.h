@@ -10,7 +10,7 @@ namespace TowerDefense
 	{
 	public:
 		Game();
-		~Game();
+		~Game() = default;
 
 	public:
 		bool InitializeGame();

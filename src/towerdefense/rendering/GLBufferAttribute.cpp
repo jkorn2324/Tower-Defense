@@ -143,7 +143,7 @@ namespace TowerDefense
 	void BufferAttributeLayout::AddAttribute(const std::string& name, const ShaderDataType& type, bool normalized)
 	{
 		const auto& foundIterator = std::find_if(mAttributes.begin(), mAttributes.end(),
-			[name](BufferAttribute attribute) -> bool
+			[name](const BufferAttribute& attribute) -> bool
 			{
 				return name == attribute.name;
 			});

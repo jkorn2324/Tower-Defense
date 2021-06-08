@@ -1,5 +1,8 @@
 
 # Ignores the build folder.
-build
-.vs
-LocalAssets
+build/
+.vs/
+LocalAssets/
+.idea/
+cmake-build-debug/
+cmake-build-debug-visual-studio/
