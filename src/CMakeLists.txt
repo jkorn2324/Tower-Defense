@@ -1,7 +1,17 @@
 set(GAMENAME towerdefense)
 # This grabs all files in this directory that end with .cpp, .h, and .hpp
-file(GLOB_RECURSE source_files CONFIGURE_DEPENDS "*.cpp" "*.h" "*.hpp")
+file(GLOB_RECURSE source_files CONFIGURE_DEPENDS 
+"${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/*.h" "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${source_files})
+
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/rendering")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/levels")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/actor")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/math")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/components")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/utils")
 
 # Don't change this
 add_executable(${GAMENAME} ${source_files})
