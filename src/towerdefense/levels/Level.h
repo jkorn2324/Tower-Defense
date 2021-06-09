@@ -43,6 +43,7 @@ namespace TowerDefense
 	    bool Load();
 		bool IsLoaded() const;
 		class Game* GetGame() const;
+		LevelPathNodeData* GetFirstPathNode() const;
 
 	private:
 		void OnSetActive(bool active);

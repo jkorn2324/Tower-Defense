@@ -146,6 +146,11 @@ namespace TowerDefense
 		return true;
 	}
 
+	LevelPathNodeData* Level::GetFirstPathNode() const
+	{
+	    return mBeginPathNode;
+	}
+
 	void Level::OnSetActive(bool active)
 	{
         if(active)
