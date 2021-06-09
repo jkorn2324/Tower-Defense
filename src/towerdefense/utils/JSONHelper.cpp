@@ -1,4 +1,5 @@
 #include "JSONHelper.h"
+#include "GameParameters.h"
 
 #include <fstream>
 #include <sstream>
@@ -12,7 +13,11 @@ namespace TowerDefense
 		if (!stream.is_open() || stream.fail())
 		{
 			stream.close();
-			SDL_Log("Unable to read file: %s", fileName.c_str());
+
+			if(DISPLAY_LOGS)
+            {
+                SDL_Log("Unable to read file: %s", fileName.c_str());
+            }
 			return false;
 		}
 		std::stringstream sStream;
@@ -22,7 +27,10 @@ namespace TowerDefense
 
 		if (document.HasParseError())
 		{
-			SDL_Log("Unable to parse file. Error Code: %i", document.GetParseError());
+		    if(DISPLAY_LOGS)
+            {
+                SDL_Log("Unable to parse file. Error Code: %i", document.GetParseError());
+            }
 			return false;
 		}
 		return true;

@@ -8,13 +8,14 @@ namespace TowerDefense
 	TexturesManager::TexturesManager(Game* game)
 	{
 		mGame = game;
-		mTextures = std::vector<Texture*>();
+		mTextures = std::unordered_map<std::string, Texture*>();
 	}
 
 	TexturesManager::~TexturesManager()
 	{
-		for(Texture* texture : mTextures)
+		for(const auto& texturePair : mTextures)
 		{
+		    Texture* texture = texturePair.second;
 			texture->UnLoad();
 			delete texture;
 		}
@@ -28,23 +29,18 @@ namespace TowerDefense
 
 	Texture* TexturesManager::GetTexture(const std::string& fileName)
 	{
-		const auto& textureSearched = std::find_if(mTextures.begin(), mTextures.end(),
-			[fileName](Texture* texture) -> bool
-			{
-				return texture->GetFileName() == fileName;
-			});
+	    const auto& textureSearched = mTextures.find(fileName);
 		if (textureSearched != mTextures.end())
 		{
-			return *textureSearched;
+			return (*textureSearched).second;
 		}
-
 		Texture* texture = new Texture();
 		if (!texture->Load(fileName))
 		{
 			delete texture;
 			return nullptr;
 		}
-		mTextures.push_back(texture);
+		mTextures.emplace(fileName, texture);
 		return texture;
 	}
 }

@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "GameParameters.h"
 
 #include <SDL2/SDL.h>
 #include <algorithm>
@@ -41,7 +42,10 @@ namespace TowerDefense
 	{
 		if (mLoaded)
 		{
-			SDL_Log("Shader is already loaded.");
+		    if(DISPLAY_LOGS)
+            {
+                SDL_Log("Shader is already loaded.");
+            }
 			return true;
 		}
 
@@ -84,7 +88,10 @@ namespace TowerDefense
 		std::ifstream shaderFile(fileName);
 		if (shaderFile.fail() || !shaderFile.is_open())
 		{
-			SDL_Log("Shader file not found: %s", fileName.c_str());
+		    if(DISPLAY_LOGS)
+            {
+                SDL_Log("Shader file not found: %s", fileName.c_str());
+            }
 			return false;
 		}
 
@@ -98,7 +105,10 @@ namespace TowerDefense
 
 		if (!IsCompiled(outShader))
 		{
-			SDL_Log("Failed to compile shader %s", fileName.c_str());
+		    if(DISPLAY_LOGS)
+            {
+                SDL_Log("Failed to compile shader %s", fileName.c_str());
+            }
 			return false;
 		}
 		return true;
@@ -113,7 +123,11 @@ namespace TowerDefense
 			char buffer[512];
 			memset(buffer, 0, 512);
 			glGetShaderInfoLog(shader, 511, nullptr, buffer);
-			SDL_Log("GLSL Compile Shader Failed: \n%s", buffer);
+
+			if(DISPLAY_LOGS)
+            {
+                SDL_Log("GLSL Compile Shader Failed: \n%s", buffer);
+            }
 			return false;
 		}
 		return true;
@@ -128,10 +142,18 @@ namespace TowerDefense
 			char buffer[512];
 			memset(buffer, 0, 512);
 			glGetProgramInfoLog(mShaderProgram, 511, nullptr, buffer);
-			SDL_Log("GLSL Program Failed: \n%s", buffer);
+
+			if(DISPLAY_LOGS)
+            {
+                SDL_Log("GLSL Program Failed: \n%s", buffer);
+            }
 			return false;
 		}
-		SDL_Log("Successfully loaded the shader: %s", mShaderName.c_str());
+
+		if(DISPLAY_LOGS)
+        {
+            SDL_Log("Successfully loaded the shader: %s", mShaderName.c_str());
+        }
 		return true;
 	}
 

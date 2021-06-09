@@ -1,4 +1,5 @@
 #include "GLBufferAttribute.h"
+#include "GameParameters.h"
 
 #include <SDL2/SDL_log.h>
 
@@ -32,7 +33,10 @@ namespace TowerDefense
 				return sizeof(float) * 4 * 4;
 		}
 
-		SDL_Log("Unknown Shader Data Type");
+		if(DISPLAY_LOGS)
+        {
+            SDL_Log("Unknown Shader Data Type");
+        }
 		return 0;
 	}
 
@@ -55,8 +59,11 @@ namespace TowerDefense
 			case ShaderDataType::INT4:
 				return GL_INT;
 		}
-		
-		SDL_Log("Unknown Shader Data Type");
+
+		if(DISPLAY_LOGS)
+        {
+            SDL_Log("Unknown Shader Data Type");
+        }
 		return 0;
 	}
 
@@ -106,7 +113,10 @@ namespace TowerDefense
 				return 4;
 		}
 
-		SDL_Log("Unknown Shader Data Type");
+		if(DISPLAY_LOGS)
+        {
+            SDL_Log("Unknown Shader Data Type");
+        }
 		return 0;
 	}
 

@@ -1,6 +1,7 @@
 #include "LevelManager.h"
 #include "Game.h"
 #include "Level.h"
+#include "GameParameters.h"
 
 namespace TowerDefense
 {
@@ -23,8 +24,13 @@ namespace TowerDefense
 
 	bool LevelManager::InitLevels()
 	{
-		// TODO: Implementation
-		return true;
+	    Level* level01 = new Level("Level1", "Assets/Levels/level1.json", this);
+	    if(!level01->Load())
+        {
+	        return false;
+        }
+        SetActiveLevel("Level1");
+	    return true;
 	}
 
 	void LevelManager::AddLevel(Level* level)
@@ -41,4 +47,29 @@ namespace TowerDefense
 	{
 		return mActiveLevel;
 	}
+
+    void LevelManager::SetActiveLevel(const std::string &levelName)
+    {
+	    const auto& searched = mLevels.find(levelName);
+	    if(searched != mLevels.end())
+        {
+	        if(mActiveLevel != nullptr)
+            {
+                mActiveLevel->OnSetActive(false);
+            }
+	        mActiveLevel = (*searched).second;
+	        mActiveLevel->OnSetActive(true);
+
+	        if(DISPLAY_LOGS)
+            {
+                SDL_Log("Successfully set the active level: %s", levelName.c_str());
+            }
+	        return;
+        }
+
+	    if(DISPLAY_LOGS)
+        {
+            SDL_Log("Failed to find level: %s", levelName.c_str());
+        }
+    }
 }

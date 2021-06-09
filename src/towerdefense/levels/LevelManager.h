@@ -18,6 +18,7 @@ namespace TowerDefense
 	public:
 		Game* GetGame() const;
 		class Level* GetActiveLevel() const;
+		void SetActiveLevel(const std::string& levelName);
 
 	public:
 		bool InitLevels();

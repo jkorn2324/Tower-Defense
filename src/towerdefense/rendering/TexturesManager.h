@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 namespace TowerDefense
 {
@@ -18,7 +18,7 @@ namespace TowerDefense
 		class Texture* GetTexture(const std::string& fileName);
 
 	private:
-		std::vector<class Texture*> mTextures;
+	    std::unordered_map<std::string, class Texture*> mTextures;
 		class Game* mGame;
 	};
 }

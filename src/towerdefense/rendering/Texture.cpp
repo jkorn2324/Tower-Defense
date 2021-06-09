@@ -1,4 +1,6 @@
 #include "Texture.h"
+#include "GameParameters.h"
+
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <SOIL/SOIL.h>
@@ -40,10 +42,18 @@ namespace TowerDefense
 			&localWidth, &localHeight, &numChannels, SOIL_LOAD_AUTO);
 		if (image == nullptr)
 		{
-			SDL_Log("Failed to load image %s: %s", file.c_str(), SOIL_last_result());
+		    if(DISPLAY_LOGS)
+            {
+                SDL_Log("Failed to load image %s: %s", file.c_str(), SOIL_last_result());
+            }
 			return false;
 		}
-		SDL_Log("Successfully loaded image %s", file.c_str());
+
+		if(DISPLAY_LOGS)
+        {
+            SDL_Log("Successfully loaded image %s", file.c_str());
+        }
+
 		int format = numChannels == 4 ? GL_RGBA : GL_RGB;
 		glGenTextures(1, &mTextureID);
 		glBindTexture(GL_TEXTURE_2D, mTextureID);

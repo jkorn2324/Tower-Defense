@@ -16,10 +16,10 @@ namespace TowerDefense
 		mCollisionComponent = new CollisionComponent(this);
 		mCollisionComponent->SetSize(1.0f, 1.0f);
 
-		mSpriteComponent = new TileSpriteComponent(0, this,
+		mSpriteComponent = new TileSpriteComponent(this,
 			std::bind(&Tower::OnSizeChanged, this, std::placeholders::_1));
 		((SpriteComponent*)mSpriteComponent)->SetTexture(TILESHEET_PATH);
-		mSpriteComponent->SetTilesData(TILE_SIZE_X, TILE_SIZE_Y);
+		mSpriteComponent->SetTilesPerColAndRow(TILE_SIZE_X, TILE_SIZE_Y);
 	}
 
 	void Tower::OnSizeChanged(const Vector2& vec)

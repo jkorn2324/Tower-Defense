@@ -58,7 +58,10 @@ namespace TowerDefense
 			static_cast<int>(mWindowSizeX), static_cast<int>(mWindowSizeY), SDL_WINDOW_OPENGL);
 		if (mWindow == nullptr)
 		{
-			SDL_Log("Failed to create SDL Window. Error: %s", SDL_GetError());
+		    if(DISPLAY_LOGS)
+            {
+                SDL_Log("Failed to create SDL Window. Error: %s", SDL_GetError());
+            }
 			return false;
 		}
 		mGLContext = SDL_GL_CreateContext(mWindow);
@@ -66,7 +69,10 @@ namespace TowerDefense
 		glewExperimental = GL_TRUE;
 		if (glewInit() != GLEW_OK)
 		{
-			SDL_Log("Failed to initialize GLEW.");
+		    if(DISPLAY_LOGS)
+            {
+                SDL_Log("Failed to initialize GLEW.");
+            }
 			return false;
 		}
 		glGetError();

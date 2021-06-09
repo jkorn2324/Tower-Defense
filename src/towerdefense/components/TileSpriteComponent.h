@@ -15,19 +15,20 @@ namespace TowerDefense
 	class TileSpriteComponent : public SpriteComponent
 	{
 	public:
-		TileSpriteComponent(unsigned int index, class Actor* owner);
-		TileSpriteComponent(unsigned int index, class Actor* owner, std::function<void(const Vector2&)> func);
+		TileSpriteComponent(class Actor* owner);
+		TileSpriteComponent(class Actor* owner, std::function<void(const Vector2&)> func);
 		virtual ~TileSpriteComponent();
 
 	public:
 		virtual void SetTexture(class Texture* texture) override;
-		void SetTileIndex(unsigned int tileIndex);
+		void SetTileIndex(unsigned int tileIndex, bool colsAsIndex = false);
 		unsigned int GetTileIndex() const;
 
 	public:
-		void SetTilesData(unsigned int tilesPerCol, unsigned int tilesPerRow);
-		void SetTilesData(const TilesData& tilesData);
-		const TilesData& GetTilesData() const;
+		void SetTilesPerColAndRow(unsigned int tilesPerCol, unsigned int tilesPerRow);
+		void SetTileSize(const Vector2& tileSize);
+		void SetTileSize(float x, float y);
+		const Vector2& GetTileSize() const;
 		
 	private:
 		unsigned int mTileIndex;

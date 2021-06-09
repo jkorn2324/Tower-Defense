@@ -40,9 +40,9 @@ namespace TowerDefense
 
 	void ActorManager::InitActors()
 	{
-		Tower* tower = new Tower(mGame);
+		/* Tower* tower = new Tower(mGame);
 		Transform& transform = (Transform&)tower->GetTransform();
-		transform.SetPosition(0.0f, 0.0f);
+		transform.SetPosition(0.0f, 0.0f); */
 	}
 
 	Game* ActorManager::GetGame() const

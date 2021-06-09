@@ -34,7 +34,10 @@ namespace TowerDefense
 	{
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
 		{
-			SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+		    if(DISPLAY_LOGS)
+            {
+                SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+            }
 			return false;
 		}
 
@@ -59,13 +62,6 @@ namespace TowerDefense
 			return false;
 		}
 		mActorManager->InitActors();
-
-		// TODO: Remove
-		rapidjson::Document document;
-		if (!ParseFile("Assets/Levels/level1.json", document))
-		{
-			return true;
-		}
 		return true;
 	}
 
