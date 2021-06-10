@@ -5,6 +5,9 @@
 #include "EnvironmentTile.h"
 #include "GameParameters.h"
 
+#include "Game.h"
+#include "Camera.h"
+
 #include <SDL2/SDL_log.h>
 #include <rapidjson/document.h>
 
@@ -20,6 +23,7 @@ namespace TowerDefense
         mLoaded = false;
 		mTiles = std::vector<LevelTileData*>();
 		mBeginPathNode = nullptr;
+		mLevelSize = Vector2::Zero();
 		mLevelManager->AddLevel(this);
 	}
 
@@ -75,6 +79,9 @@ namespace TowerDefense
 		unsigned int tileHeight = static_cast<unsigned int>(document["tileheight"].GetInt());
 		unsigned int tileWidth = static_cast<unsigned int>(document["tilewidth"].GetInt());
 
+		mLevelSize.x = (float)levelWidth * (float)tileWidth;
+        mLevelSize.y = (float)levelHeight * (float)tileHeight;
+
 		if(document.HasMember("layers"))
         {
 		    float halfTileWidth = (float)tileWidth * 0.5f;
@@ -84,11 +91,13 @@ namespace TowerDefense
 		    calculatedInitialPosition.x = -((float)levelWidth * 0.5f) * (float)tileWidth + halfTileWidth;
 		    calculatedInitialPosition.y = (float)levelHeight * 0.5f * (float)tileHeight - halfTileHeight;
 
+		    unsigned int layerIndex = 0;
 		    const auto& layers = document["layers"];
 		    for(const auto& layer : layers.GetArray())
             {
                 const auto& layerData = layer.GetObject();
-                if(layerData.HasMember("data"))
+                std::string layerType = layerData["type"].GetString();
+                if(layerType == "tilelayer")
                 {
                     unsigned int currentIndex = 0;
                     const auto& data = layerData["data"].GetArray();
@@ -97,11 +106,13 @@ namespace TowerDefense
                         unsigned int tileIndex = index.GetInt();
                         if(tileIndex == 0)
                         {
+                            currentIndex++;
                             continue;
                         }
                         float extraXPos = (float)(currentIndex % levelWidth) * (float)tileWidth;
                         float extraYPos = (float)(currentIndex / levelWidth) * (float)tileHeight;
                         LevelTileData* tileData = new LevelTileData();
+                        tileData->layerIndex = layerIndex;
                         tileData->position = calculatedInitialPosition + Vector2(extraXPos, -extraYPos);
                         tileData->tileIndex = tileIndex - 1;
                         tileData->tileSizeX = tileWidth;
@@ -109,29 +120,30 @@ namespace TowerDefense
                         mTiles.push_back(tileData);
                         currentIndex++;
                     }
-                    continue;
+                    layerIndex++;
                 }
-
-                if(layerData.HasMember("objects")
-                    && layerData.HasMember("Path-Nodes"))
+                else if (layerType == "objectgroup")
                 {
                     const auto& objects = layerData["objects"].GetArray();
-                    for(const auto& node : objects)
+                    if(layerData.HasMember("Path-Nodes"))
                     {
-                        const auto& nodeData = node.GetObject();
-                        float xPosition = nodeData["x"].GetFloat();
-                        float yPosition = nodeData["y"].GetFloat();
-
-                        LevelPathNodeData* pathNodeData = new LevelPathNodeData();
-                        pathNodeData->position = Vector2(xPosition, yPosition) + calculatedInitialPosition;
-                        pathNodeData->next = nullptr;
-
-                        if(mBeginPathNode == nullptr)
+                        for(const auto& node : objects)
                         {
-                            mBeginPathNode = pathNodeData;
-                            continue;
+                            const auto& nodeData = node.GetObject();
+                            float xPosition = nodeData["x"].GetFloat();
+                            float yPosition = nodeData["y"].GetFloat();
+
+                            LevelPathNodeData* pathNodeData = new LevelPathNodeData();
+                            pathNodeData->position = Vector2(xPosition, yPosition) + calculatedInitialPosition;
+                            pathNodeData->next = nullptr;
+
+                            if(mBeginPathNode == nullptr)
+                            {
+                                mBeginPathNode = pathNodeData;
+                                continue;
+                            }
+                            mBeginPathNode->next = pathNodeData;
                         }
-                        mBeginPathNode->next = pathNodeData;
                     }
                 }
             }
@@ -174,4 +186,6 @@ namespace TowerDefense
     {
         return mLoaded;
     }
+
+    const Vector2& Level::GetLevelSize() const { return mLevelSize; }
 }

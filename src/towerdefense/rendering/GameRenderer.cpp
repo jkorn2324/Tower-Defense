@@ -1,8 +1,10 @@
 #include "GameRenderer.h"
 #include <GL/glew.h>
 #include <SDL2/SDL_opengl.h>
+#include <algorithm>
 
 #include "Game.h"
+#include "Camera.h"
 #include "GameParameters.h"
 #include "ShaderManager.h"
 #include "Shader.h"
@@ -27,8 +29,7 @@ namespace TowerDefense
 		mDefaultIndexBuffer = nullptr;
 		mDefaultVertexBuffer = nullptr;
 		mDefaultUVBuffer = nullptr;
-		mViewProjection = Matrix4::CreateSimpleViewProjection(
-			static_cast<float>(mWindowSizeX), static_cast<float>(mWindowSizeY));
+		mViewProjection = mGame->GetCamera()->GetOrthoMatrix();
 	}
 
 	GameRenderer::~GameRenderer()
@@ -108,6 +109,15 @@ namespace TowerDefense
 	ShaderManager* GameRenderer::GetShaderManager() const
 	{
 		return mShaderManager;
+	}
+
+	void GameRenderer::ReOrderSpriteComponents()
+	{
+	    std::sort(mSpriteComponents.begin(), mSpriteComponents.end(),
+            [](SpriteComponent* a, SpriteComponent* b) -> bool
+            {
+	        	return a->GetDrawLayer() < b->GetDrawLayer();
+            });
 	}
 
 	void GameRenderer::AddSpriteComponent(SpriteComponent* spriteComponent)
@@ -200,10 +210,13 @@ namespace TowerDefense
 
 	void GameRenderer::Render()
 	{
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		mViewProjection = mGame->GetCamera()->GetOrthoMatrix();
+
+	    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		mDefaultVertexArray->Bind();
 
 		for (SpriteComponent* spriteComponent : mSpriteComponents)

@@ -9,9 +9,11 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/rendering")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/levels")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/actor")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/actor/game")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/math")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/components")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/utils")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/input")
 
 # Don't change this
 add_executable(${GAMENAME} ${source_files})

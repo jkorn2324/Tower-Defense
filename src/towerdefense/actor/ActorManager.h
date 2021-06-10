@@ -23,6 +23,7 @@ namespace TowerDefense
 
 	public:
 		class Game* GetGame() const;
+        class Player* GetPlayer() const;
 
 	private:
 		void HandleSpawn(class Actor* actor);
@@ -34,6 +35,7 @@ namespace TowerDefense
 		std::vector<class Actor*> mActors;
 
 	private:
+	    class Player* mPlayer;
 		class Game* mGame;
 	};
 }

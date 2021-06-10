@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <unordered_map>
 
 namespace TowerDefense
 {
@@ -25,7 +25,7 @@ namespace TowerDefense
 		class Game* mGame;
 
 	private:
-		std::vector<class Shader*> mShaders;
+	    std::unordered_map<std::string, class Shader*> mShaders;
 		Shader* mDefaultShader;
 
 		friend class GameRenderer;

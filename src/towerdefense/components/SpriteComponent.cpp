@@ -65,6 +65,7 @@ namespace TowerDefense
 	SpriteComponent::SpriteComponent(Actor* actor)
 		: Component(actor)
 	{
+	    mDrawLayer = 0;
 		mRenderer = actor->GetGame()->GetRenderer();
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
@@ -79,7 +80,8 @@ namespace TowerDefense
 	SpriteComponent::SpriteComponent(const std::string& textureFile, Actor* actor)
 		: Component(actor)
 	{
-		mRenderer = actor->GetGame()->GetRenderer();
+        mDrawLayer = 0;
+        mRenderer = actor->GetGame()->GetRenderer();
 		mTexturesManager = actor->GetGame()->GetTexturesManager();
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
 		mTexture = nullptr;
@@ -94,6 +96,20 @@ namespace TowerDefense
 	SpriteComponent::~SpriteComponent() 
 	{
 		mRenderer->RemoveSpriteComponent(this);
+	}
+
+	void SpriteComponent::SetDrawLayer(unsigned int drawLayer)
+	{
+	    if(mDrawLayer != drawLayer)
+        {
+            mDrawLayer = drawLayer;
+            mRenderer->ReOrderSpriteComponents();
+        }
+	}
+
+	unsigned int SpriteComponent::GetDrawLayer() const
+	{
+	    return mDrawLayer;
 	}
 
 	const Vector2& SpriteComponent::GetSize() const
@@ -185,7 +201,7 @@ namespace TowerDefense
 
 		Matrix4 scaleMatrix = Matrix4::CreateScale(mSize.x, mSize.y, 1.0f);
 		Matrix4 rotationMatrix = Matrix4::CreateRotation2D(mRotationOffset);
-		Matrix4 worldTransform = scaleMatrix * rotationMatrix 
+		Matrix4 worldTransform = scaleMatrix * rotationMatrix
 			* mTransform->CreateTransformMatrix();
 
 		mTexCoords.SetTexCoords(mRenderer->GetDefaultUVBuffer());

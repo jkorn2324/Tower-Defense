@@ -28,6 +28,8 @@ namespace TowerDefense
 		class GameRenderer* GetRenderer() const;
 		class ActorManager* GetActorManager() const;
 		class TexturesManager* GetTexturesManager() const;
+        class Mouse* GetMouse() const;
+        class Camera* GetCamera() const;
 
 	private:
 		bool mRunning;
@@ -38,5 +40,7 @@ namespace TowerDefense
 		class TexturesManager* mTextureManager;
 		class ActorManager* mActorManager;
 		class LevelManager* mLevelManager;
+		class Mouse* mMouse;
+		class Camera* mCamera;
 	};
 }

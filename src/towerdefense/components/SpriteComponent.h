@@ -57,6 +57,8 @@ namespace TowerDefense
 		float GetRotationOffset() const;
 		void SetTexCoords(const Vector2& centerPos, const Vector2& size);
 		const SpriteTexCoords& GetTexCoords() const;
+		unsigned int GetDrawLayer() const;
+		void SetDrawLayer(unsigned int drawLayer);
 
 	public:
 		void Draw();
@@ -67,6 +69,7 @@ namespace TowerDefense
 		SpriteTexCoords mTexCoords;
 
 	private:
+	    unsigned int mDrawLayer;
 	    EventCallback<const Vector2&> mSizeChanged;
 		class Texture* mTexture;
 		class Shader* mShader;

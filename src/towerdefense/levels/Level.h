@@ -17,6 +17,7 @@ namespace TowerDefense
 	    unsigned int tileSizeX;
 	    unsigned int tileSizeY;
 		unsigned int tileIndex = 0;
+		unsigned int layerIndex;
 		Vector2 position;
 		bool colAsIndex = false;
 	};
@@ -44,6 +45,7 @@ namespace TowerDefense
 		bool IsLoaded() const;
 		class Game* GetGame() const;
 		LevelPathNodeData* GetFirstPathNode() const;
+        const Vector2& GetLevelSize() const;
 
 	private:
 		void OnSetActive(bool active);
@@ -58,6 +60,7 @@ namespace TowerDefense
 		bool mLoaded;
 
 	private:
+	    Vector2 mLevelSize;
 		LevelPathNodeData* mBeginPathNode;
 		std::vector<LevelTileData*> mTiles;
 	    std::vector<class Actor*> mActors;

@@ -11,13 +11,14 @@ namespace TowerDefense
 	{
 		mGame = game;
 		mDefaultShader = nullptr;
-		mShaders = std::vector<Shader*>();
+		mShaders = std::unordered_map<std::string, Shader*>();
 	}
 
 	ShaderManager::~ShaderManager()
 	{
-		for (Shader* shader : mShaders)
+		for (const auto& shaderPair : mShaders)
 		{
+		    Shader* shader = shaderPair.second;
 			delete shader;
 		}
 		mShaders.clear();
@@ -25,14 +26,10 @@ namespace TowerDefense
 
 	Shader* ShaderManager::GetShader(const std::string& name) const
 	{
-		const auto& searched = std::find_if(mShaders.begin(), mShaders.end(),
-			[name](Shader* shader) -> bool 
-			{ 
-				return shader->GetShaderName() == name;
-			});
+		const auto& searched = mShaders.find(name);
 		if (searched != mShaders.end())
 		{
-			return *searched;
+			return (*searched).second;
 		}
 		return nullptr;
 	}
@@ -49,11 +46,7 @@ namespace TowerDefense
 
 	bool ShaderManager::AddShader(const std::string& name, const std::string& fragFile, const std::string& vertFile, bool defaultShader)
 	{
-		const auto& searched = std::find_if(mShaders.begin(), mShaders.end(),
-			[name](Shader* shader) -> bool
-			{
-				return shader->GetShaderName() == name;
-			});
+		const auto& searched = mShaders.find(name);
 		if (searched != mShaders.end())
 		{
 			SDL_Log("Shader %s already exists.", name.c_str());
@@ -66,8 +59,7 @@ namespace TowerDefense
 			delete shader;
 			return false;
 		}
-		mShaders.push_back(shader);
-
+		mShaders.emplace(name, shader);
 		if (defaultShader)
 		{
 			mDefaultShader = shader;

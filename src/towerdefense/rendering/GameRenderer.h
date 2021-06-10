@@ -22,6 +22,7 @@ namespace TowerDefense
 		void Uninitialize();
 
 	public:
+	    void ReOrderSpriteComponents();
 		void AddSpriteComponent(class SpriteComponent* spriteComponent);
 		void RemoveSpriteComponent(class SpriteComponent* spriteComponent);
 

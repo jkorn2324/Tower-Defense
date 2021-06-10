@@ -12,8 +12,10 @@ namespace TowerDefense
     {
         mSpriteComponent = new TileSpriteComponent(this);
         ((SpriteComponent*)mSpriteComponent)->SetTexture(TILESHEET_PATH);
-        mSpriteComponent->SetTileSize(tileData->tileSizeX, tileData->tileSizeY);
+        mSpriteComponent->SetTileSize(static_cast<float>(tileData->tileSizeX),
+                                      static_cast<float>(tileData->tileSizeY));
         mSpriteComponent->SetTileIndex(tileData->tileIndex, tileData->colAsIndex);
+        ((SpriteComponent*)mSpriteComponent)->SetDrawLayer(tileData->layerIndex);
 
         mLevel = level;
         mTransform.SetPosition(tileData->position);

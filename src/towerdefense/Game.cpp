@@ -5,16 +5,21 @@
 #include "TexturesManager.h"
 #include "GameParameters.h"
 #include "JSONHelper.h"
+#include "Mouse.h"
+#include "Camera.h"
 
 namespace TowerDefense
 {
 
 	Game::Game()
 	{
+        mCamera = new Camera(static_cast<float>(WINDOW_SIZE_X),
+                             static_cast<float>(WINDOW_SIZE_Y));
 		mRenderer = new GameRenderer(this);
 		mActorManager = new ActorManager(this);
 		mTextureManager = new TexturesManager(this);
 		mLevelManager = new LevelManager(this);
+		mMouse = new Mouse();
 		mRunning = false;
 		mPrevGameTick = SDL_GetTicks();
 	}
@@ -29,6 +34,10 @@ namespace TowerDefense
 	ActorManager* Game::GetActorManager() const { return mActorManager; }
 
 	TexturesManager* Game::GetTexturesManager() const { return mTextureManager; }
+
+	Mouse* Game::GetMouse() const { return mMouse; }
+
+	Camera* Game::GetCamera() const { return mCamera; }
 
 	bool Game::InitializeGame()
 	{
@@ -45,6 +54,11 @@ namespace TowerDefense
 		{
 			return false;
 		}
+
+		if(!mMouse->Initialize())
+        {
+		    return false;
+        }
 
 		if (!LoadGame())
 		{
@@ -88,13 +102,14 @@ namespace TowerDefense
 			}
 		}
 
-		const Uint8* state = SDL_GetKeyboardState(NULL);
+		const Uint8* state = SDL_GetKeyboardState(nullptr);
 		if (state[SDL_SCANCODE_ESCAPE])
 		{
 			mRunning = false;
 			return;
 		}
-		// TODO: Process input for actors
+		mMouse->Update();
+		mActorManager->ProcessInput(state);
 	}
 
 	void Game::UpdateGame()
@@ -118,6 +133,7 @@ namespace TowerDefense
 			mRunning = false;
 		}
 		mRenderer->Uninitialize();
-		delete mRenderer, mActorManager, mTextureManager;
+		delete mRenderer, mActorManager, mTextureManager,
+		    mMouse, mLevelManager, mCamera;
 	}
 }

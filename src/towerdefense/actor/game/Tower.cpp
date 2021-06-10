@@ -20,6 +20,7 @@ namespace TowerDefense
 			std::bind(&Tower::OnSizeChanged, this, std::placeholders::_1));
 		((SpriteComponent*)mSpriteComponent)->SetTexture(TILESHEET_PATH);
 		mSpriteComponent->SetTilesPerColAndRow(TILE_SIZE_X, TILE_SIZE_Y);
+		mSpriteComponent->SetTileIndex(130);
 	}
 
 	void Tower::OnSizeChanged(const Vector2& vec)

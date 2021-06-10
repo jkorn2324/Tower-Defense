@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Actor.h"
 
-#include "Tower.h"
+#include "Player.h"
 
 namespace TowerDefense
 {
@@ -10,7 +10,7 @@ namespace TowerDefense
 	ActorManager::ActorManager(Game* game)
 	{
 		mGame = game;
-
+        mPlayer = nullptr;
 		mSpawnActors = std::vector<Actor*>();
 		mDespawnActors = std::vector<Actor*>();
 		mActors = std::vector<Actor*>();
@@ -22,17 +22,14 @@ namespace TowerDefense
 		{
 			delete actor;
 		}
-
 		for (Actor* spawnActor : mSpawnActors)
 		{
 			delete spawnActor;
 		}
-
 		for (Actor* despawnActors : mDespawnActors)
 		{
 			delete despawnActors;
 		}
-
 		mActors.clear();
 		mSpawnActors.clear();
 		mDespawnActors.clear();
@@ -40,14 +37,17 @@ namespace TowerDefense
 
 	void ActorManager::InitActors()
 	{
-		/* Tower* tower = new Tower(mGame);
-		Transform& transform = (Transform&)tower->GetTransform();
-		transform.SetPosition(0.0f, 0.0f); */
+	    mPlayer = new Player(mGame);
 	}
 
 	Game* ActorManager::GetGame() const
 	{
 		return mGame;
+	}
+
+	Player* ActorManager::GetPlayer() const
+	{
+	    return mPlayer;
 	}
 
 	void ActorManager::ProcessInput(const Uint8* keyState)
