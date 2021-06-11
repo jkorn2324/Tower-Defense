@@ -12,6 +12,24 @@ namespace TowerDefense
 		std::memcpy(mMatrix, mat, 9 * sizeof(float));
 	}
 
+    Matrix3& Matrix3::operator*=(const Matrix3& mat)
+    {
+        *this = *this * mat;
+        return *this;
+    }
+
+    Matrix3& Matrix3::operator+=(const Matrix3& mat)
+    {
+        *this = *this + mat;
+        return *this;
+    }
+
+    Matrix3& Matrix3::operator-=(const Matrix3& mat)
+    {
+        *this = *this - mat;
+        return *this;
+    }
+
 	const float* Matrix3::FloatPointer() const
 	{
 		return reinterpret_cast<const float*>(&mMatrix[0][0]);
@@ -50,6 +68,38 @@ namespace TowerDefense
 		return Matrix3(mat);
 	}
 
+    Matrix3 operator+(const Matrix3& a, const Matrix3& b)
+    {
+        unsigned int size = 3;
+        Matrix3 output;
+
+        for(unsigned int outRow = 0; outRow < size; outRow++)
+        {
+            for(unsigned int outCol = 0; outCol < size; outCol++)
+            {
+                output.mMatrix[outRow][outCol] = a.mMatrix[outRow][outCol]
+                                                 + b.mMatrix[outRow][outCol];
+            }
+        }
+        return output;
+    }
+
+    Matrix3 operator-(const Matrix3& a, const Matrix3& b)
+    {
+        unsigned int size = 3;
+        Matrix3 output;
+
+        for(unsigned int outRow = 0; outRow < size; outRow++)
+        {
+            for(unsigned int outCol = 0; outCol < size; outCol++)
+            {
+                output.mMatrix[outRow][outCol] = a.mMatrix[outRow][outCol]
+                                                 - b.mMatrix[outRow][outCol];
+            }
+        }
+        return output;
+    }
+
 	Matrix3 operator*(const Matrix3& a, const Matrix3& b)
 	{
 		Matrix3 output;
@@ -66,11 +116,5 @@ namespace TowerDefense
 			}
 		}
 		return output;
-	}
-
-	Matrix3& Matrix3::operator*=(const Matrix3& mat)
-	{
-		*this = *this * mat;
-		return *this;
 	}
 }

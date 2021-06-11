@@ -22,6 +22,18 @@ namespace TowerDefense
 		return *this;
 	}
 
+	Matrix4& Matrix4::operator+=(const Matrix4& other)
+	{
+		*this = *this + other;
+		return *this;
+	}
+
+	Matrix4& Matrix4::operator-=(const Matrix4 &other)
+	{
+		*this = *this - other;
+		return *this;
+	}
+
 	Matrix4 Matrix4::CreatePosition(float x, float y, float z)
 	{
 		float mat[4][4] =
@@ -80,6 +92,38 @@ namespace TowerDefense
 			{0.0f, 0.0f, near / (near - far), 1.0f}
 		};
 		return Matrix4(mat);
+	}
+
+	Matrix4 operator+(const Matrix4& a, const Matrix4& b)
+	{
+		unsigned int size = 4;
+		Matrix4 output;
+
+		for(unsigned int outRow = 0; outRow < size; outRow++)
+		{
+			for(unsigned int outCol = 0; outCol < size; outCol++)
+			{
+				output.mMatrix[outRow][outCol] = a.mMatrix[outRow][outCol]
+						+ b.mMatrix[outRow][outCol];
+			}
+		}
+		return output;
+	}
+
+	Matrix4 operator-(const Matrix4& a, const Matrix4& b)
+	{
+		unsigned int size = 4;
+		Matrix4 output;
+
+		for(unsigned int outRow = 0; outRow < size; outRow++)
+		{
+			for(unsigned int outCol = 0; outCol < size; outCol++)
+			{
+				output.mMatrix[outRow][outCol] = a.mMatrix[outRow][outCol]
+												 - b.mMatrix[outRow][outCol];
+			}
+		}
+		return output;
 	}
 	
 	Matrix4 operator*(const Matrix4& a, const Matrix4& b)

@@ -43,7 +43,7 @@ namespace TowerDefense
 
 	public:
 		virtual void SetTexture(class Texture* texture);
-		void SetTexture(const std::string& file);
+		virtual void SetTexture(const std::string& file);
 		class Texture* GetTexture() const;
 		void SetShader(class Shader* shader);
 		class Shader* GetShader() const;

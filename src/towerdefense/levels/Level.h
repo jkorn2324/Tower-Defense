@@ -51,10 +51,12 @@ namespace TowerDefense
 		void OnSetActive(bool active);
 
 	public:
+	    class EnemyManager* GetEnemyManager() const;
 		const std::string& GetName() const;
 
 	private:
 		class LevelManager* mLevelManager;
+		class EnemyManager* mEnemyManager;
 		std::string mName;
 		std::string mLevelPath;
 		bool mLoaded;

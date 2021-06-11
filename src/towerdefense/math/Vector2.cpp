@@ -63,6 +63,19 @@ namespace TowerDefense
 		return directionVector.Length();
 	}
 
+	/**
+	 * The Cross product of a 2D Vector returns the angular direction
+	 * in which to rotate a vector to match another.
+	 *
+	 * @param a - The first vector.
+	 * @param b - The second vector.
+	 * @return Vector2 - The 2D Cross Product.
+	 */
+	float Vector2::Cross(const Vector2 &a, const Vector2 &b)
+    {
+	    return a.x * b.y - a.y * b.x;
+    }
+
 	Vector2 operator*(const Vector2& vec, float scalar)
 	{
 		Vector2 vector(vec);

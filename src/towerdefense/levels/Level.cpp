@@ -7,6 +7,7 @@
 
 #include "Game.h"
 #include "Camera.h"
+#include "EnemyManager.h"
 
 #include <SDL2/SDL_log.h>
 #include <rapidjson/document.h>
@@ -23,6 +24,7 @@ namespace TowerDefense
         mLoaded = false;
 		mTiles = std::vector<LevelTileData*>();
 		mBeginPathNode = nullptr;
+		mEnemyManager = new EnemyManager(this);
 		mLevelSize = Vector2::Zero();
 		mLevelManager->AddLevel(this);
 	}
@@ -45,12 +47,18 @@ namespace TowerDefense
 		mBeginPathNode = nullptr;
 		mTiles.clear();
 		mActors.clear();
-	}
+        delete mEnemyManager;
+    }
 
 	const std::string& Level::GetName() const
 	{
 		return mName;
 	}
+
+	EnemyManager* Level::GetEnemyManager() const
+    {
+        return mEnemyManager;
+    }
 
 	Game* Level::GetGame() const
 	{
@@ -88,8 +96,8 @@ namespace TowerDefense
 		    float halfTileHeight = (float)tileHeight * 0.5f;
 
 		    Vector2 calculatedInitialPosition;
-		    calculatedInitialPosition.x = -((float)levelWidth * 0.5f) * (float)tileWidth + halfTileWidth;
-		    calculatedInitialPosition.y = (float)levelHeight * 0.5f * (float)tileHeight - halfTileHeight;
+		    calculatedInitialPosition.x = -((float)levelWidth * 0.5f) * (float)tileWidth;
+		    calculatedInitialPosition.y = (float)levelHeight * 0.5f * (float)tileHeight;
 
 		    unsigned int layerIndex = 0;
 		    const auto& layers = document["layers"];
@@ -113,7 +121,8 @@ namespace TowerDefense
                         float extraYPos = (float)(currentIndex / levelWidth) * (float)tileHeight;
                         LevelTileData* tileData = new LevelTileData();
                         tileData->layerIndex = layerIndex;
-                        tileData->position = calculatedInitialPosition + Vector2(extraXPos, -extraYPos);
+                        tileData->position = calculatedInitialPosition + Vector2(
+                                extraXPos + halfTileWidth, -extraYPos - halfTileHeight);
                         tileData->tileIndex = tileIndex - 1;
                         tileData->tileSizeX = tileWidth;
                         tileData->tileSizeY = tileHeight;
@@ -125,24 +134,45 @@ namespace TowerDefense
                 else if (layerType == "objectgroup")
                 {
                     const auto& objects = layerData["objects"].GetArray();
-                    if(layerData.HasMember("Path-Nodes"))
+                    std::string layerName = layerData["name"].GetString();
+                    if(layerName == "Path-Nodes")
                     {
+                        LevelPathNodeData* prevPathNode = nullptr;
                         for(const auto& node : objects)
                         {
                             const auto& nodeData = node.GetObject();
                             float xPosition = nodeData["x"].GetFloat();
                             float yPosition = nodeData["y"].GetFloat();
+                            Vector2 position = Vector2(xPosition, -yPosition) + calculatedInitialPosition;
 
-                            LevelPathNodeData* pathNodeData = new LevelPathNodeData();
-                            pathNodeData->position = Vector2(xPosition, yPosition) + calculatedInitialPosition;
-                            pathNodeData->next = nullptr;
-
-                            if(mBeginPathNode == nullptr)
+                            std::string name = nodeData["name"].GetString();
+                            if(name == "Enemy-Spawn-Position")
                             {
-                                mBeginPathNode = pathNodeData;
+                                mEnemyManager->SetSpawnPosition(position);
                                 continue;
                             }
-                            mBeginPathNode->next = pathNodeData;
+
+                            LevelPathNodeData* pathNodeData = new LevelPathNodeData();
+                            pathNodeData->position = position;
+                            pathNodeData->next = nullptr;
+
+                            if(prevPathNode == nullptr)
+                            {
+                                prevPathNode = pathNodeData;
+                                mBeginPathNode = prevPathNode;
+                                continue;
+                            }
+
+                            if(prevPathNode == mBeginPathNode)
+                            {
+                                prevPathNode->next = pathNodeData;
+                                mBeginPathNode = prevPathNode;
+                            }
+                            else
+                            {
+                                prevPathNode->next = pathNodeData;
+                            }
+                            prevPathNode = pathNodeData;
                         }
                     }
                 }
@@ -174,7 +204,7 @@ namespace TowerDefense
             }
             return;
         }
-
+        mEnemyManager->ClearEnemies();
         for(const auto& actor : mActors)
         {
             actor->Despawn();

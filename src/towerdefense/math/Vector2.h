@@ -36,6 +36,7 @@ namespace TowerDefense
 		static float Distance(const Vector2& a, const Vector2& b);
 		static Vector2 Zero();
 		static Vector2 One();
+		static float Cross(const Vector2& a, const Vector2& b);
 
 	public:
 		float x;

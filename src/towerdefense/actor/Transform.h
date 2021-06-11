@@ -53,6 +53,7 @@ namespace TowerDefense
 	public:
 		void SetRotation(float rotation, bool inRadians = false);
 		float GetRotation() const;
+		Vector2 GetForward() const;
 
 	private:
 		Vector2 mPosition;

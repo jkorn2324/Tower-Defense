@@ -21,7 +21,7 @@ namespace TowerDefense
 
 	void Transform::LookAt(const Vector2& position)
 	{
-		Vector2 directionVector = position - mPosition;
+        Vector2 directionVector = position - mPosition;
 		directionVector.Normalize();
 		mRotation = std::atan2f(directionVector.y, directionVector.x);
 	}
@@ -51,7 +51,7 @@ namespace TowerDefense
 		const Transform& transform = mParentData.parent->GetTransform();
 		return transform.GetWorldPosition() + GetPosition();
 	}
-	
+
 	const Vector2& Transform::GetScale() const
 	{
 		return mScale;
@@ -84,6 +84,15 @@ namespace TowerDefense
 		float deg2Rad = (float)M_PI / 180.0f;
 		mRotation = inRadians ? rotation : deg2Rad * rotation;
 	}
+
+	Vector2 Transform::GetForward() const
+    {
+	    float x = std::cosf(mRotation);
+	    float y = std::sinf(mRotation);
+	    Vector2 forwardDirection(x, y);
+	    forwardDirection.Normalize();
+	    return forwardDirection;
+    }
 
 	bool Transform::HasParent() const
 	{

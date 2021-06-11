@@ -14,7 +14,11 @@ namespace TowerDefense
 
 	public:
 		friend Matrix3 operator*(const Matrix3& a, const Matrix3& b);
+		friend Matrix3 operator+(const Matrix3& a, const Matrix3& b);
+		friend Matrix3 operator-(const Matrix3& a, const Matrix3& b);
 		Matrix3& operator*=(const Matrix3& mat);
+		Matrix3& operator+=(const Matrix3& mat);
+		Matrix3& operator-=(const Matrix3& mat);
 
 	public:
 		static Matrix3 CreateScale(float x, float y);

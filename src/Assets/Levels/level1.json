@@ -1,5 +1,4 @@
-{
- "compressionlevel":-1,
+{ "compressionlevel":-1,
  "editorsettings":
     {
      "export":
@@ -231,6 +230,18 @@
                  "width":0,
                  "x":1269.33,
                  "y":258.667
+                }, 
+                {
+                 "height":0,
+                 "id":18,
+                 "name":"Enemy-Spawn-Position",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":189.333333333333,
+                 "y":-57.3333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -238,8 +249,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":10,
- "nextobjectid":18,
+ "nextlayerid":11,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.0",

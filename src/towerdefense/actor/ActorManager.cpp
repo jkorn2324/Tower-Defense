@@ -3,6 +3,7 @@
 #include "Actor.h"
 
 #include "Player.h"
+#include "Enemy.h"
 
 namespace TowerDefense
 {
@@ -38,6 +39,9 @@ namespace TowerDefense
 	void ActorManager::InitActors()
 	{
 	    mPlayer = new Player(mGame);
+
+	    // TODO: Remove - Only here for testing purposes.
+	    new Enemy(mGame);
 	}
 
 	Game* ActorManager::GetGame() const

@@ -15,6 +15,10 @@ namespace TowerDefense
 
 	public:
 		friend Matrix4 operator*(const Matrix4& a, const Matrix4& b);
+		friend Matrix4 operator+(const Matrix4& a, const Matrix4& b);
+		friend Matrix4 operator-(const Matrix4& a, const Matrix4& b);
+		Matrix4& operator+=(const Matrix4& other);
+		Matrix4& operator-=(const Matrix4& other);
 		Matrix4& operator*=(const Matrix4& other);
 
 	public:
