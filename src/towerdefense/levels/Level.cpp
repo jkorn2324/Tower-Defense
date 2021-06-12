@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "Camera.h"
 #include "EnemyManager.h"
+#include "LevelTowerAreaRect.h"
 
 #include <SDL2/SDL_log.h>
 #include <rapidjson/document.h>
@@ -25,6 +26,7 @@ namespace TowerDefense
 		mTiles = std::vector<LevelTileData*>();
 		mBeginPathNode = nullptr;
 		mEnemyManager = new EnemyManager(this);
+		mTowerAreaManager = new LevelTowersAreaManager(this);
 		mLevelSize = Vector2::Zero();
 		mLevelManager->AddLevel(this);
 	}
@@ -47,7 +49,7 @@ namespace TowerDefense
 		mBeginPathNode = nullptr;
 		mTiles.clear();
 		mActors.clear();
-        delete mEnemyManager;
+        delete mEnemyManager, mTowerAreaManager;
     }
 
 	const std::string& Level::GetName() const
@@ -175,6 +177,20 @@ namespace TowerDefense
                             prevPathNode = pathNodeData;
                         }
                     }
+                    else if (layerName == "Towers-Area")
+                    {
+                        for(const auto& object : objects)
+                        {
+                            const auto& objectData = object.GetObject();
+                            Vector2 pos = Vector2(
+                                    objectData["x"].GetFloat(),
+                                    -objectData["y"].GetFloat());
+                            Vector2 size = Vector2(
+                                    objectData["width"].GetFloat(),
+                                    objectData["height"].GetFloat());
+                            mTowerAreaManager->AddTowerArea(size, pos + calculatedInitialPosition);
+                        }
+                    }
                 }
             }
         }
@@ -183,7 +199,6 @@ namespace TowerDefense
         {
             SDL_Log("Successfully loaded the level: %s", mName.c_str());
         }
-
 		mLoaded = true;
 		return true;
 	}
@@ -192,6 +207,11 @@ namespace TowerDefense
 	{
 	    return mBeginPathNode;
 	}
+
+	bool Level::CanPlaceTower(const Vector2 &point) const
+    {
+	    return mTowerAreaManager->CanPlaceTower(point);
+    }
 
 	void Level::OnSetActive(bool active)
 	{

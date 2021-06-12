@@ -1,7 +1,5 @@
 #include "EventListener.h"
 
-#include <algorithm>
-
 namespace TowerDefense
 {
 
@@ -32,10 +30,10 @@ namespace TowerDefense
 
     void EventListener::Invoke()
     {
-        unsigned int size = mObservers.size();
-        for(unsigned int i = size - 1; i >= 0; i--)
+        int size = static_cast<int>(mObservers.size());
+        for(int i = size - 1; i >= 0; i--)
         {
-            mObservers[i]->Invoke();
+            mObservers[i]->OnEventTriggered();
         }
     }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace TowerDefense
 {
 
@@ -12,6 +14,7 @@ namespace TowerDefense
 
 	public:
 		const float* FloatPointer() const;
+		std::string ToString() const;
 		void Normalize();
 		float Length() const;
 

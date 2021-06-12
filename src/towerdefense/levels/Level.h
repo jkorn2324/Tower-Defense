@@ -46,6 +46,7 @@ namespace TowerDefense
 		class Game* GetGame() const;
 		LevelPathNodeData* GetFirstPathNode() const;
         const Vector2& GetLevelSize() const;
+        bool CanPlaceTower(const Vector2& point) const;
 
 	private:
 		void OnSetActive(bool active);
@@ -57,6 +58,7 @@ namespace TowerDefense
 	private:
 		class LevelManager* mLevelManager;
 		class EnemyManager* mEnemyManager;
+		class LevelTowersAreaManager* mTowerAreaManager;
 		std::string mName;
 		std::string mLevelPath;
 		bool mLoaded;

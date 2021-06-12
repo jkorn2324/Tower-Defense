@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Matrix4.h"
+#include "Vector2.h"
 
 namespace TowerDefense
 {
@@ -13,7 +14,7 @@ namespace TowerDefense
 	{
 
 	public:
-		GameRenderer(class Game* game);
+		explicit GameRenderer(class Game* game);
 		~GameRenderer();
 
 	public:
@@ -25,6 +26,10 @@ namespace TowerDefense
 	    void ReOrderSpriteComponents();
 		void AddSpriteComponent(class SpriteComponent* spriteComponent);
 		void RemoveSpriteComponent(class SpriteComponent* spriteComponent);
+
+	public:
+	    Vector2 ScreenToWorldPoint(const Vector2& screenCoord);
+	    Vector2 WorldToScreenPoint(const Vector2& worldCoord);
 
 	public:
 		class VertexArray* GetDefaultVertexArray() const;

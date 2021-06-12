@@ -1,5 +1,7 @@
 #include "Vector2.h"
+
 #include <cmath>
+#include <sstream>
 
 namespace TowerDefense
 {
@@ -25,6 +27,13 @@ namespace TowerDefense
 	{
 		return reinterpret_cast<const float*>(&(this->x));
 	}
+
+	std::string Vector2::ToString() const
+    {
+	    std::stringstream s;
+	    s << "x: " << this->x << ", y: " << this->y;
+	    return s.str();
+    }
 
 	void Vector2::Normalize()
 	{

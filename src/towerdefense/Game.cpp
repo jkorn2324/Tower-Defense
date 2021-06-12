@@ -19,7 +19,7 @@ namespace TowerDefense
 		mActorManager = new ActorManager(this);
 		mTextureManager = new TexturesManager(this);
 		mLevelManager = new LevelManager(this);
-		mMouse = new Mouse();
+		mMouse = new Mouse(this);
 		mRunning = false;
 		mPrevGameTick = SDL_GetTicks();
 	}
@@ -96,9 +96,15 @@ namespace TowerDefense
 		{
 			switch (event.type)
 			{
-			case SDL_QUIT:
-				mRunning = false;
-				return;
+			    case SDL_QUIT:
+				    mRunning = false;
+				    return;
+				case SDL_MOUSEBUTTONDOWN:
+			        mMouse->OnMouseDown(event.button);
+			        break;
+			    case SDL_MOUSEBUTTONUP:
+			        mMouse->OnMouseUp(event.button);
+			        break;
 			}
 		}
 

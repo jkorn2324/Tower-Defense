@@ -63,7 +63,7 @@ namespace TowerDefense
 	private:
 		bool mActive;
 
-	private:
+	protected:
 		class ActorManager* mActorManager;
 		class Game* mGame;
 

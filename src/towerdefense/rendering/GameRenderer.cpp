@@ -226,4 +226,30 @@ namespace TowerDefense
 		}
 		SDL_GL_SwapWindow(mWindow);
 	}
+
+	Vector2 GameRenderer::ScreenToWorldPoint(const Vector2 &screenCoord)
+    {
+	    const Vector2& cameraPos = mGame->GetCamera()->GetPosition();
+	    const Vector2& cameraSize = mGame->GetCamera()->GetSize();
+	    float sizeX = static_cast<float>(mWindowSizeX);
+	    float sizeY = static_cast<float>(mWindowSizeY);
+	    float convertedX = (screenCoord.x / sizeX) * cameraSize.x;
+	    float convertedY = (-screenCoord.y / sizeY) * cameraSize.y;
+	    convertedX += cameraPos.x - (cameraSize.x * 0.5f);
+	    convertedY += cameraPos.y + (cameraSize.y * 0.5f);
+	    return Vector2(convertedX, convertedY);
+    }
+
+    Vector2 GameRenderer::WorldToScreenPoint(const Vector2 &worldCoord)
+    {
+	    float sizeX = static_cast<float>(mWindowSizeX);
+	    float sizeY = static_cast<float>(mWindowSizeY);
+	    const Vector2& cameraPos = mGame->GetCamera()->GetPosition();
+	    const Vector2& cameraSize = mGame->GetCamera()->GetSize();
+	    float offsetX = worldCoord.x - (cameraPos.x - (cameraSize.x * 0.5f));
+	    float offsetY = worldCoord.y - (cameraPos.y - (cameraSize.y * 0.5f));
+	    float convertedX = offsetX / cameraSize.x * sizeX;
+	    float convertedY = sizeY - ((offsetY / cameraSize.y) * sizeY);
+        return Vector2(convertedX, convertedY);
+    }
 }

@@ -19,6 +19,8 @@ namespace TowerDefense
         mSize = size;
     }
 
+    const Vector2& Camera::GetSize() const { return mSize; }
+
     void Camera::SetPosition(float x, float y)
     {
         mPosition.x = x;
