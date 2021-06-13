@@ -36,7 +36,6 @@ namespace TowerDefense
 
     public:
         bool Initialize();
-        void Update();
 
     public:
         const Vector2& GetMousePosition() const;
@@ -48,6 +47,7 @@ namespace TowerDefense
         void SetHidden(bool hidden);
 
     private:
+        void OnMouseMove(SDL_MouseMotionEvent& event);
         void OnMouseDown(SDL_MouseButtonEvent& button);
         void OnMouseUp(SDL_MouseButtonEvent& button);
 

@@ -48,6 +48,14 @@ namespace TowerDefense
 		return transformPosition;
 	}
 
+	bool CollisionComponent::ContainsPosition(const Vector2 &position) const
+	{
+	    Vector2 min = GetMin();
+	    Vector2 max = GetMax();
+        return min.x <= position.x && max.x >= position.x
+            && min.y <= position.y && max.y >= position.y;
+	}
+
 	bool CollisionComponent::Intersects(CollisionComponent* other, CollisionData& collisionData)
 	{
 		Vector2 otherMin = other->GetMin();

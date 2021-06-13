@@ -46,6 +46,7 @@ namespace TowerDefense
 	public:
 		bool Intersects(CollisionComponent* other, CollisionData& collisionData);
 		bool Intersects(class Actor* other, CollisionData& collisionData);
+        bool ContainsPosition(const Vector2& position) const;
 
 	private:
 		void CalculateCollisionData(CollisionComponent* other, CollisionData& collisionData);

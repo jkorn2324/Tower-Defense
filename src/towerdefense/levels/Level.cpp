@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "Camera.h"
 #include "EnemyManager.h"
+#include "TowerManager.h"
 #include "LevelTowerAreaRect.h"
 
 #include <SDL2/SDL_log.h>
@@ -27,6 +28,7 @@ namespace TowerDefense
 		mBeginPathNode = nullptr;
 		mEnemyManager = new EnemyManager(this);
 		mTowerAreaManager = new LevelTowersAreaManager(this);
+		mTowerManager = new TowerManager(this);
 		mLevelSize = Vector2::Zero();
 		mLevelManager->AddLevel(this);
 	}
@@ -49,7 +51,12 @@ namespace TowerDefense
 		mBeginPathNode = nullptr;
 		mTiles.clear();
 		mActors.clear();
-        delete mEnemyManager, mTowerAreaManager;
+
+		// TODO: Save Towers
+
+        delete mEnemyManager;
+        delete mTowerAreaManager;
+        delete mTowerManager;
     }
 
 	const std::string& Level::GetName() const
@@ -60,6 +67,11 @@ namespace TowerDefense
 	EnemyManager* Level::GetEnemyManager() const
     {
         return mEnemyManager;
+    }
+
+    TowerManager* Level::GetTowerManager() const
+    {
+	    return mTowerManager;
     }
 
 	Game* Level::GetGame() const
@@ -210,7 +222,8 @@ namespace TowerDefense
 
 	bool Level::CanPlaceTower(const Vector2 &point) const
     {
-	    return mTowerAreaManager->CanPlaceTower(point);
+	    return mTowerAreaManager->CanPlaceTower(point)
+	        && mTowerManager->CanPlaceTower(point);
     }
 
 	void Level::OnSetActive(bool active)
@@ -225,6 +238,7 @@ namespace TowerDefense
             return;
         }
         mEnemyManager->ClearEnemies();
+        mTowerManager->ClearTowers();
         for(const auto& actor : mActors)
         {
             actor->Despawn();

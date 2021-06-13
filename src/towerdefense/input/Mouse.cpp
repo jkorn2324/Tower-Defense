@@ -39,13 +39,12 @@ namespace TowerDefense
         return true;
     }
 
-    void Mouse::Update()
+    void Mouse::OnMouseMove(SDL_MouseMotionEvent &event)
     {
-        int newX, newY;
-        SDL_GetRelativeMouseState(&newX, &newY);
-        mDeltaPosition.x = static_cast<float>(newX);
-        mDeltaPosition.y = -static_cast<float>(newY);
-        mPosition += mDeltaPosition;
+        mDeltaPosition.x = static_cast<float>(event.xrel);
+        mDeltaPosition.y = static_cast<float>(event.yrel);
+        mPosition.x = static_cast<float>(event.x);
+        mPosition.y = static_cast<float>(event.y);
     }
 
     void Mouse::OnMouseDown(SDL_MouseButtonEvent &button)

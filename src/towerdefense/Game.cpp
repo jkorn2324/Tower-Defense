@@ -105,6 +105,9 @@ namespace TowerDefense
 			    case SDL_MOUSEBUTTONUP:
 			        mMouse->OnMouseUp(event.button);
 			        break;
+			    case SDL_MOUSEMOTION:
+			        mMouse->OnMouseMove(event.motion);
+			        break;
 			}
 		}
 
@@ -114,7 +117,6 @@ namespace TowerDefense
 			mRunning = false;
 			return;
 		}
-		mMouse->Update();
 		mActorManager->ProcessInput(state);
 	}
 

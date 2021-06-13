@@ -53,12 +53,14 @@ namespace TowerDefense
 
 	public:
 	    class EnemyManager* GetEnemyManager() const;
+	    class TowerManager* GetTowerManager() const;
 		const std::string& GetName() const;
 
 	private:
 		class LevelManager* mLevelManager;
 		class EnemyManager* mEnemyManager;
 		class LevelTowersAreaManager* mTowerAreaManager;
+		class TowerManager* mTowerManager;
 		std::string mName;
 		std::string mLevelPath;
 		bool mLoaded;
