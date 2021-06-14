@@ -8,6 +8,8 @@
 #include "Level.h"
 #include "Tower.h"
 
+#include "GreenCannonTower.h"
+
 namespace TowerDefense
 {
 
@@ -18,6 +20,7 @@ namespace TowerDefense
         mMouseObserverComponent = new MouseObserverComponent(this);
         mMouseObserverComponent->SetMouseUpCallback(
                 std::bind(&Player::OnMouseUp, this, std::placeholders::_1));
+        SetTowerSelected(new GreenCannonTower(game));
     }
 
     void Player::OnUpdate(float deltaTime)

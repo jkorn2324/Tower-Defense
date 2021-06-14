@@ -21,7 +21,7 @@ namespace TowerDefense
 
 	void Transform::LookAt(const Vector2& position)
 	{
-        Vector2 directionVector = position - mPosition;
+        Vector2 directionVector = position - GetWorldPosition();
 		directionVector.Normalize();
 		mRotation = std::atan2f(directionVector.y, directionVector.x);
 	}

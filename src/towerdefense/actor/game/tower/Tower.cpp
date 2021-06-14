@@ -6,6 +6,8 @@
 #include "CollisionComponent.h"
 #include "LevelManager.h"
 #include "TowerManager.h"
+#include "EnemyManager.h"
+#include "Enemy.h"
 #include "Level.h"
 
 #include <functional>
@@ -16,6 +18,8 @@ namespace TowerDefense
 	Tower::Tower(Game* game)
 		: Actor(game)
 	{
+	    mTarget = nullptr;
+	    mTargetType = TowerTargetType::TARGET_CLOSEST_ENEMY;
 		mCollisionComponent = new CollisionComponent(this);
 		mCollisionComponent->SetSize(1.0f, 1.0f);
 
@@ -28,12 +32,69 @@ namespace TowerDefense
 		mSpriteComponent->SetTileSize(TILE_SIZE_X, TILE_SIZE_Y);
 		mSpriteComponent->SetTileIndex(130);
 
+		mEnemyManager = mLevel->GetEnemyManager();
 		mLevel->GetTowerManager()->AddTower(this);
 	}
 
     Tower::~Tower()
     {
         mLevel->GetTowerManager()->RemoveTower(this);
+    }
+
+    void Tower::SetTargetType(const TowerTargetType &type)
+    {
+	    mTargetType = type;
+    }
+
+    const TowerTargetType& Tower::GetTargetType() const { return mTargetType; }
+
+    void Tower::OnUpdate(float deltaTime)
+    {
+	    if(!mPlaced)
+        {
+            UpdateNonPlacedTower(deltaTime);
+            return;
+        }
+
+	    switch(mTargetType)
+        {
+            case TowerTargetType::TARGET_CLOSEST_ENEMY:
+                UpdateClosestEnemy(deltaTime);
+                break;
+            case TowerTargetType::TARGET_FARTHEST_ENEMY:
+                UpdateFarthestEnemy(deltaTime);
+                break;
+            case TowerTargetType::TARGET_FARTHEST_ALONG_TRACK:
+                UpdateFarthestEnemyAlongTrack(deltaTime);
+                break;
+            case TowerTargetType::TARGET_STRONGEST:
+                UpdateStrongestEnemy(deltaTime);
+                break;
+        }
+        UpdatePlacedTower(deltaTime);
+    }
+
+    void Tower::UpdateClosestEnemy(float deltaTime)
+    {
+	    mTarget = mEnemyManager->GetClosestEnemy(
+	            mTransform.GetWorldPosition(), GetRange());
+    }
+
+    void Tower::UpdateFarthestEnemy(float deltaTime)
+    {
+	    mTarget = mEnemyManager->GetFarthestEnemy(
+	            mTransform.GetWorldPosition(), GetRange());
+    }
+
+    void Tower::UpdateFarthestEnemyAlongTrack(float deltaTime)
+    {
+	    mTarget = mEnemyManager->GetFarthestEnemyAlongTrack(
+	            mTransform.GetWorldPosition(), GetRange());
+    }
+
+    void Tower::UpdateStrongestEnemy(float deltaTime)
+    {
+	    // TODO: Implementation
     }
 
     bool Tower::IsPlaced() const { return mPlaced; }

@@ -14,8 +14,17 @@ namespace TowerDefense
     public:
         class Level* GetLevel() const;
         const std::vector<class Enemy*>& GetEnemies() const;
+
+    public:
         class Enemy* GetClosestEnemy(const Vector2& position) const;
-        // TODO: Get Enemy closest to the goal
+        class Enemy* GetClosestEnemy(const Vector2& position, float maxDist) const;
+        class Enemy* GetFarthestEnemy(const Vector2& position) const;
+        class Enemy* GetFarthestEnemy(const Vector2& position, float maxDist) const;
+
+    public:
+        class Enemy* GetFarthestEnemyAlongTrack() const;
+        class Enemy* GetFarthestEnemyAlongTrack(const Vector2& position) const;
+        class Enemy* GetFarthestEnemyAlongTrack(const Vector2& position, float maxDist) const;
 
     public:
         const Vector2& GetSpawnPosition() const;

@@ -12,6 +12,14 @@
 namespace TowerDefense
 {
 
+    enum TowerTargetType
+    {
+        TARGET_CLOSEST_ENEMY,
+        TARGET_FARTHEST_ENEMY,
+        TARGET_FARTHEST_ALONG_TRACK,
+        TARGET_STRONGEST
+    };
+
 
 	class Tower : public Actor
 	{
@@ -25,8 +33,24 @@ namespace TowerDefense
 	    bool IsPlaced() const;
 
 	public:
+	    virtual float GetRange() const =0;
+        void SetTargetType(const TowerTargetType& type);
+        const TowerTargetType& GetTargetType() const;
+
+	public:
         const std::string& GetName() const;
         class CollisionComponent* GetCollisionComponent() const;
+
+	protected:
+	    virtual void UpdateClosestEnemy(float deltaTime);
+	    virtual void UpdateFarthestEnemy(float deltaTime);
+	    virtual void UpdateFarthestEnemyAlongTrack(float deltaTime);
+	    virtual void UpdateStrongestEnemy(float deltaTime);
+
+	protected:
+	    virtual void UpdateNonPlacedTower(float deltaTime)=0;
+	    virtual void UpdatePlacedTower(float deltaTime)=0;
+	    virtual void OnUpdate(float deltaTime) override;
 
 	private:
 		void OnSizeChanged(const Vector2& vec);
@@ -35,8 +59,12 @@ namespace TowerDefense
 		class TileSpriteComponent* mSpriteComponent;
 		class CollisionComponent* mCollisionComponent;
 
+		class EnemyManager* mEnemyManager;
+        class Enemy* mTarget;
+
 	private:
-	    std::string mName;
+        TowerTargetType mTargetType;
+        std::string mName;
 	    class Level* mLevel;
 	    bool mPlaced;
 	};
