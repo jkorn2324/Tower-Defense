@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Vector2.h"
 #include "EventCallback.h"
+#include "Color.h"
 
 #include <string>
 #include <functional>
@@ -49,8 +50,16 @@ namespace TowerDefense
 		class Shader* GetShader() const;
 
 	public:
+	    void SetColorMultiplier(const Color& colorMultiplier);
+	    const Color& GetColorMultiplier() const;
+
+	public:
 		void SetSizeChangedCallback(std::function<void(const Vector2&)> func);
 		const Vector2& GetSize() const;
+
+	private:
+	    void SetSize(float x, float y);
+	    void SetSize(const Vector2& size);
 
 	public:
 		void SetRotationOffset(float rotation, bool inRadians = false);
@@ -75,5 +84,9 @@ namespace TowerDefense
 		class Shader* mShader;
 		Vector2 mSize;
 		float mRotationOffset;
+		Color mColorMultiplier;
+
+	public:
+	    friend class Tower;
 	};
 }

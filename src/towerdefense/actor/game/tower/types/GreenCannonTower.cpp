@@ -13,6 +13,7 @@ namespace TowerDefense
     GreenCannonTower::GreenCannonTower(Game *game)
             : Tower(game)
     {
+        mRange = GREEN_CANNON_ORIGINAL_RANGE;
         mCannon = GenerateCannon();
         mSpriteComponent->SetTileIndex(180);
     }
@@ -46,7 +47,7 @@ namespace TowerDefense
         }
     }
 
-    float GreenCannonTower::GetRange() const { return 100.0f; }
+    float GreenCannonTower::GetRange() const { return mRange; }
 
     void GreenCannonTower::OnDespawn()
     {

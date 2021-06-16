@@ -34,6 +34,9 @@ namespace TowerDefense
 
 	public:
 	    virtual float GetRange() const =0;
+	    void HighlightTowerRange(bool highlight);
+
+	public:
         void SetTargetType(const TowerTargetType& type);
         const TowerTargetType& GetTargetType() const;
 
@@ -50,9 +53,11 @@ namespace TowerDefense
 	protected:
 	    virtual void UpdateNonPlacedTower(float deltaTime)=0;
 	    virtual void UpdatePlacedTower(float deltaTime)=0;
+	    virtual void OnSpawn() override;
 	    virtual void OnUpdate(float deltaTime) override;
 
 	private:
+	    Actor* SetupRangeHighlight();
 		void OnSizeChanged(const Vector2& vec);
 
 	protected:
@@ -63,9 +68,12 @@ namespace TowerDefense
         class Enemy* mTarget;
 
 	private:
+        class Actor* mRangeHighlight;
+        class Level* mLevel;
+
+	private:
         TowerTargetType mTargetType;
         std::string mName;
-	    class Level* mLevel;
 	    bool mPlaced;
 	};
 }

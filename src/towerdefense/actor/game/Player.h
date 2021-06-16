@@ -18,11 +18,16 @@ namespace TowerDefense
         virtual void OnUpdate(float deltaTime) override;
 
     private:
-        void UpdateTower(float deltaTime);
+        void SetTowerHighlighted(class Tower* tower);
+
+    private:
+        void UpdatePlacedTower(float deltaTime);
         void OnMouseUp(const struct MouseButtonEventData& eventData);
+        void OnMouseDown(const struct MouseButtonEventData& eventData);
 
     private:
         class MouseObserverComponent* mMouseObserverComponent;
-        class Tower* mTowerSelected;
+        class Tower* mPlacedTower;
+        class Tower* mHighlightedTower;
     };
 }

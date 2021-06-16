@@ -74,6 +74,7 @@ namespace TowerDefense
 		mRotationOffset = 0.0f;
 		mTexCoords = SpriteTexCoords();
 		mSizeChanged = EventCallback<const Vector2&>();
+		mColorMultiplier = Color::GetWhite();
 		mRenderer->AddSpriteComponent(this);
 	}
 
@@ -89,7 +90,8 @@ namespace TowerDefense
 		mTexCoords = SpriteTexCoords();
 		mRotationOffset = 0.0f;
 		mSizeChanged = EventCallback<const Vector2&>();
-		SetTexture(textureFile);
+        mColorMultiplier = Color::GetWhite();
+        SetTexture(textureFile);
 		mRenderer->AddSpriteComponent(this);
 	}
 
@@ -112,6 +114,21 @@ namespace TowerDefense
 	    return mDrawLayer;
 	}
 
+	void SpriteComponent::SetSize(float x, float y)
+    {
+	    Vector2 size = Vector2(x, y);
+	    SetSize(size);
+    }
+
+	void SpriteComponent::SetSize(const Vector2& size)
+    {
+        if (size != mSize)
+        {
+            mSizeChanged.Invoke(size);
+        }
+        mSize = size;
+    }
+
 	const Vector2& SpriteComponent::GetSize() const
 	{
 		return mSize;
@@ -133,13 +150,19 @@ namespace TowerDefense
 		mSizeChanged.SetCallback(std::move(func));
 	}
 
+	void SpriteComponent::SetColorMultiplier(const Color &colorMultiplier)
+    {
+	    mColorMultiplier = colorMultiplier;
+    }
+
+    const Color& SpriteComponent::GetColorMultiplier() const
+    {
+	    return mColorMultiplier;
+    }
+
 	void SpriteComponent::SetTexCoords(const Vector2& center, const Vector2& size)
 	{
-		if (mSize != size)
-		{
-			mSizeChanged.Invoke(size);
-		}
-		mSize = size;
+		SetSize(size);
 		mTexCoords = SpriteTexCoords::CreateTexCoords(center, size, mTexture);
 	}
 
@@ -155,15 +178,8 @@ namespace TowerDefense
 			return;
 		}
 		mTexture = texture;
-
-		Vector2 newSize;
-		newSize.x = static_cast<float>(texture->GetWidth());
-		newSize.y = static_cast<float>(texture->GetHeight());
-		if (newSize != mSize)
-		{
-			mSizeChanged.Invoke(newSize);
-		}
-		mSize = newSize;
+        SetSize(static_cast<float>(texture->GetWidth()),
+                static_cast<float>(texture->GetHeight()));
 		mTexCoords = SpriteTexCoords();
 	}
 
@@ -208,7 +224,8 @@ namespace TowerDefense
 		mShader->Bind();
 		mShader->SetMatrix4Uniform("uWorldTransform", worldTransform);
 		mShader->SetMatrix4Uniform("uViewProjection", mRenderer->GetViewProjectionMatrix());
-		
+		mShader->SetVec4Uniform("uColorMultiplier", mColorMultiplier);
+
 		mTexture->Bind();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}

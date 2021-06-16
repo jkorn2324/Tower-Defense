@@ -13,7 +13,7 @@ namespace TowerDefense
     {
     public:
         EventCallback() { mFunc = nullptr; }
-        EventCallback(std::function<void(T)> func) { mFunc = func }
+        EventCallback(std::function<void(T)> func) { mFunc = func; }
         ~EventCallback() = default;
 
     public:

@@ -5,6 +5,8 @@
 namespace TowerDefense
 {
 
+    const float GREEN_CANNON_ORIGINAL_RANGE = 300.0f;
+
     class GreenCannonTower : public Tower
     {
     public:
@@ -22,6 +24,7 @@ namespace TowerDefense
         Actor* GenerateCannon();
 
     private:
+        float mRange;
         class Actor* mCannon;
     };
 }

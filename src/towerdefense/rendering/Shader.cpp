@@ -197,6 +197,16 @@ namespace TowerDefense
 		glUniform3fv(uniformData->mLocation, 1, vec.FloatPointer());
 	}
 
+	void Shader::SetVec4Uniform(const std::string &name, const Color &color)
+    {
+	    if(!mLoaded)
+        {
+	        return;
+        }
+	    ShaderUniformData* uniformData = GetUniformData(name);
+	    glUniform4fv(uniformData->mLocation, 1, color.FloatPointer());
+    }
+
 	void Shader::SetFloatUniform(const std::string& name, float f)
 	{
 		if (!mLoaded)

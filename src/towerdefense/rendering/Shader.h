@@ -8,6 +8,7 @@
 #include "Matrix3.h"
 #include "Vector2.h"
 #include "Vector3.h"
+#include "Color.h"
 
 namespace TowerDefense
 {
@@ -38,6 +39,7 @@ namespace TowerDefense
 		void SetMatrix3Uniform(const std::string& name, const Matrix3& matrix);
 		void SetVec2Uniform(const std::string& name, const Vector2& vec);
 		void SetVec3Uniform(const std::string& name, const Vector3& vec);
+		void SetVec4Uniform(const std::string& name, const Color& color);
 		void SetFloatUniform(const std::string& name, float f);
 
 	private:

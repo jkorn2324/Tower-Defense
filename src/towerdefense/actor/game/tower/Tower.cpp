@@ -9,6 +9,8 @@
 #include "EnemyManager.h"
 #include "Enemy.h"
 #include "Level.h"
+#include "SpriteComponent.h"
+#include "MouseObserverComponent.h"
 
 #include <functional>
 
@@ -19,6 +21,7 @@ namespace TowerDefense
 		: Actor(game)
 	{
 	    mTarget = nullptr;
+	    mRangeHighlight = SetupRangeHighlight();
 	    mTargetType = TowerTargetType::TARGET_CLOSEST_ENEMY;
 		mCollisionComponent = new CollisionComponent(this);
 		mCollisionComponent->SetSize(1.0f, 1.0f);
@@ -38,7 +41,34 @@ namespace TowerDefense
 
     Tower::~Tower()
     {
+	    mRangeHighlight->Despawn();
         mLevel->GetTowerManager()->RemoveTower(this);
+    }
+
+    Actor* Tower::SetupRangeHighlight()
+    {
+	    Actor* actor = new Actor(mGame);
+        actor->SetParent(this);
+	    SpriteComponent* spriteComponent = new SpriteComponent(actor);
+        spriteComponent->SetTexture("Assets/Sprites/white_circle.png");
+        spriteComponent->SetDrawLayer(5);
+        Color colorMultiplier = Color::GetWhite();
+        colorMultiplier.a = 1.0f;
+        spriteComponent->SetColorMultiplier(colorMultiplier);
+	    return actor;
+    }
+
+    void Tower::OnSpawn()
+    {
+        HighlightTowerRange(false);
+    }
+
+    void Tower::HighlightTowerRange(bool highlight)
+    {
+        SpriteComponent* highlightSprite = mRangeHighlight->GetComponent
+                <SpriteComponent>();
+        highlightSprite->SetSize(GetRange(), GetRange());
+        highlightSprite->SetEnabled(highlight);
     }
 
     void Tower::SetTargetType(const TowerTargetType &type)
