@@ -1,6 +1,6 @@
 #include "Vector2.h"
+#include "GameMath.h"
 
-#include <cmath>
 #include <sstream>
 
 namespace TowerDefense
@@ -44,7 +44,7 @@ namespace TowerDefense
 
 	float Vector2::Length() const
 	{
-		return std::sqrtf(
+		return Sqrt(
 			this->x * this->x + this->y * this->y);
 	}
 

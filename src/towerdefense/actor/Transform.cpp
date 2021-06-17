@@ -1,9 +1,6 @@
 #include "Transform.h"
 #include "Actor.h"
-#ifndef _USE_MATH_DEFINES
-#define _USE_MATH_DEFINES
-#endif
-#include <cmath>
+#include "GameMath.h"
 
 namespace TowerDefense
 {
@@ -23,7 +20,7 @@ namespace TowerDefense
 	{
         Vector2 directionVector = position - GetWorldPosition();
 		directionVector.Normalize();
-		mRotation = std::atan2f(directionVector.y, directionVector.x);
+		mRotation = ATan2(directionVector.y, directionVector.x);
 	}
 
 	void Transform::MovePosition(const Vector2& position)
@@ -81,14 +78,13 @@ namespace TowerDefense
 
 	void Transform::SetRotation(float rotation, bool inRadians)
 	{
-		float deg2Rad = (float)M_PI / 180.0f;
-		mRotation = inRadians ? rotation : deg2Rad * rotation;
+		mRotation = inRadians ? rotation : Deg2Rad(rotation);
 	}
 
 	Vector2 Transform::GetForward() const
     {
-	    float x = std::cosf(mRotation);
-	    float y = std::sinf(mRotation);
+	    float x = Cos(mRotation);
+	    float y = Sin(mRotation);
 	    Vector2 forwardDirection(x, y);
 	    forwardDirection.Normalize();
 	    return forwardDirection;

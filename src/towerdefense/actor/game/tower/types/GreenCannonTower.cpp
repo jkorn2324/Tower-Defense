@@ -7,6 +7,7 @@
 #include "Actor.h"
 #include "TileSpriteComponent.h"
 #include "SpriteComponent.h"
+#include "GameMath.h"
 
 namespace TowerDefense
 {
@@ -30,7 +31,8 @@ namespace TowerDefense
         ((SpriteComponent*)tileSprite)->SetTexture(TILESHEET_PATH);
         tileSprite->SetTileSize(TILE_SIZE_X, TILE_SIZE_Y);
         tileSprite->SetTileIndex(249);
-        tileSprite->SetDrawLayer(2);
+        tileSprite->SetDrawLayer(
+                mSpriteComponent->GetDrawLayer() + 1);
         tileSprite->SetRotationOffset(-90.0f);
         return actor;
     }
@@ -39,10 +41,10 @@ namespace TowerDefense
 
     void GreenCannonTower::UpdatePlacedTower(float deltaTime)
     {
+        Transform& cannonTransform = (Transform&)mCannon->GetTransform();
         if(mTarget != nullptr)
         {
             const Vector2& targetPosition = mTarget->GetTransform().GetWorldPosition();
-            Transform& cannonTransform = (Transform&)mCannon->GetTransform();
             cannonTransform.LookAt(targetPosition);
         }
     }

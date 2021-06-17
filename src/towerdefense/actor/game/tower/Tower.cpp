@@ -27,6 +27,8 @@ namespace TowerDefense
 		mCollisionComponent->SetSize(1.0f, 1.0f);
 
 		mPlaced = false;
+		mHighlighted = false;
+
 		mLevel = game->GetLevelManager()->GetActiveLevel();
         mName = DEFAULT_TOWER;
 		mSpriteComponent = new TileSpriteComponent(this,
@@ -34,6 +36,7 @@ namespace TowerDefense
 		((SpriteComponent*)mSpriteComponent)->SetTexture(TILESHEET_PATH);
 		mSpriteComponent->SetTileSize(TILE_SIZE_X, TILE_SIZE_Y);
 		mSpriteComponent->SetTileIndex(130);
+		mSpriteComponent->SetDrawLayer(30.0f);
 
 		mEnemyManager = mLevel->GetEnemyManager();
 		mLevel->GetTowerManager()->AddTower(this);
@@ -50,25 +53,28 @@ namespace TowerDefense
 	    Actor* actor = new Actor(mGame);
         actor->SetParent(this);
 	    SpriteComponent* spriteComponent = new SpriteComponent(actor);
+	    // TODO: Fix
         spriteComponent->SetTexture("Assets/Sprites/white_circle.png");
-        spriteComponent->SetDrawLayer(5);
+        spriteComponent->SetDrawLayer(10);
         Color colorMultiplier = Color::GetWhite();
-        colorMultiplier.a = 1.0f;
+        colorMultiplier.a = 0.2f;
         spriteComponent->SetColorMultiplier(colorMultiplier);
 	    return actor;
     }
 
     void Tower::OnSpawn()
     {
-        HighlightTowerRange(false);
+        HighlightTowerRange(mHighlighted);
     }
 
     void Tower::HighlightTowerRange(bool highlight)
     {
         SpriteComponent* highlightSprite = mRangeHighlight->GetComponent
                 <SpriteComponent>();
-        highlightSprite->SetSize(GetRange(), GetRange());
+        highlightSprite->SetSize(
+                GetRange() * 2.0f, GetRange() * 2.0f);
         highlightSprite->SetEnabled(highlight);
+        mHighlighted = highlight;
     }
 
     void Tower::SetTargetType(const TowerTargetType &type)

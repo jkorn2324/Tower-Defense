@@ -1,6 +1,6 @@
 #include "Matrix4.h"
+#include "GameMath.h"
 #include <memory>
-#include <cmath>
 
 namespace TowerDefense
 {
@@ -62,8 +62,8 @@ namespace TowerDefense
 	{
 		float mat[4][4] =
 		{
-			{std::cosf(rotation), std::sinf(rotation), 0.0f, 0.0f},
-			{-std::sinf(rotation), std::cosf(rotation), 0.0f, 0.0f},
+			{Cos(rotation), Sin(rotation), 0.0f, 0.0f},
+			{-Sin(rotation), Cos(rotation), 0.0f, 0.0f},
 			{0.0f, 0.0f, 1.0f, 0.0f},
 			{0.0f, 0.0f, 0.0f, 1.0f}
 		};

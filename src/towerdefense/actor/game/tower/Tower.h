@@ -74,6 +74,6 @@ namespace TowerDefense
 	private:
         TowerTargetType mTargetType;
         std::string mName;
-	    bool mPlaced;
+	    bool mPlaced, mHighlighted;
 	};
 }

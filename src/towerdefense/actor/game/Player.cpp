@@ -38,8 +38,8 @@ namespace TowerDefense
         {
             mPlacedTower->Despawn();
         }
-        SetTowerHighlighted(tower);
         mPlacedTower = tower;
+        SetTowerHighlighted(mPlacedTower);
     }
 
     void Player::SetTowerHighlighted(Tower *tower)

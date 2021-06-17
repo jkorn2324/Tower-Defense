@@ -64,6 +64,7 @@ namespace TowerDefense
 	public:
 		void SetRotationOffset(float rotation, bool inRadians = false);
 		float GetRotationOffset() const;
+
 		void SetTexCoords(const Vector2& centerPos, const Vector2& size);
 		const SpriteTexCoords& GetTexCoords() const;
 		unsigned int GetDrawLayer() const;
