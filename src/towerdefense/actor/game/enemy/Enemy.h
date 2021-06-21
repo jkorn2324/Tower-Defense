@@ -11,8 +11,12 @@ namespace TowerDefense
         Enemy(class Game* game);
         virtual ~Enemy();
 
+    public:
+        struct LevelPathNodeData* GetTargetPathNode() const;
+
     protected:
         virtual void OnUpdate(float deltaTime) override;
+        virtual void OnHealthChanged(const struct HealthChangedEventData& eventData);
 
     private:
         void OnSizeChanged(const Vector2& size);
@@ -20,6 +24,7 @@ namespace TowerDefense
     protected:
         class TileSpriteComponent* mSpriteComponent;
         class EnemyAIComponent* mEnemyAIComponent;
+        class HealthComponent* mHealthComponent;
 
     private:
         class CollisionComponent* mCollisionComponent;

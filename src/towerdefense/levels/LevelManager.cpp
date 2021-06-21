@@ -22,6 +22,14 @@ namespace TowerDefense
 		mLevels.clear();
 	}
 
+	void LevelManager::Update(float deltaTime)
+    {
+	    if(mActiveLevel != nullptr)
+        {
+	        mActiveLevel->Update(deltaTime);
+        }
+    }
+
 	bool LevelManager::InitLevels()
 	{
 	    Level* level01 = new Level("Level1", "Assets/Levels/level1.json", this);

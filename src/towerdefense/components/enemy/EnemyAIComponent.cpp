@@ -26,6 +26,16 @@ namespace TowerDefense
 
     float EnemyAIComponent::GetMaximumDistanceToPathNode() const { return mMaximumDistanceToPathNode; }
 
+    /**
+     * Gets the target path node. Returns null if the enemy has finished navigating the path.
+     *
+     * @return LevelPathNodeData* - The current path node the enemy is traversing towards.
+     */
+    LevelPathNodeData* EnemyAIComponent::GetTargetPathNode() const
+    {
+        return mCurrentPathNode;
+    }
+
     void EnemyAIComponent::Update(float deltaTime)
     {
         UpdateAI(deltaTime);

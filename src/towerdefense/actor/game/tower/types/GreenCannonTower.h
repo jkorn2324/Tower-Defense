@@ -6,6 +6,7 @@ namespace TowerDefense
 {
 
     const float GREEN_CANNON_ORIGINAL_RANGE = 300.0f;
+    const float GREEN_CANNON_ORIGINAL_PROJECTILE_COOLDOWN = 0.8f;
 
     class GreenCannonTower : public Tower
     {
@@ -24,7 +25,15 @@ namespace TowerDefense
         Actor* GenerateCannon();
 
     private:
+        void UpdateProjectile(float deltaTime);
+        void GenerateProjectile();
+
+    private:
         float mRange;
+
+        float mMaxProjectileCooldown;
+        float mProjectileCooldown;
+
         class Actor* mCannon;
     };
 }

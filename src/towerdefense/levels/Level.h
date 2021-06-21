@@ -29,6 +29,7 @@ namespace TowerDefense
 	{
 		Vector2 position;
 		LevelPathNodeData* next;
+		unsigned int nodeIndex;
 	};
 
 	/**
@@ -47,18 +48,25 @@ namespace TowerDefense
 		LevelPathNodeData* GetFirstPathNode() const;
         const Vector2& GetLevelSize() const;
         bool CanPlaceTower(const Vector2& point) const;
+        void Update(float deltaTime);
 
 	private:
 		void OnSetActive(bool active);
 
 	public:
+	    void AddActor(class Actor* actor);
+	    void RemoveActor(class Actor* actor);
+
+	public:
 	    class EnemyManager* GetEnemyManager() const;
 	    class TowerManager* GetTowerManager() const;
+	    class EnemyAffectorManager* GetEnemyAffectorManager() const;
 		const std::string& GetName() const;
 
 	private:
 		class LevelManager* mLevelManager;
 		class EnemyManager* mEnemyManager;
+		class EnemyAffectorManager* mEnemyAffectorManager;
 		class LevelTowersAreaManager* mTowerAreaManager;
 		class TowerManager* mTowerManager;
 		std::string mName;

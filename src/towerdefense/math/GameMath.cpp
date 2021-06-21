@@ -28,6 +28,11 @@ namespace TowerDefense
         return static_cast<float>(std::tan(angleTheta));
     }
 
+    float ACos(float f)
+    {
+        return static_cast<float>(std::acosf(f));
+    }
+
     float ATan2(float y, float x)
     {
         return static_cast<float>(std::atan2(y, x));

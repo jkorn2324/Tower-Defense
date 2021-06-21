@@ -126,6 +126,7 @@ namespace TowerDefense
 		Uint32 currentTicks = SDL_GetTicks();
 		float deltaTime = (float)(currentTicks - mPrevGameTick) / 1000.0f;
 		mActorManager->Update(deltaTime);
+		mLevelManager->Update(deltaTime);
 		mPrevGameTick = currentTicks;
 	}
 

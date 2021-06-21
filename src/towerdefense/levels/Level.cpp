@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "Camera.h"
 #include "EnemyManager.h"
+#include "EnemyAffectorManager.h"
 #include "TowerManager.h"
 #include "LevelTowerAreaRect.h"
 
@@ -25,10 +26,12 @@ namespace TowerDefense
 		mLevelManager = manager;
         mLoaded = false;
 		mTiles = std::vector<LevelTileData*>();
+		mActors = std::vector<Actor*>();
 		mBeginPathNode = nullptr;
 		mEnemyManager = new EnemyManager(this);
 		mTowerAreaManager = new LevelTowersAreaManager(this);
 		mTowerManager = new TowerManager(this);
+		mEnemyAffectorManager = new EnemyAffectorManager(this);
 		mLevelSize = Vector2::Zero();
 		mLevelManager->AddLevel(this);
 	}
@@ -57,6 +60,12 @@ namespace TowerDefense
         delete mEnemyManager;
         delete mTowerAreaManager;
         delete mTowerManager;
+        delete mEnemyAffectorManager;
+    }
+
+    void Level::Update(float deltaTime)
+    {
+	    mEnemyAffectorManager->Update(deltaTime);
     }
 
 	const std::string& Level::GetName() const
@@ -73,6 +82,8 @@ namespace TowerDefense
     {
 	    return mTowerManager;
     }
+
+    EnemyAffectorManager* Level::GetEnemyAffectorManager() const { return mEnemyAffectorManager; }
 
 	Game* Level::GetGame() const
 	{
@@ -172,6 +183,7 @@ namespace TowerDefense
 
                             if(prevPathNode == nullptr)
                             {
+                                pathNodeData->nodeIndex = 0;
                                 prevPathNode = pathNodeData;
                                 mBeginPathNode = prevPathNode;
                                 continue;
@@ -179,11 +191,13 @@ namespace TowerDefense
 
                             if(prevPathNode == mBeginPathNode)
                             {
+                                pathNodeData->nodeIndex = prevPathNode->nodeIndex + 1;
                                 prevPathNode->next = pathNodeData;
                                 mBeginPathNode = prevPathNode;
                             }
                             else
                             {
+                                pathNodeData->nodeIndex = prevPathNode->nodeIndex + 1;
                                 prevPathNode->next = pathNodeData;
                             }
                             prevPathNode = pathNodeData;
@@ -245,6 +259,23 @@ namespace TowerDefense
         }
         mActors.clear();
 	}
+
+	void Level::AddActor(Actor *actor)
+    {
+	    const auto& searchedActor = std::find(
+	            mActors.begin(), mActors.end(), actor);
+	    if(searchedActor != mActors.end())
+        {
+            mActors.push_back(actor);
+        }
+    }
+
+    void Level::RemoveActor(class Actor *actor)
+    {
+	    const auto& removedActor = std::find(
+	            mActors.begin(), mActors.end(), actor);
+	    mActors.erase(removedActor);
+    }
 
     bool Level::IsLoaded() const
     {

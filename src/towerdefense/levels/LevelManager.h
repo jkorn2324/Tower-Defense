@@ -19,6 +19,7 @@ namespace TowerDefense
 		Game* GetGame() const;
 		class Level* GetActiveLevel() const;
 		void SetActiveLevel(const std::string& levelName);
+		void Update(float deltaTime);
 
 	public:
 		bool InitLevels();

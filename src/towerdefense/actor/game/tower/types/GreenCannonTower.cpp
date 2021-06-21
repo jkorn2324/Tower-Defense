@@ -8,6 +8,8 @@
 #include "TileSpriteComponent.h"
 #include "SpriteComponent.h"
 #include "GameMath.h"
+#include "GreenCannonProjectile.h"
+#include "MoveComponent.h"
 
 namespace TowerDefense
 {
@@ -15,6 +17,9 @@ namespace TowerDefense
             : Tower(game)
     {
         mRange = GREEN_CANNON_ORIGINAL_RANGE;
+        mMaxProjectileCooldown = GREEN_CANNON_ORIGINAL_PROJECTILE_COOLDOWN;
+        mProjectileCooldown = 0.01f;
+
         mCannon = GenerateCannon();
         mSpriteComponent->SetTileIndex(180);
     }
@@ -37,6 +42,16 @@ namespace TowerDefense
         return actor;
     }
 
+    void GreenCannonTower::GenerateProjectile()
+    {
+        GreenCannonProjectile* projectile = new GreenCannonProjectile(mGame);
+        Transform& transform = (Transform&)projectile->GetTransform();
+        transform.SetPosition(mCannon->GetTransform().GetWorldPosition()
+            + mCannon->GetTransform().GetForward() * 5.0f);
+        transform.SetRotation(mCannon->GetTransform().GetRotation(), true);
+        projectile->SetTarget(mTarget);
+    }
+
     void GreenCannonTower::UpdateNonPlacedTower(float deltaTime) { }
 
     void GreenCannonTower::UpdatePlacedTower(float deltaTime)
@@ -46,6 +61,24 @@ namespace TowerDefense
         {
             const Vector2& targetPosition = mTarget->GetTransform().GetWorldPosition();
             cannonTransform.LookAt(targetPosition);
+        }
+        UpdateProjectile(deltaTime);
+    }
+
+    void GreenCannonTower::UpdateProjectile(float deltaTime)
+    {
+        if(mTarget != nullptr)
+        {
+            if(mProjectileCooldown > 0.0f)
+            {
+                mProjectileCooldown -= deltaTime;
+                if(mProjectileCooldown <= 0.0f)
+                {
+                    // Shoots the projectile.
+                    mProjectileCooldown = mMaxProjectileCooldown;
+                    GenerateProjectile();
+                }
+            }
         }
     }
 

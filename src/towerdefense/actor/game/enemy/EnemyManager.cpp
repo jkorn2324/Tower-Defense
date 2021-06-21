@@ -176,20 +176,120 @@ namespace TowerDefense
 
     Enemy* EnemyManager::GetFarthestEnemyAlongTrack() const
     {
-        // TODO: Implementation
-        return nullptr;
-    }
+        std::size_t enemiesCount = mEnemies.size();
+        if(enemiesCount <= 0)
+        {
+            return nullptr;
+        }
 
-    Enemy* EnemyManager::GetFarthestEnemyAlongTrack(const Vector2 &position) const
-    {
-        // TODO: Implementation
-        return nullptr;
+        Enemy* initialEnemy = mEnemies[0];
+        if(enemiesCount == 1)
+        {
+            LevelPathNodeData* initialEnemyNode = initialEnemy->GetTargetPathNode();
+            return initialEnemyNode == nullptr ? initialEnemy : nullptr;
+        }
+
+        for(unsigned int i = 1; i < enemiesCount; i++)
+        {
+            Enemy* testEnemy = mEnemies[i];
+            LevelPathNodeData* currentTarget = testEnemy->GetTargetPathNode();
+            if(currentTarget == nullptr)
+            {
+                continue;
+            }
+
+            LevelPathNodeData* initialTargetPathNode = initialEnemy->GetTargetPathNode();
+            if(initialTargetPathNode == nullptr
+                || currentTarget->nodeIndex > initialTargetPathNode->nodeIndex)
+            {
+                initialEnemy = testEnemy;
+                continue;
+            }
+
+            if(currentTarget->nodeIndex == initialTargetPathNode->nodeIndex)
+            {
+                const Vector2& testEnemyPos = testEnemy->GetTransform().GetWorldPosition();
+                const Vector2& initialEnemyPos = initialEnemy->GetTransform().GetWorldPosition();
+                float testEnemyDistance = Vector2::Distance(
+                        testEnemyPos, currentTarget->position);
+                float initialEnemyDistance = Vector2::Distance(
+                        testEnemyPos, initialTargetPathNode->position);
+                if(testEnemyDistance < initialEnemyDistance)
+                {
+                    initialEnemy = testEnemy;
+                    continue;
+                }
+            }
+        }
+        return initialEnemy;
     }
 
     Enemy* EnemyManager::GetFarthestEnemyAlongTrack(const Vector2 &position, float maxDist) const
     {
-        // TODO: Implementation
-        return nullptr;
+        std::size_t enemiesCount = mEnemies.size();
+        if(enemiesCount <= 0)
+        {
+            return nullptr;
+        }
+
+        Enemy* initialEnemy = mEnemies[0];
+
+        if(enemiesCount > 1)
+        {
+            for(unsigned int i = 1; i < enemiesCount; i++)
+            {
+                Enemy* testEnemy = mEnemies[i];
+                LevelPathNodeData* currentTarget = testEnemy->GetTargetPathNode();
+                if(currentTarget == nullptr)
+                {
+                    continue;
+                }
+
+                LevelPathNodeData* initialTarget = initialEnemy->GetTargetPathNode();
+                if(initialTarget == nullptr
+                   || currentTarget->nodeIndex > initialTarget->nodeIndex)
+                {
+                    float currentDistance = Vector2::Distance(
+                            position, testEnemy->GetTransform().GetWorldPosition());
+                    if(currentDistance <= maxDist)
+                    {
+                        initialEnemy = testEnemy;
+                    }
+                    continue;
+                }
+
+                if(currentTarget->nodeIndex == initialTarget->nodeIndex)
+                {
+                    // Compare distance to the target. (currentTarget == initialTarget)
+                    float testDistanceToTarget = Vector2::Distance(
+                            testEnemy->GetTransform().GetWorldPosition(),
+                            currentTarget->position);
+                    float initialDistanceToTarget = Vector2::Distance(
+                            initialEnemy->GetTransform().GetWorldPosition(),
+                            initialTarget->position);
+                    if(testDistanceToTarget > initialDistanceToTarget)
+                    {
+                        continue;
+                    }
+                    // Tests the distance to the position.
+                    float distanceToPosition = Vector2::Distance(
+                            position, testEnemy->GetTransform().GetWorldPosition());
+                    if(distanceToPosition <= maxDist)
+                    {
+                        initialEnemy = testEnemy;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if(initialEnemy->GetTargetPathNode() == nullptr)
+        {
+            return nullptr;
+        }
+        float currentDistance = Vector2::Distance(
+                position, initialEnemy->GetTransform().GetWorldPosition());
+        return currentDistance <= maxDist ? initialEnemy : nullptr;
     }
 
     const std::vector<Enemy*>& EnemyManager::GetEnemies() const

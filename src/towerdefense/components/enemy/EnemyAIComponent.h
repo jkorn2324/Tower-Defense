@@ -18,6 +18,9 @@ namespace TowerDefense
         void SetMaximumDistanceToPathNode(float distance);
         virtual void Update(float deltaTime) override;
 
+    public:
+        struct LevelPathNodeData* GetTargetPathNode() const;
+
     private:
         float CalculateAngularSpeed() const;
         void UpdateAI(float deltaTime);

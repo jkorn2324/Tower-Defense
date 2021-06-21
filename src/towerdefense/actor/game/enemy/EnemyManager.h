@@ -23,7 +23,6 @@ namespace TowerDefense
 
     public:
         class Enemy* GetFarthestEnemyAlongTrack() const;
-        class Enemy* GetFarthestEnemyAlongTrack(const Vector2& position) const;
         class Enemy* GetFarthestEnemyAlongTrack(const Vector2& position, float maxDist) const;
 
     public:
