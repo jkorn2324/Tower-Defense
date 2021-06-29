@@ -11,6 +11,7 @@
 #include "Level.h"
 #include "SpriteComponent.h"
 #include "MouseObserverComponent.h"
+#include "ScaleSelectAnimationComponent.h"
 
 #include <functional>
 
@@ -25,6 +26,10 @@ namespace TowerDefense
 	    mTargetType = TowerTargetType::TARGET_CLOSEST_ENEMY;
 		mCollisionComponent = new CollisionComponent(this);
 		mCollisionComponent->SetSize(1.0f, 1.0f);
+
+        mScaleSelectAnimationComponent = new ScaleSelectAnimationComponent(this);
+        mScaleSelectAnimationComponent->SetMaxScale(1.1f, 1.1f);
+        mScaleSelectAnimationComponent->SetTotalAnimationTime(0.25f);
 
 		mPlaced = false;
 		mHighlighted = false;
@@ -53,13 +58,17 @@ namespace TowerDefense
 	    Actor* actor = new Actor(mGame);
         actor->SetParent(this);
 	    SpriteComponent* spriteComponent = new SpriteComponent(actor);
-	    // TODO: Fix
         spriteComponent->SetTexture("Assets/Sprites/white_circle.png");
         spriteComponent->SetDrawLayer(10);
         Color colorMultiplier = Color::GetWhite();
         colorMultiplier.a = 0.2f;
         spriteComponent->SetColorMultiplier(colorMultiplier);
 	    return actor;
+    }
+
+    void Tower::OnSelected()
+    {
+        mScaleSelectAnimationComponent->TriggerAnimation();
     }
 
     void Tower::OnSpawn()

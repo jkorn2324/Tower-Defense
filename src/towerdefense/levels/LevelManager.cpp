@@ -32,7 +32,8 @@ namespace TowerDefense
 
 	bool LevelManager::InitLevels()
 	{
-	    Level* level01 = new Level("Level1", "Assets/Levels/level1.json", this);
+	    Level* level01 = new Level(
+	            "Level1","Assets/Levels/level1", this);
 	    if(!level01->Load())
         {
 	        return false;

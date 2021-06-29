@@ -1,0 +1,12 @@
+{
+  "waves": 1,
+  "wavesData": [
+    {
+      "green-enemy": {
+        "spawn-amount": 10,
+        "time-begin": 0.5,
+        "time-difference": 0.2
+      }
+    }
+  ]
+}

@@ -29,6 +29,7 @@ namespace TowerDefense
 		virtual ~Tower();
 
 	public:
+	    virtual void OnSelected();
 	    virtual void PlaceTower();
 	    bool IsPlaced() const;
 
@@ -61,7 +62,8 @@ namespace TowerDefense
 		void OnSizeChanged(const Vector2& vec);
 
 	protected:
-		class TileSpriteComponent* mSpriteComponent;
+        class ScaleSelectAnimationComponent* mScaleSelectAnimationComponent;
+        class TileSpriteComponent* mSpriteComponent;
 		class CollisionComponent* mCollisionComponent;
 
 		class EnemyManager* mEnemyManager;

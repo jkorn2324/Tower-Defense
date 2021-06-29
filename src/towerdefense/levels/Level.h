@@ -51,6 +51,8 @@ namespace TowerDefense
         void Update(float deltaTime);
 
 	private:
+	    bool LoadLevelTiles();
+	    bool LoadLevelWaves();
 		void OnSetActive(bool active);
 
 	public:
@@ -58,6 +60,7 @@ namespace TowerDefense
 	    void RemoveActor(class Actor* actor);
 
 	public:
+	    class LevelWave* GetCurrentWave() const;
 	    class EnemyManager* GetEnemyManager() const;
 	    class TowerManager* GetTowerManager() const;
 	    class EnemyAffectorManager* GetEnemyAffectorManager() const;
@@ -72,6 +75,10 @@ namespace TowerDefense
 		std::string mName;
 		std::string mLevelPath;
 		bool mLoaded;
+
+	private:
+	    class LevelWave* mFirstWave;
+	    class LevelWave* mCurrentWave;
 
 	private:
 	    Vector2 mLevelSize;

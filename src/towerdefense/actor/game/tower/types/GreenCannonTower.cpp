@@ -9,6 +9,7 @@
 #include "SpriteComponent.h"
 #include "GameMath.h"
 #include "GreenCannonProjectile.h"
+#include "ScaleSelectAnimationComponent.h"
 #include "MoveComponent.h"
 
 namespace TowerDefense
@@ -32,6 +33,13 @@ namespace TowerDefense
         Transform& cannonTransform = (Transform&)actor->GetTransform();
         cannonTransform.SetRotation(90.0f);
 
+        ScaleSelectAnimationComponent* selectAnimationComponent
+            = new ScaleSelectAnimationComponent(actor);
+        selectAnimationComponent->SetTotalAnimationTime(
+                mScaleSelectAnimationComponent->GetTotalAnimationTime());
+        selectAnimationComponent->SetMaxScale(
+                mScaleSelectAnimationComponent->GetMaxScale());
+
         TileSpriteComponent* tileSprite = new TileSpriteComponent(actor);
         ((SpriteComponent*)tileSprite)->SetTexture(TILESHEET_PATH);
         tileSprite->SetTileSize(TILE_SIZE_X, TILE_SIZE_Y);
@@ -50,6 +58,18 @@ namespace TowerDefense
             + mCannon->GetTransform().GetForward() * 5.0f);
         transform.SetRotation(mCannon->GetTransform().GetRotation(), true);
         projectile->SetTarget(mTarget);
+    }
+
+    void GreenCannonTower::OnSelected()
+    {
+        Tower::OnSelected();
+
+        ScaleSelectAnimationComponent* scaleSelectAnimationComponent
+            = mCannon->GetComponent<ScaleSelectAnimationComponent>();
+        if(scaleSelectAnimationComponent != nullptr)
+        {
+            scaleSelectAnimationComponent->TriggerAnimation();
+        }
     }
 
     void GreenCannonTower::UpdateNonPlacedTower(float deltaTime) { }

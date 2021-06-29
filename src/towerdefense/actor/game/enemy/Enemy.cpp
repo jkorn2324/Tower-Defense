@@ -10,9 +10,19 @@
 #include "CollisionComponent.h"
 #include "EnemyAIComponent.h"
 #include "HealthComponent.h"
+#include "ScaleSelectAnimationComponent.h"
 
 namespace TowerDefense
 {
+
+    EnemyType GetEnemyTypeFromLocalizedString(const std::string& string)
+    {
+        if(string == "green-enemy")
+        {
+            return EnemyType::GREEN_ENEMY;
+        }
+        return EnemyType::UNKNOWN;
+    }
 
     Enemy::Enemy(Game *game)
         : Actor(game)
@@ -30,14 +40,6 @@ namespace TowerDefense
         mHealthComponent = new HealthComponent(this);
         mHealthComponent->SetHealthChangedCallback(
                 std::bind(&Enemy::OnHealthChanged, this, std::placeholders::_1));
-
-        mSpriteComponent = new TileSpriteComponent(this);
-        mSpriteComponent->SetSizeChangedCallback(std::bind(
-                &Enemy::OnSizeChanged, this, std::placeholders::_1));
-        ((SpriteComponent*)mSpriteComponent)->SetTexture(TILESHEET_PATH);
-        mSpriteComponent->SetTileSize(static_cast<float>(TILE_SIZE_X),
-                                      static_cast<float>(TILE_SIZE_Y));
-        mSpriteComponent->SetTileIndex(245);
 
         enemyManager->AddEnemy(this);
     }
@@ -58,15 +60,5 @@ namespace TowerDefense
         {
             Despawn();
         }
-    }
-
-    void Enemy::OnUpdate(float deltaTime)
-    {
-        // TODO: Implementation
-    }
-
-    void Enemy::OnSizeChanged(const Vector2 &size)
-    {
-        mCollisionComponent->SetSize(size);
     }
 }

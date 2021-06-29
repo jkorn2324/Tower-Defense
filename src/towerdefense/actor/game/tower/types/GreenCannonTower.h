@@ -14,6 +14,7 @@ namespace TowerDefense
         GreenCannonTower(class Game* game);
 
     public:
+        void OnSelected() override;
         virtual float GetRange() const override;
 
     protected:

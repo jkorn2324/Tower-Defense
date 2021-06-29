@@ -50,8 +50,10 @@ namespace TowerDefense
         }
 
         mHighlightedTower = tower;
+
         if(mHighlightedTower != nullptr)
         {
+            mHighlightedTower->OnSelected();
             mHighlightedTower->HighlightTowerRange(true);
         }
     }

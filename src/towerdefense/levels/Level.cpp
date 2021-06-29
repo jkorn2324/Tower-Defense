@@ -11,6 +11,7 @@
 #include "EnemyAffectorManager.h"
 #include "TowerManager.h"
 #include "LevelTowerAreaRect.h"
+#include "LevelWave.h"
 
 #include <SDL2/SDL_log.h>
 #include <rapidjson/document.h>
@@ -23,6 +24,8 @@ namespace TowerDefense
 	{
 		mLevelPath = levelPath;
 		mName = levelName;
+		mCurrentWave = nullptr;
+		mFirstWave = nullptr;
 		mLevelManager = manager;
         mLoaded = false;
 		mTiles = std::vector<LevelTileData*>();
@@ -50,8 +53,17 @@ namespace TowerDefense
 		    delete currentNodeData;
 		    currentNodeData = temp;
         }
+        mBeginPathNode = nullptr;
 
-		mBeginPathNode = nullptr;
+		LevelWave* currentWave = mFirstWave;
+		while(currentWave != nullptr)
+        {
+		    LevelWave* temp = currentWave->GetNext();
+		    delete currentWave;
+		    currentWave = temp;
+        }
+        mFirstWave = mCurrentWave = nullptr;
+
 		mTiles.clear();
 		mActors.clear();
 
@@ -65,6 +77,10 @@ namespace TowerDefense
 
     void Level::Update(float deltaTime)
     {
+	    if(mCurrentWave != nullptr)
+        {
+	        mCurrentWave->Update(deltaTime);
+        }
 	    mEnemyAffectorManager->Update(deltaTime);
     }
 
@@ -97,36 +113,53 @@ namespace TowerDefense
             return true;
         }
 
-		rapidjson::Document document;
-		if (!ParseFile(mLevelPath, document))
-		{
-		    if(DISPLAY_LOGS)
+		if(!LoadLevelTiles()
+		    || !LoadLevelWaves())
+        {
+		    return false;
+        }
+
+		if(DISPLAY_LOGS)
+        {
+            SDL_Log("Successfully loaded the level: %s", mName.c_str());
+        }
+
+		mLoaded = true;
+		return true;
+	}
+
+	bool Level::LoadLevelTiles()
+    {
+        rapidjson::Document document;
+        if (!ParseFile(mLevelPath + "/tilesData.json", document))
+        {
+            if(DISPLAY_LOGS)
             {
                 SDL_Log("Unable to load level: %s", mName.c_str());
             }
-			return false;
-		}
+            return false;
+        }
 
-		unsigned int levelWidth = static_cast<unsigned int>(document["width"].GetInt());
-		unsigned int levelHeight = static_cast<unsigned int>(document["height"].GetInt());
-		unsigned int tileHeight = static_cast<unsigned int>(document["tileheight"].GetInt());
-		unsigned int tileWidth = static_cast<unsigned int>(document["tilewidth"].GetInt());
+        unsigned int levelWidth = static_cast<unsigned int>(document["width"].GetInt());
+        unsigned int levelHeight = static_cast<unsigned int>(document["height"].GetInt());
+        unsigned int tileHeight = static_cast<unsigned int>(document["tileheight"].GetInt());
+        unsigned int tileWidth = static_cast<unsigned int>(document["tilewidth"].GetInt());
 
-		mLevelSize.x = (float)levelWidth * (float)tileWidth;
+        mLevelSize.x = (float)levelWidth * (float)tileWidth;
         mLevelSize.y = (float)levelHeight * (float)tileHeight;
 
-		if(document.HasMember("layers"))
+        if(document.HasMember("layers"))
         {
-		    float halfTileWidth = (float)tileWidth * 0.5f;
-		    float halfTileHeight = (float)tileHeight * 0.5f;
+            float halfTileWidth = (float)tileWidth * 0.5f;
+            float halfTileHeight = (float)tileHeight * 0.5f;
 
-		    Vector2 calculatedInitialPosition;
-		    calculatedInitialPosition.x = -((float)levelWidth * 0.5f) * (float)tileWidth;
-		    calculatedInitialPosition.y = (float)levelHeight * 0.5f * (float)tileHeight;
+            Vector2 calculatedInitialPosition;
+            calculatedInitialPosition.x = -((float)levelWidth * 0.5f) * (float)tileWidth;
+            calculatedInitialPosition.y = (float)levelHeight * 0.5f * (float)tileHeight;
 
-		    unsigned int layerIndex = 0;
-		    const auto& layers = document["layers"];
-		    for(const auto& layer : layers.GetArray())
+            unsigned int layerIndex = 0;
+            const auto& layers = document["layers"];
+            for(const auto& layer : layers.GetArray())
             {
                 const auto& layerData = layer.GetObject();
                 std::string layerType = layerData["type"].GetString();
@@ -220,14 +253,56 @@ namespace TowerDefense
                 }
             }
         }
+        return true;
+    }
 
-		if(DISPLAY_LOGS)
+    bool Level::LoadLevelWaves()
+    {
+        rapidjson::Document document;
+        if (!ParseFile(mLevelPath + "/wavesData.json", document))
         {
-            SDL_Log("Successfully loaded the level: %s", mName.c_str());
+            if(DISPLAY_LOGS)
+            {
+                SDL_Log("Unable to load level: %s", mName.c_str());
+            }
+            return false;
         }
-		mLoaded = true;
-		return true;
-	}
+
+        unsigned int numWaves = document["waves"].GetUint();
+        if(numWaves == 0)
+        {
+            return true;
+        }
+
+        unsigned int currentWaveID = 0;
+        LevelWave* prevLevelWave = nullptr;
+        while(currentWaveID < numWaves)
+        {
+            LevelWave* currentWave = LevelWave::Load(
+                    currentWaveID, document);
+            if(currentWave == nullptr)
+            {
+                currentWaveID++;
+                continue;
+            }
+
+            if(prevLevelWave == nullptr)
+            {
+                prevLevelWave = currentWave;
+            }
+            else
+            {
+                prevLevelWave->SetNext(currentWave);
+                if(mFirstWave == nullptr)
+                {
+                    mFirstWave = prevLevelWave;
+                }
+            }
+            currentWaveID++;
+        }
+        mCurrentWave = mFirstWave;
+	    return true;
+    }
 
 	LevelPathNodeData* Level::GetFirstPathNode() const
 	{
