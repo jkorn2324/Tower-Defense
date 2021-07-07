@@ -10,6 +10,14 @@ namespace TowerDefense
 	 */
 	struct TransformParentData
 	{
+	public:
+		TransformParentData()
+		{
+			parent = nullptr;
+			useScale = true;
+		}
+
+	public:
 		class Actor* parent = nullptr;
 		bool useScale = true;
 	};

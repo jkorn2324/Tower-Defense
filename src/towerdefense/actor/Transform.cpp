@@ -9,6 +9,7 @@ namespace TowerDefense
 		mScale = Vector2::One();
 		mPosition = Vector2::Zero();
 		mRotation = 0.0f;
+		mParentData = TransformParentData();
 	}
 
 	const Vector2& Transform::GetPosition() const
@@ -41,7 +42,8 @@ namespace TowerDefense
 
 	Vector2 Transform::GetWorldPosition() const
 	{
-		if (!HasParent())
+	    bool hasParent = HasParent();
+		if (!hasParent)
 		{
 			return GetPosition();
 		}

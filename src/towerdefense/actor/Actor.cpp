@@ -37,7 +37,7 @@ namespace TowerDefense
 
 		for (const auto& children : mChildren)
 		{
-			children->SetParent(nullptr);
+		    children->RemoveParent();
 		}
 		mChildren.clear();
 		mComponents.clear();
@@ -77,8 +77,23 @@ namespace TowerDefense
 		return mTransform.HasParent();
 	}
 
+	void Actor::RemoveParent()
+    {
+	    if(HasParent())
+        {
+	        GetParent()->RemoveChild(this);
+        }
+	    mTransform.mParentData.parent = nullptr;
+    }
+
 	void Actor::SetParent(Actor* actor, bool useScale)
 	{
+	    if(actor == nullptr)
+        {
+	        RemoveParent();
+	        return;
+        }
+
 		if (HasParent())
 		{
 			GetParent()->RemoveChild(this);
@@ -92,7 +107,7 @@ namespace TowerDefense
 		return searchedChild != mChildren.end();
 	}
 
-	const std::vector<Actor*> Actor::GetChildren() const
+	const std::vector<Actor*>& Actor::GetChildren() const
 	{
 		return mChildren;
 	}

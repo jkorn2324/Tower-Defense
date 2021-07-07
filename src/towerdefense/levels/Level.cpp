@@ -79,6 +79,8 @@ namespace TowerDefense
     {
 	    if(mCurrentWave != nullptr)
         {
+	        // TODO: Remove Start - Only here for testing purposes
+	        mCurrentWave->Start();
 	        mCurrentWave->Update(deltaTime);
         }
 	    mEnemyAffectorManager->Update(deltaTime);
@@ -279,7 +281,7 @@ namespace TowerDefense
         while(currentWaveID < numWaves)
         {
             LevelWave* currentWave = LevelWave::Load(
-                    currentWaveID, document);
+                    currentWaveID, this, document);
             if(currentWave == nullptr)
             {
                 currentWaveID++;
@@ -289,6 +291,11 @@ namespace TowerDefense
             if(prevLevelWave == nullptr)
             {
                 prevLevelWave = currentWave;
+
+                if(numWaves <= 1)
+                {
+                    mFirstWave = prevLevelWave;
+                }
             }
             else
             {

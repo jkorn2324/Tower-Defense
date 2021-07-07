@@ -41,11 +41,17 @@ namespace TowerDefense
         mHealthComponent->SetHealthChangedCallback(
                 std::bind(&Enemy::OnHealthChanged, this, std::placeholders::_1));
 
-        enemyManager->AddEnemy(this);
     }
 
-    Enemy::~Enemy()
+    void Enemy::OnSpawn()
     {
+        mLevel->GetEnemyManager()->AddEnemy(this);
+    }
+
+    void Enemy::OnDespawn()
+    {
+        // Here to remove enemy from enemy manager list.
+        // Prevents bug where enemy affectors crash game.
         mLevel->GetEnemyManager()->RemoveEnemy(this);
     }
 

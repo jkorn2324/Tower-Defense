@@ -16,11 +16,17 @@ namespace TowerDefense
             : TowerProjectile(game)
     {
         mTarget = nullptr;
+        mHitEnemy = false;
         mSpriteComponent = new TileSpriteComponent(this);
         ((SpriteComponent*)mSpriteComponent)->SetTexture(TILESHEET_PATH);
         mSpriteComponent->SetTileSize(TILE_SIZE_X, TILE_SIZE_Y);
         mSpriteComponent->SetTileIndex(272);
         mMoveComponent->SetMovementSpeed(GREEN_CANNON_PROJECTILE_SPEED);
+    }
+
+    GreenCannonProjectile::~GreenCannonProjectile()
+    {
+        mTarget = nullptr;
     }
 
     void GreenCannonProjectile::SetTarget(class Actor *target)
@@ -39,6 +45,12 @@ namespace TowerDefense
 
     void GreenCannonProjectile::OnEnemyCollision(const EnemyCollisionData &collisionData)
     {
+        if(mHitEnemy)
+        {
+           return;
+        }
+
+        mHitEnemy = true;
         SDL_Log("Projectile has collided with an enemy");
         HealthComponent* healthComponent = collisionData.enemy
                 ->GetComponent<HealthComponent>();

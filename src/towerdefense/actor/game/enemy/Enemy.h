@@ -27,13 +27,14 @@ namespace TowerDefense
     {
     public:
         Enemy(class Game* game);
-        virtual ~Enemy();
 
     public:
         struct LevelPathNodeData* GetTargetPathNode() const;
         virtual EnemyType GetEnemyType() const =0;
 
     protected:
+        virtual void OnSpawn() override;
+        virtual void OnDespawn() override;
         virtual void OnHealthChanged(const struct HealthChangedEventData& eventData);
 
     protected:

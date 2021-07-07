@@ -35,18 +35,26 @@ namespace TowerDefense
 
     void EnemyAffectorManager::Update(float deltaTime)
     {
-        for(const auto& affector : mAffectors)
+        int affectorsSize = mAffectors.size();
+        for(int i = affectorsSize - 1; i >= 0; i--)
         {
+            EnemyAffectorComponent* affector = mAffectors[i];
             if(!affector->IsEnabled())
             {
                 continue;
             }
-            for(const auto& enemy : mEnemyManager->GetEnemies())
+
+            const std::vector<Enemy*>& enemies = mEnemyManager->GetEnemies();
+            int enemySize = static_cast<int>(enemies.size());
+            for(int e = enemySize - 1; e >= 0; e--)
             {
+                Enemy* enemy = enemies[e];
                 CollisionComponent* collisionComponent = enemy
                         ->GetComponent<CollisionComponent>();
                 CollisionData collisionData;
-                if(affector->Intersects(collisionComponent, collisionData))
+                if(enemy->IsActive()
+                   && collisionComponent->IsEnabled()
+                   && affector->Intersects(collisionComponent, collisionData))
                 {
                     affector->OnCollision(enemy, collisionData);
                 }

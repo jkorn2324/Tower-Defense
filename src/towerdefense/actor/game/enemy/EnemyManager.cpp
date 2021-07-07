@@ -36,8 +36,16 @@ namespace TowerDefense
 
     void EnemyManager::RemoveEnemy(Enemy *enemy)
     {
-        const auto& enemySearched = std::find(mEnemies.begin(), mEnemies.end(), enemy);
+        const auto& enemySearched = std::find(
+                mEnemies.begin(), mEnemies.end(), enemy);
         mEnemies.erase(enemySearched);
+    }
+
+    bool EnemyManager::ContainsEnemy(class Enemy *enemy)
+    {
+        const auto& enemySearched = std::find(
+                mEnemies.begin(), mEnemies.end(), enemy);
+        return enemySearched != mEnemies.end();
     }
 
     Enemy* EnemyManager::GetClosestEnemy(const Vector2 &position) const
@@ -83,7 +91,7 @@ namespace TowerDefense
             auto enemy = mEnemies[0];
             float distance = Vector2::Distance(
                     enemy->GetTransform().GetPosition(), position);
-            return distance <= maxDist ? mEnemies[0] : nullptr;
+            return distance <= maxDist ? enemy : nullptr;
         }
 
         auto closestEnemy = mEnemies[0];

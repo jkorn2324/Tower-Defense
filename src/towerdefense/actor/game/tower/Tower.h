@@ -56,6 +56,7 @@ namespace TowerDefense
 	    virtual void UpdatePlacedTower(float deltaTime)=0;
 	    virtual void OnSpawn() override;
 	    virtual void OnUpdate(float deltaTime) override;
+        virtual bool ShouldUpdateTarget() const;
 
 	private:
 	    Actor* SetupRangeHighlight();

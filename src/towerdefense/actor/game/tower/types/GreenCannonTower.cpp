@@ -11,6 +11,7 @@
 #include "GreenCannonProjectile.h"
 #include "ScaleSelectAnimationComponent.h"
 #include "MoveComponent.h"
+#include "EnemyManager.h"
 
 namespace TowerDefense
 {
@@ -79,7 +80,8 @@ namespace TowerDefense
         Transform& cannonTransform = (Transform&)mCannon->GetTransform();
         if(mTarget != nullptr)
         {
-            const Vector2& targetPosition = mTarget->GetTransform().GetWorldPosition();
+            // TODO: Crash here.
+            Vector2 targetPosition = mTarget->GetTransform().GetWorldPosition();
             cannonTransform.LookAt(targetPosition);
         }
         UpdateProjectile(deltaTime);

@@ -50,8 +50,9 @@ namespace TowerDefense
 		Actor* GetParent() const;
 		bool HasParent() const;
 		void SetParent(Actor* actor, bool useScale = false);
+        void RemoveParent();
 		bool IsChild(Actor* actor) const;
-		const std::vector<Actor*> GetChildren() const;
+		const std::vector<Actor*>& GetChildren() const;
 
 	private:
 		void AddChild(class Actor* actor);

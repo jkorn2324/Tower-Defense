@@ -2,6 +2,7 @@
 
 #include <string>
 #include <rapidjson/document.h>
+#include <vector>
 
 namespace TowerDefense
 {
@@ -13,9 +14,11 @@ namespace TowerDefense
      */
     struct WaveEnemyData
     {
+        // Enemy Type Casted to enumerator.
+        unsigned int enemyType;
         float beginSpawnTime;
         float spawnTimeDifference;
-        unsigned int numSpawned;
+        int numSpawned;
         // TODO: enum for enemy type
     };
 
@@ -45,6 +48,9 @@ namespace TowerDefense
         unsigned int GetWaveID() const;
 
     private:
+        void SpawnEnemy(const WaveEnemyData& enemyData);
+
+    private:
         // TODO: Callback function for enemy death
         // TODO: Callback function for ending wave
         unsigned int mWaveID;
@@ -52,9 +58,10 @@ namespace TowerDefense
         bool mStarted;
         LevelWave* mNext;
         class Level* mLevel;
+        std::vector<WaveEnemyData> mWaveEnemyData;
 
     public:
-        static LevelWave* Load(unsigned int waveID, const rapidjson::Document& document);
+        static LevelWave* Load(unsigned int waveID, class Level* level, const rapidjson::Document& document);
     };
 
 #pragma endregion

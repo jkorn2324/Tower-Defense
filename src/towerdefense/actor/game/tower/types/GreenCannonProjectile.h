@@ -11,6 +11,7 @@ namespace TowerDefense
     {
     public:
         GreenCannonProjectile(class Game* game);
+        ~GreenCannonProjectile();
 
     public:
         void SetTarget(class Actor* target);
@@ -24,5 +25,6 @@ namespace TowerDefense
     private:
         class Actor* mTarget;
         class TileSpriteComponent* mSpriteComponent;
+        bool mHitEnemy;
     };
 }

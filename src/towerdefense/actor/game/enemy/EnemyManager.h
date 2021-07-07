@@ -27,6 +27,7 @@ namespace TowerDefense
 
     public:
         const Vector2& GetSpawnPosition() const;
+        bool ContainsEnemy(class Enemy* enemy);
 
     private:
         void SetSpawnPosition(const Vector2& spawnPosition);

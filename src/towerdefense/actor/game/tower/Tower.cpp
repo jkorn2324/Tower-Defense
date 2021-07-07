@@ -29,7 +29,7 @@ namespace TowerDefense
 
         mScaleSelectAnimationComponent = new ScaleSelectAnimationComponent(this);
         mScaleSelectAnimationComponent->SetMaxScale(1.1f, 1.1f);
-        mScaleSelectAnimationComponent->SetTotalAnimationTime(0.25f);
+        mScaleSelectAnimationComponent->SetTotalAnimationTime(0.15f);
 
 		mPlaced = false;
 		mHighlighted = false;
@@ -121,25 +121,53 @@ namespace TowerDefense
 
     void Tower::UpdateClosestEnemy(float deltaTime)
     {
-	    mTarget = mEnemyManager->GetClosestEnemy(
-	            mTransform.GetWorldPosition(), GetRange());
+	    if(ShouldUpdateTarget())
+        {
+            mTarget = mEnemyManager->GetClosestEnemy(
+                    mTransform.GetWorldPosition(), GetRange());
+        }
     }
 
     void Tower::UpdateFarthestEnemy(float deltaTime)
     {
-	    mTarget = mEnemyManager->GetFarthestEnemy(
-	            mTransform.GetWorldPosition(), GetRange());
+	    if(ShouldUpdateTarget())
+        {
+            mTarget = mEnemyManager->GetFarthestEnemy(
+                    mTransform.GetWorldPosition(), GetRange());
+        }
     }
 
     void Tower::UpdateFarthestEnemyAlongTrack(float deltaTime)
     {
-	    mTarget = mEnemyManager->GetFarthestEnemyAlongTrack(
-	            mTransform.GetWorldPosition(), GetRange());
+        if(ShouldUpdateTarget())
+        {
+            mTarget = mEnemyManager->GetFarthestEnemyAlongTrack(
+                    mTransform.GetWorldPosition(), GetRange());
+        }
     }
 
     void Tower::UpdateStrongestEnemy(float deltaTime)
     {
 	    // TODO: Implementation
+    }
+
+    bool Tower::ShouldUpdateTarget() const
+    {
+	    if(mTarget == nullptr)
+        {
+	        return true;
+        }
+
+	    // Prevents exception.
+	    if(!mEnemyManager->ContainsEnemy(mTarget))
+        {
+	        return true;
+        }
+
+	    float distance = Vector2::Distance(
+	            mTransform.GetWorldPosition(),
+	            mTarget->GetTransform().GetWorldPosition());
+	    return distance > GetRange();
     }
 
     bool Tower::IsPlaced() const { return mPlaced; }

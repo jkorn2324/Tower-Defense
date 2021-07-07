@@ -23,6 +23,7 @@ namespace TowerDefense
 		{
 			delete actor;
 		}
+
 		for (Actor* spawnActor : mSpawnActors)
 		{
 			delete spawnActor;
@@ -61,10 +62,13 @@ namespace TowerDefense
 
 	void ActorManager::Update(float deltaTime)
 	{
-		for (const auto& despawnedActor : mDespawnActors)
+		for (int i = 0; i < mDespawnActors.size(); i++)
 		{
+		    Actor* despawnedActor = mDespawnActors[i];
 			HandleDespawn(despawnedActor);
+			delete despawnedActor;
 		}
+		mDespawnActors.clear();
 
 		for (const auto& actor : mActors)
 		{
@@ -75,9 +79,7 @@ namespace TowerDefense
 		{
 			HandleSpawn(spawnedActor);
 		}
-		
 		mSpawnActors.clear();
-		mDespawnActors.clear();
 	}
 
 	void ActorManager::HandleSpawn(Actor* actor)
@@ -87,20 +89,15 @@ namespace TowerDefense
 		{
 			return;
 		}
-
 		actor->OnActorSpawn();
 		mActors.push_back(actor);
 	}
 
 	void ActorManager::HandleDespawn(Actor* actor)
 	{
-		const auto& searchedActor = std::find(mActors.begin(), mActors.end(), actor);
-		if (searchedActor != mActors.end())
-		{
-			mActors.erase(searchedActor);
-		}
-
-		delete actor;
+		const auto& searchedActor = std::find(
+		        mActors.begin(), mActors.end(), actor);
+        mActors.erase(searchedActor);
 	}
 
 	void ActorManager::AddActor(Actor* actor)
@@ -119,8 +116,8 @@ namespace TowerDefense
 		{
 			return;
 		}
-
-		const auto& searchedDespawnGroup = std::find(mDespawnActors.begin(), mDespawnActors.end(), actor);
+		const auto& searchedDespawnGroup = std::find(
+		        mDespawnActors.begin(), mDespawnActors.end(), actor);
 		if (searchedDespawnGroup != mDespawnActors.end())
 		{
 			return;
