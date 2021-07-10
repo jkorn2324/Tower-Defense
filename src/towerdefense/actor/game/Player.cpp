@@ -18,13 +18,13 @@ namespace TowerDefense
         : Actor(game)
     {
         mPlacedTower = nullptr;
-        mHighlightedTower = nullptr;
+        mSelectedTower = nullptr;
         mMouseObserverComponent = new MouseObserverComponent(this);
         mMouseObserverComponent->SetMouseUpCallback(
                 std::bind(&Player::OnMouseUp, this, std::placeholders::_1));
         mMouseObserverComponent->SetMouseDownCallback(
                 std::bind(&Player::OnMouseDown, this, std::placeholders::_1));
-        SetTowerSelected(new GreenCannonTower(game));
+        SetPlacedTower(new GreenCannonTower(game));
     }
 
     void Player::OnUpdate(float deltaTime)
@@ -32,35 +32,40 @@ namespace TowerDefense
         UpdatePlacedTower(deltaTime);
     }
 
-    void Player::SetTowerSelected(Tower *tower)
+    bool Player::HasPlacedTower() const
     {
-        if(mPlacedTower != nullptr && !mPlacedTower->IsPlaced())
+        return mPlacedTower != nullptr;
+    }
+
+    void Player::SetPlacedTower(Tower *tower)
+    {
+        if(HasPlacedTower() && !mPlacedTower->IsPlaced())
         {
             mPlacedTower->Despawn();
         }
         mPlacedTower = tower;
-        SetTowerHighlighted(mPlacedTower);
+        SetTowerSelected(mPlacedTower);
     }
 
-    void Player::SetTowerHighlighted(Tower *tower)
+    void Player::SetTowerSelected(Tower *tower)
     {
-        if(mHighlightedTower != nullptr)
+        if(mSelectedTower != nullptr)
         {
-            mHighlightedTower->HighlightTowerRange(false);
+            mSelectedTower->HighlightTowerRange(false);
         }
 
-        mHighlightedTower = tower;
+        mSelectedTower = tower;
 
-        if(mHighlightedTower != nullptr)
+        if(mSelectedTower != nullptr)
         {
-            mHighlightedTower->OnSelected();
-            mHighlightedTower->HighlightTowerRange(true);
+            mSelectedTower->OnSelected();
+            mSelectedTower->HighlightTowerRange(true);
         }
     }
 
     void Player::UpdatePlacedTower(float deltaTime)
     {
-        if(mPlacedTower != nullptr
+        if(HasPlacedTower()
             && !mPlacedTower->IsPlaced())
         {
             Vector2 screenPosition = mGame->GetMouse()->GetMousePosition();
@@ -73,7 +78,7 @@ namespace TowerDefense
 
     void Player::OnMouseDown(const MouseButtonEventData &eventData)
     {
-        if(mPlacedTower != nullptr)
+        if(HasPlacedTower())
         {
             return;
         }
@@ -81,17 +86,17 @@ namespace TowerDefense
         Level* activeLevel = mGame->GetLevelManager()->GetActiveLevel();
         Tower* selectedTower = activeLevel->GetTowerManager()
                 ->GetTowerAtPosition(eventData.mouseWorldPosition);
-        SetTowerHighlighted(selectedTower);
+        SetTowerSelected(selectedTower);
     }
 
     void Player::OnMouseUp(const MouseButtonEventData &eventData)
     {
-        if(mPlacedTower != nullptr)
+        if(HasPlacedTower())
         {
             Level* activeLevel = mGame->GetLevelManager()->GetActiveLevel();
-            if(activeLevel != nullptr
-               && activeLevel->CanPlaceTower(eventData.mouseWorldPosition)
-               && !mPlacedTower->IsPlaced())
+            if(!mPlacedTower->IsPlaced()
+                && activeLevel != nullptr
+                && activeLevel->CanPlaceTower(eventData.mouseWorldPosition))
             {
                 mPlacedTower->PlaceTower();
                 mPlacedTower = nullptr;

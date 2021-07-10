@@ -12,13 +12,14 @@ namespace TowerDefense
         explicit Player(class Game* game);
 
     public:
-        void SetTowerSelected(class Tower* tower);
+        bool HasPlacedTower() const;
+        void SetPlacedTower(class Tower* tower);
 
     protected:
         virtual void OnUpdate(float deltaTime) override;
 
     private:
-        void SetTowerHighlighted(class Tower* tower);
+        void SetTowerSelected(class Tower* tower);
 
     private:
         void UpdatePlacedTower(float deltaTime);
@@ -28,6 +29,6 @@ namespace TowerDefense
     private:
         class MouseObserverComponent* mMouseObserverComponent;
         class Tower* mPlacedTower;
-        class Tower* mHighlightedTower;
+        class Tower* mSelectedTower;
     };
 }
