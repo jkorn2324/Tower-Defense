@@ -16,6 +16,7 @@ namespace TowerDefense
 		mGame = game;
 		mActorManager = game->GetActorManager();
 		mTransform = Transform();
+        mDespawnedListener = GenericEventListener<class Actor*>();
 		mActorManager->AddActor(this);
 	}
 
@@ -140,6 +141,11 @@ namespace TowerDefense
 
 	void Actor::OnSpawn() { }
 
+	const GenericEventListener<class Actor*>& Actor::GetDespawnListener() const
+    {
+	    return mDespawnedListener;
+    }
+
 	void Actor::Despawn()
 	{
 		if (mQueuedForDespawn)
@@ -152,6 +158,7 @@ namespace TowerDefense
 			component->OnDespawn();
 		}
 		OnDespawn();
+		mDespawnedListener.Invoke(this);
 		mActorManager->RemoveActor(this);
 	}
 

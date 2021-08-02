@@ -33,6 +33,6 @@ namespace TowerDefense
 
     private:
         class Level* mLevel;
-        EventCallback<const EnemyCollisionData&> mEnemyCollisionCallback;
+        GenericEventCallback<const EnemyCollisionData&> mEnemyCollisionCallback;
     };
 }

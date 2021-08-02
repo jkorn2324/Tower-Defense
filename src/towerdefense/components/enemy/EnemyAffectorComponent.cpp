@@ -12,7 +12,7 @@ namespace TowerDefense
     EnemyAffectorComponent::EnemyAffectorComponent(class Actor *owner)
             : CollisionComponent(owner)
     {
-        mEnemyCollisionCallback = EventCallback<const EnemyCollisionData&>();
+        mEnemyCollisionCallback = GenericEventCallback<const EnemyCollisionData&>();
         mLevel = owner->GetGame()->GetLevelManager()->GetActiveLevel();
         mLevel->GetEnemyAffectorManager()->AddAffector(this);
     }

@@ -9,14 +9,14 @@ namespace TowerDefense
     HealthComponent::HealthComponent(Actor *owner)
             : Component(owner)
     {
-        mHealthChanged = EventCallback<const HealthChangedEventData&>();
+        mHealthChanged = GenericEventCallback<const HealthChangedEventData&>();
         mHealth = mMaxHealth = MAX_DEFAULT_HEALTH;
     }
 
     HealthComponent::HealthComponent(float maxHealth, Actor *owner)
         : Component(owner)
     {
-        mHealthChanged = EventCallback<const HealthChangedEventData&>();
+        mHealthChanged = GenericEventCallback<const HealthChangedEventData&>();
         mHealth = mMaxHealth = maxHealth;
     }
 

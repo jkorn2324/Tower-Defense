@@ -12,8 +12,8 @@ namespace TowerDefense
             : Component(owner), GenericEventObserver<MouseButtonEventData>(
                     owner->GetGame()->GetMouse()->GetListener())
     {
-        mMouseDownCallback = new EventCallback<const MouseButtonEventData&>();
-        mMouseUpCallback = new EventCallback<const MouseButtonEventData&>();
+        mMouseDownCallback = new GenericEventCallback<const MouseButtonEventData&>();
+        mMouseUpCallback = new GenericEventCallback<const MouseButtonEventData&>();
     }
 
     MouseObserverComponent::~MouseObserverComponent()

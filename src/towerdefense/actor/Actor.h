@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "Transform.h"
+#include "EventListener.h"
 
 namespace TowerDefense
 {
@@ -54,6 +55,9 @@ namespace TowerDefense
 		bool IsChild(Actor* actor) const;
 		const std::vector<Actor*>& GetChildren() const;
 
+	public:
+		const GenericEventListener<Actor*>& GetDespawnListener() const;
+
 	private:
 		void AddChild(class Actor* actor);
 		void RemoveChild(class Actor* actor);
@@ -75,6 +79,7 @@ namespace TowerDefense
 	private:
 		bool mQueuedForDespawn;
 		float mDespawnTime, mMaxDespawnTime;
+		GenericEventListener<class Actor*> mDespawnedListener;
 	};
 
 	template<typename T>

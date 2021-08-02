@@ -6,7 +6,7 @@
         "enemy-type": "green-enemy",
         "spawn-amount": 10,
         "time-begin": 0.5,
-        "time-difference": 0.2
+        "time-difference": 1
       }
     }
   ]

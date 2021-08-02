@@ -23,7 +23,7 @@ namespace TowerDefense
         virtual void OnEventTriggered(const MouseButtonEventData& data) override;
 
     private:
-        EventCallback<const MouseButtonEventData&>* mMouseDownCallback;
-        EventCallback<const MouseButtonEventData&>* mMouseUpCallback;
+        GenericEventCallback<const MouseButtonEventData&>* mMouseDownCallback;
+        GenericEventCallback<const MouseButtonEventData&>* mMouseUpCallback;
     };
 }

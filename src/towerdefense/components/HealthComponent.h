@@ -37,6 +37,6 @@ namespace TowerDefense
     private:
         float mHealth;
         float mMaxHealth;
-        EventCallback<const HealthChangedEventData&> mHealthChanged;
+        GenericEventCallback<const HealthChangedEventData&> mHealthChanged;
     };
 }

@@ -73,7 +73,7 @@ namespace TowerDefense
 		mSize = Vector2::Zero();
 		mRotationOffset = 0.0f;
 		mTexCoords = SpriteTexCoords();
-		mSizeChanged = EventCallback<const Vector2&>();
+		mSizeChanged = GenericEventCallback<const Vector2&>();
 		mColorMultiplier = Color::GetWhite();
 		mRenderer->AddSpriteComponent(this);
 	}
@@ -89,7 +89,7 @@ namespace TowerDefense
 		mSize = Vector2::Zero();
 		mTexCoords = SpriteTexCoords();
 		mRotationOffset = 0.0f;
-		mSizeChanged = EventCallback<const Vector2&>();
+		mSizeChanged = GenericEventCallback<const Vector2&>();
         mColorMultiplier = Color::GetWhite();
         SetTexture(textureFile);
 		mRenderer->AddSpriteComponent(this);

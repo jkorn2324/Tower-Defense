@@ -80,7 +80,7 @@ namespace TowerDefense
 
 	private:
 	    unsigned int mDrawLayer;
-	    EventCallback<const Vector2&> mSizeChanged;
+	    GenericEventCallback<const Vector2&> mSizeChanged;
 		class Texture* mTexture;
 		class Shader* mShader;
 		Vector2 mSize;

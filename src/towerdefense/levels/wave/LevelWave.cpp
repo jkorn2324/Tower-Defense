@@ -13,14 +13,26 @@
 namespace TowerDefense
 {
 
+    LevelWaveActorDespawnObserver::LevelWaveActorDespawnObserver(class Actor *actor)
+            : GenericEventObserverCallback<class Actor *>(
+                    (GenericEventListener<Actor*>*)&actor->GetDespawnListener()) { }
+
     LevelWave::LevelWave(class Level *level, unsigned int waveID)
     {
         mLevel = level;
         mWaveID = waveID;
         mCurrentTime = 0.0f;
-        mStarted = false;
+        mState = LevelWaveState::STATE_IDLE;
         mNext = nullptr;
+        mEnemiesActive = 0;
         mWaveEnemyData = std::vector<WaveEnemyData>();
+        mActorDespawnedObservers = std::unordered_map<class Actor*, LevelWaveActorDespawnObserver*>();
+        mLevelWaveFinished = GenericEventCallback<LevelWave*>();
+    }
+
+    LevelWave::~LevelWave()
+    {
+        // TODO: Implementation
     }
 
     Level* LevelWave::GetLevel() const { return mLevel; }
@@ -33,19 +45,47 @@ namespace TowerDefense
 
     unsigned int LevelWave::GetWaveID() const { return mWaveID; }
 
+    void LevelWave::SetWaveFinishedCallback(std::function<void(class LevelWave *)> func)
+    {
+        mLevelWaveFinished.SetCallback(func);
+    }
+
+    LevelWaveState LevelWave::GetState() const { return mState; }
+
     void LevelWave::Start()
     {
-        if(mStarted)
+        if(mState != LevelWaveState::STATE_IDLE)
         {
             return;
         }
+
+        if(mWaveEnemyData.size() <= 0)
+        {
+            FinishWave();
+            return;
+        }
+        BeginWave();
+    }
+
+    void LevelWave::BeginWave()
+    {
         // TODO: Implementation
-        mStarted = true;
+        mState = LevelWaveState::STATE_RUNNING;
+    }
+
+    void LevelWave::FinishWave()
+    {
+        if(mState == LevelWaveState::STATE_FINISHED)
+        {
+            return;
+        }
+        mLevelWaveFinished.Invoke(this);
+        mState = LevelWaveState::STATE_FINISHED;
     }
 
     void LevelWave::Update(float deltaTime)
     {
-        if(mStarted)
+        if(mState == LevelWaveState::STATE_RUNNING)
         {
             mCurrentTime += deltaTime;
 
@@ -54,8 +94,6 @@ namespace TowerDefense
             {
                 return;
             }
-
-            SDL_Log("Update Enemy Data");
 
             // Loops through each and updates the enemy wave data.
             for(int i = enemyDataSize - 1; i >= 0; i--)
@@ -82,14 +120,39 @@ namespace TowerDefense
 
     void LevelWave::SpawnEnemy(const WaveEnemyData &enemyData)
     {
+        Enemy* enemy = nullptr;
         switch(static_cast<EnemyType>(enemyData.enemyType))
         {
             case EnemyType::GREEN_ENEMY:
-                new GreenEnemy(mLevel->GetGame());
+                enemy = new GreenEnemy(mLevel->GetGame());
                 break;
         }
 
-        SDL_Log("Spawning Enemy: %i", enemyData.enemyType);
+        if(enemy != nullptr)
+        {
+            LevelWaveActorDespawnObserver* despawnObserver =
+                    new LevelWaveActorDespawnObserver(enemy);
+            despawnObserver->SetCallback(
+                    std::bind(&LevelWave::OnEnemyDespawn, this, std::placeholders::_1));
+            mActorDespawnedObservers.emplace(
+                    enemy, despawnObserver);
+        }
+    }
+
+    void LevelWave::OnEnemyDespawn(class Actor *enemy)
+    {
+        // Remove observers from enemy observer list.
+        const auto& searchedIteratedEnemy =
+                mActorDespawnedObservers.find(enemy);
+        if(searchedIteratedEnemy != mActorDespawnedObservers.end())
+        {
+            LevelWaveActorDespawnObserver* observer
+                    = mActorDespawnedObservers[enemy];
+            mActorDespawnedObservers.erase(searchedIteratedEnemy);
+            delete observer;
+        }
+
+        SDL_Log("Enemy has despawned");
     }
 
     LevelWave* LevelWave::Load(unsigned int waveID, Level* level, const rapidjson::Document& document)
