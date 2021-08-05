@@ -307,8 +307,30 @@ namespace TowerDefense
             }
             currentWaveID++;
         }
+
         mCurrentWave = mFirstWave;
+
+        if(mCurrentWave != nullptr)
+        {
+            mCurrentWave->SetWaveFinishedCallback(
+                    std::bind(&Level::OnWaveFinished, this, std::placeholders::_1));
+        }
 	    return true;
+    }
+
+    void Level::OnWaveFinished(LevelWave *waveFinished)
+    {
+        waveFinished->SetWaveFinishedCallback(nullptr);
+
+        if(waveFinished->HasNext())
+        {
+            LevelWave* nextWave = (LevelWave*)waveFinished->GetNext();
+            mCurrentWave = nextWave;
+            mCurrentWave->SetWaveFinishedCallback(
+                    std::bind(&Level::OnWaveFinished, this, std::placeholders::_1));
+            return;
+        }
+        mCurrentWave = nullptr;
     }
 
 	LevelPathNodeData* Level::GetFirstPathNode() const

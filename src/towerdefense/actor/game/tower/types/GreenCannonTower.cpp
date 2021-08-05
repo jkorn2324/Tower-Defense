@@ -80,7 +80,6 @@ namespace TowerDefense
         Transform& cannonTransform = (Transform&)mCannon->GetTransform();
         if(mTarget != nullptr)
         {
-            // TODO: Crash here.
             Vector2 targetPosition = mTarget->GetTransform().GetWorldPosition();
             cannonTransform.LookAt(targetPosition);
         }

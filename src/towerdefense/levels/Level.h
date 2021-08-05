@@ -67,6 +67,9 @@ namespace TowerDefense
 		const std::string& GetName() const;
 
 	private:
+	    void OnWaveFinished(LevelWave* waveFinished);
+
+	private:
 		class LevelManager* mLevelManager;
 		class EnemyManager* mEnemyManager;
 		class EnemyAffectorManager* mEnemyAffectorManager;

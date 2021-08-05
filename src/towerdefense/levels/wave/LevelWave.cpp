@@ -32,7 +32,12 @@ namespace TowerDefense
 
     LevelWave::~LevelWave()
     {
-        // TODO: Implementation
+        for(auto observerPair : mActorDespawnedObservers)
+        {
+            LevelWaveActorDespawnObserver* observer = observerPair.second;
+            delete observer;
+        }
+        mActorDespawnedObservers.clear();
     }
 
     Level* LevelWave::GetLevel() const { return mLevel; }
@@ -59,7 +64,7 @@ namespace TowerDefense
             return;
         }
 
-        if(mWaveEnemyData.size() <= 0)
+        if(mWaveEnemyData.empty())
         {
             FinishWave();
             return;
@@ -69,7 +74,7 @@ namespace TowerDefense
 
     void LevelWave::BeginWave()
     {
-        // TODO: Implementation
+        // TODO: More Implementation
         mState = LevelWaveState::STATE_RUNNING;
     }
 
@@ -79,8 +84,8 @@ namespace TowerDefense
         {
             return;
         }
-        mLevelWaveFinished.Invoke(this);
         mState = LevelWaveState::STATE_FINISHED;
+        mLevelWaveFinished.Invoke(this);
     }
 
     void LevelWave::Update(float deltaTime)
@@ -115,7 +120,6 @@ namespace TowerDefense
                 }
             }
         }
-        // TODO: Implementation
     }
 
     void LevelWave::SpawnEnemy(const WaveEnemyData &enemyData)
@@ -152,7 +156,11 @@ namespace TowerDefense
             delete observer;
         }
 
-        SDL_Log("Enemy has despawned");
+        if(mActorDespawnedObservers.empty()
+            && mWaveEnemyData.empty())
+        {
+            FinishWave();
+        }
     }
 
     LevelWave* LevelWave::Load(unsigned int waveID, Level* level, const rapidjson::Document& document)
