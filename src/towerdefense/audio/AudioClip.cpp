@@ -36,7 +36,7 @@ namespace TowerDefense
         return mPlaying && mPaused;
     }
 
-    void AudioClip::Play()
+    void AudioClip::Play(int channelGroupID)
     {
         if(mMixChunk == nullptr)
         {
@@ -47,9 +47,17 @@ namespace TowerDefense
         {
             Stop();
         }
+
+        int groupAvailable = channelGroupID < 0 ? -1
+                : Mix_GroupAvailable(channelGroupID);
         mChannelID = Mix_PlayChannel(
-                -1, mMixChunk, -(int)mLooping);
+                groupAvailable, mMixChunk, -(int)mLooping);
         mPlaying = true;
+    }
+
+    void AudioClip::Play()
+    {
+        Play(-1);
     }
 
     void AudioClip::Pause(bool paused)
@@ -84,6 +92,11 @@ namespace TowerDefense
 
     void AudioClip::FadeIn(float time)
     {
+        FadeIn(time, -1);
+    }
+
+    void AudioClip::FadeIn(float time, int channelGroupID)
+    {
         if(mMixChunk == nullptr)
         {
             return;
@@ -92,8 +105,11 @@ namespace TowerDefense
         {
             Stop();
         }
+        int groupAvailable = channelGroupID < 0 ? -1
+                : Mix_GroupAvailable(channelGroupID);
         unsigned int milliseconds = (unsigned int)(time * 1000);
-        mChannelID = Mix_FadeInChannel(-1, mMixChunk, -((int)mLooping), milliseconds);
+        mChannelID = Mix_FadeInChannel(
+                groupAvailable, mMixChunk, -((int)mLooping), milliseconds);
         mPlaying = true;
     }
 

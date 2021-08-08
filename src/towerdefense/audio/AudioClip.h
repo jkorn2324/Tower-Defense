@@ -17,6 +17,7 @@ namespace TowerDefense
         bool IsPlaying() const;
         void Stop();
         void FadeIn(float time);
+        void FadeIn(float time, int channelGroupID);
         void FadeOut(float time);
 
     public:

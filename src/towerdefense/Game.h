@@ -30,6 +30,7 @@ namespace TowerDefense
 		class TexturesManager* GetTexturesManager() const;
         class Mouse* GetMouse() const;
         class Camera* GetCamera() const;
+        class MixChunkAudioManager* GetMixChunkAudioManager() const;
 
 	private:
 		bool mRunning;
@@ -40,6 +41,7 @@ namespace TowerDefense
 		class TexturesManager* mTextureManager;
 		class ActorManager* mActorManager;
 		class LevelManager* mLevelManager;
+		class MixChunkAudioManager* mMixChunkAudioManager;
 		class Mouse* mMouse;
 		class Camera* mCamera;
 	};
