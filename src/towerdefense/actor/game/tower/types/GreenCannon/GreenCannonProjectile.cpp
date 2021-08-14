@@ -39,7 +39,7 @@ namespace TowerDefense
         if(mTarget != nullptr)
         {
             mTransform.LookAt(mTarget
-            ->GetTransform().GetWorldPosition());
+                ->GetTransform().GetWorldPosition());
         }
     }
 

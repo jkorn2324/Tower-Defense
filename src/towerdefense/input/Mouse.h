@@ -11,10 +11,10 @@ namespace TowerDefense
     enum MouseButtonType
     {
         RIGHT_CLICK,
-        LEFT_CLICK
+        LEFT_CLICK,
     };
 
-    enum MouseButtonClickType
+    enum MouseEventType
     {
         BUTTON_UP,
         BUTTON_DOWN
@@ -23,9 +23,17 @@ namespace TowerDefense
     struct MouseButtonEventData
     {
         MouseButtonType buttonType;
-        MouseButtonClickType clickType;
+        MouseEventType clickType;
         Vector2 mouseScreenPosition;
         Vector2 mouseWorldPosition;
+    };
+
+    struct MouseMoveEventData
+    {
+        Vector2 newMouseScreenPos;
+        Vector2 newMouseWorldPos;
+        Vector2 prevMouseScreenPos;
+        Vector2 prevMouseWorldPos;
     };
 
     class Mouse
@@ -42,7 +50,8 @@ namespace TowerDefense
         const Vector2& GetDeltaPosition() const;
 
     public:
-        GenericEventListener<MouseButtonEventData>* GetListener() const;
+        GenericEventListener<MouseButtonEventData>* GetClickListener() const;
+        GenericEventListener<MouseMoveEventData>* GetMoveListener() const;
         bool IsHidden() const;
         void SetHidden(bool hidden);
 
@@ -55,7 +64,8 @@ namespace TowerDefense
         bool mHidden;
         Vector2 mDeltaPosition;
         Vector2 mPosition;
-        GenericEventListener<MouseButtonEventData>* mListener;
+        GenericEventListener<MouseButtonEventData>* mClickListener;
+        GenericEventListener<MouseMoveEventData>* mMoveListener;
         class Game* mGame;
 
     public:

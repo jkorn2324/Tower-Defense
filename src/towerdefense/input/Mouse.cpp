@@ -14,12 +14,14 @@ namespace TowerDefense
         mDeltaPosition = Vector2();
         mPosition = Vector2();
         mHidden = false;
-        mListener = new GenericEventListener<MouseButtonEventData>();
+        mClickListener = new GenericEventListener<MouseButtonEventData>();
+        mMoveListener = new GenericEventListener<MouseMoveEventData>();
     }
 
     Mouse::~Mouse()
     {
-        delete mListener;
+        delete mClickListener;
+        delete mMoveListener;
     }
 
     void Mouse::SetHidden(bool hidden)
@@ -41,10 +43,20 @@ namespace TowerDefense
 
     void Mouse::OnMouseMove(SDL_MouseMotionEvent &event)
     {
+        MouseMoveEventData eventData;
+        eventData.prevMouseScreenPos = mPosition;
+        eventData.prevMouseWorldPos = mGame->GetRenderer()->ScreenToWorldPoint(
+                eventData.prevMouseScreenPos);
+
         mDeltaPosition.x = static_cast<float>(event.xrel);
         mDeltaPosition.y = static_cast<float>(event.yrel);
         mPosition.x = static_cast<float>(event.x);
         mPosition.y = static_cast<float>(event.y);
+
+        eventData.newMouseScreenPos = mPosition;
+        eventData.newMouseWorldPos = mGame->GetRenderer()->ScreenToWorldPoint(
+                eventData.newMouseScreenPos);
+        mMoveListener->Invoke(eventData);
     }
 
     void Mouse::OnMouseDown(SDL_MouseButtonEvent &button)
@@ -65,7 +77,7 @@ namespace TowerDefense
                 eventData.buttonType = MouseButtonType::RIGHT_CLICK;
                 break;
         }
-        mListener->Invoke(eventData);
+        mClickListener->Invoke(eventData);
     }
 
     void Mouse::OnMouseUp(SDL_MouseButtonEvent &button)
@@ -86,13 +98,12 @@ namespace TowerDefense
                 eventData.buttonType = MouseButtonType::RIGHT_CLICK;
                 break;
         }
-        mListener->Invoke(eventData);
+        mClickListener->Invoke(eventData);
     }
 
-    GenericEventListener<MouseButtonEventData>* Mouse::GetListener() const
-    {
-        return mListener;
-    }
+    GenericEventListener<MouseButtonEventData>* Mouse::GetClickListener() const { return mClickListener; }
+
+    GenericEventListener<MouseMoveEventData>* Mouse::GetMoveListener() const { return mMoveListener; }
 
     const Vector2& Mouse::GetMousePosition() const
     {

@@ -9,20 +9,22 @@ namespace TowerDefense
 {
 
     MouseObserverComponent::MouseObserverComponent(Actor *owner)
-            : Component(owner), GenericEventObserver<MouseButtonEventData>(
-                    owner->GetGame()->GetMouse()->GetListener())
+            : Component(owner),
+            GenericEventObserver<MouseButtonEventData>(
+                    owner->GetGame()->GetMouse()->GetClickListener()),
+                    GenericEventObserver<MouseMoveEventData>(
+                      owner->GetGame()->GetMouse()->GetMoveListener())
     {
         mMouseDownCallback = new GenericEventCallback<const MouseButtonEventData&>();
         mMouseUpCallback = new GenericEventCallback<const MouseButtonEventData&>();
+        mMouseMoveCallback = new GenericEventCallback<const MouseMoveEventData&>();
     }
 
     MouseObserverComponent::~MouseObserverComponent()
     {
-        Component::~Component();
-        GenericEventObserver<MouseButtonEventData>::~GenericEventObserver();
-
         delete mMouseDownCallback;
         delete mMouseUpCallback;
+        delete mMouseMoveCallback;
     }
 
     void MouseObserverComponent::SetMouseDownCallback(std::function<void(const MouseButtonEventData &)> func)
@@ -35,16 +37,26 @@ namespace TowerDefense
         mMouseUpCallback->SetCallback(func);
     }
 
+    void MouseObserverComponent::SetMouseMoveCallback(std::function<void(const MouseMoveEventData &)> func)
+    {
+        mMouseMoveCallback->SetCallback(func);
+    }
+
     void MouseObserverComponent::OnEventTriggered(const MouseButtonEventData &data)
     {
         switch(data.clickType)
         {
-            case MouseButtonClickType::BUTTON_UP:
+            case MouseEventType::BUTTON_UP:
                 mMouseUpCallback->Invoke(data);
                 break;
-            case MouseButtonClickType::BUTTON_DOWN:
+            case MouseEventType::BUTTON_DOWN:
                 mMouseDownCallback->Invoke(data);
                 break;
         }
+    }
+
+    void MouseObserverComponent::OnEventTriggered(const MouseMoveEventData &data)
+    {
+        mMouseMoveCallback->Invoke(data);
     }
 }
