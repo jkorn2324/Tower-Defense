@@ -148,7 +148,11 @@ namespace TowerDefense
 
     void Tower::UpdateStrongestEnemy(float deltaTime)
     {
-	    // TODO: Implementation
+	    if(ShouldUpdateTarget())
+        {
+	        mTarget = mEnemyManager->GetStrongestEnemy(
+	                mTransform.GetWorldPosition(), GetRange());
+        }
     }
 
     bool Tower::ShouldUpdateTarget() const

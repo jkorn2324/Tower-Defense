@@ -19,6 +19,10 @@ namespace TowerDefense
 
     GameUI::~GameUI()
     {
+        for(const auto& actor : mUIActors)
+        {
+            actor->Despawn();
+        }
         mUIActors.clear();
     }
 
@@ -27,6 +31,7 @@ namespace TowerDefense
         const auto& searchedActor = std::find(mUIActors.begin(), mUIActors.end(), uiActor);
         if(searchedActor == mUIActors.end())
         {
+            uiActor->SetParent(this);
             mUIActors.push_back(uiActor);
         }
     }
@@ -36,6 +41,7 @@ namespace TowerDefense
         const auto& searchedActor = std::find(mUIActors.begin(), mUIActors.end(), uiActor);
         if(searchedActor != mUIActors.end())
         {
+            uiActor->SetParent(nullptr);
             mUIActors.erase(searchedActor);
         }
     }

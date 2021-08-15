@@ -14,7 +14,7 @@ namespace TowerDefense
     class GameUI : public Actor
     {
     public:
-        GameUI(class Game* game);
+        explicit GameUI(class Game* game);
         virtual ~GameUI();
 
     private:

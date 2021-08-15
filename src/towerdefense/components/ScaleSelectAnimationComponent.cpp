@@ -42,6 +42,12 @@ namespace TowerDefense
 
     void ScaleSelectAnimationComponent::TriggerAnimation()
     {
+        if(!IsEnabled()
+            || !mOwner->IsActive())
+        {
+            return;
+        }
+
         if(mTotalAnimationTime > 0.0f)
         {
             mTransform->SetScale(mOriginalScale);

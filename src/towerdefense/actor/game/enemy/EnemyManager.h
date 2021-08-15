@@ -9,6 +9,14 @@ namespace TowerDefense
     class EnemyManager
     {
     public:
+        enum EnemyComparisonOutput
+        {
+            A_BETTER_THAN_B,
+            B_BETTER_THAN_A,
+            NO_COMPARISON
+        };
+
+    public:
         explicit EnemyManager(class Level* level);
 
     public:
@@ -20,14 +28,19 @@ namespace TowerDefense
         class Enemy* GetClosestEnemy(const Vector2& position, float maxDist) const;
         class Enemy* GetFarthestEnemy(const Vector2& position) const;
         class Enemy* GetFarthestEnemy(const Vector2& position, float maxDist) const;
-
-    public:
         class Enemy* GetFarthestEnemyAlongTrack() const;
         class Enemy* GetFarthestEnemyAlongTrack(const Vector2& position, float maxDist) const;
+        class Enemy* GetStrongestEnemy() const;
+        class Enemy* GetStrongestEnemy(const Vector2& position, float maxDist) const;
 
     public:
         const Vector2& GetSpawnPosition() const;
         bool ContainsEnemy(class Enemy* enemy);
+
+    private:
+        static bool IsWithinRange(Enemy* enemy, const Vector2& position, float maxDist);
+        static EnemyComparisonOutput CompareCandidatesAlongTrack(Enemy* a, Enemy* b);
+        static EnemyComparisonOutput CompareCandidatesAlongTrack(Enemy* a, Enemy* b, const Vector2& position, float maxDist);
 
     private:
         void SetSpawnPosition(const Vector2& spawnPosition);

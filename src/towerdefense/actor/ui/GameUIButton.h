@@ -21,14 +21,20 @@ namespace TowerDefense
         void OnMouseUp(const struct MouseButtonEventData& eventData) override;
         void OnMouseMove(const struct MouseMoveEventData& eventData) override;
 
-    private:
+    protected:
+        virtual void OnMouseDownOnButton(const struct MouseButtonEventData& eventData)=0;
+        virtual void OnMouseUpOnButton(const struct MouseButtonEventData& eventData, bool clickedSuccessfully)=0;
+        virtual void OnMouseEnter(const struct MouseMoveEventData& eventData)=0;
+        virtual void OnMouseExit(const struct MouseMoveEventData& eventData)=0;
+
+    protected:
         class SpriteComponent* mBackgroundSprite;
         class RectComponent* mRectComponent;
 
     private:
+        bool mContainsMouse, mMouseHeld;
+
         float mMouseHeldTime;
         float mMaxMouseHeldTime;
-
-        bool mContainsMouse, mMouseHeld;
     };
 }

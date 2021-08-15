@@ -29,6 +29,9 @@ namespace TowerDefense
 
     GameUIActor::~GameUIActor()
     {
-        mGameUI->RemoveUIActor(this);
+        if(mGameUI != nullptr)
+        {
+            mGameUI->RemoveUIActor(this);
+        }
     }
 }

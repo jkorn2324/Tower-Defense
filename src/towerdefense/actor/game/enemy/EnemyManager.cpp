@@ -1,6 +1,7 @@
 #include "EnemyManager.h"
 #include "Enemy.h"
 #include "Level.h"
+#include "HealthComponent.h"
 
 #include <algorithm>
 
@@ -88,10 +89,8 @@ namespace TowerDefense
 
         if(size == 1)
         {
-            auto enemy = mEnemies[0];
-            float distance = Vector2::Distance(
-                    enemy->GetTransform().GetPosition(), position);
-            return distance <= maxDist ? enemy : nullptr;
+            return IsWithinRange(mEnemies[0], position, maxDist)
+                ? mEnemies[0] : nullptr;
         }
 
         auto closestEnemy = mEnemies[0];
@@ -155,10 +154,8 @@ namespace TowerDefense
 
         if(size == 1)
         {
-            auto enemy = mEnemies[0];
-            float distance = Vector2::Distance(
-                    enemy->GetTransform().GetPosition(), position);
-            return distance <= maxDistance ? mEnemies[0] : nullptr;
+            return IsWithinRange(mEnemies[0], position, maxDistance)
+                ? mEnemies[0] : nullptr;
         }
 
         Enemy* farthestEnemy = mEnemies[0];
@@ -200,33 +197,11 @@ namespace TowerDefense
         for(unsigned int i = 1; i < enemiesCount; i++)
         {
             Enemy* testEnemy = mEnemies[i];
-            LevelPathNodeData* currentTarget = testEnemy->GetTargetPathNode();
-            if(currentTarget == nullptr)
-            {
-                continue;
-            }
-
-            LevelPathNodeData* initialTargetPathNode = initialEnemy->GetTargetPathNode();
-            if(initialTargetPathNode == nullptr
-                || currentTarget->nodeIndex > initialTargetPathNode->nodeIndex)
+            EnemyComparisonOutput comparisonOutput =
+                    CompareCandidatesAlongTrack(initialEnemy, testEnemy);
+            if(comparisonOutput == B_BETTER_THAN_A)
             {
                 initialEnemy = testEnemy;
-                continue;
-            }
-
-            if(currentTarget->nodeIndex == initialTargetPathNode->nodeIndex)
-            {
-                const Vector2& testEnemyPos = testEnemy->GetTransform().GetWorldPosition();
-                const Vector2& initialEnemyPos = initialEnemy->GetTransform().GetWorldPosition();
-                float testEnemyDistance = Vector2::Distance(
-                        testEnemyPos, currentTarget->position);
-                float initialEnemyDistance = Vector2::Distance(
-                        testEnemyPos, initialTargetPathNode->position);
-                if(testEnemyDistance < initialEnemyDistance)
-                {
-                    initialEnemy = testEnemy;
-                    continue;
-                }
             }
         }
         return initialEnemy;
@@ -247,6 +222,14 @@ namespace TowerDefense
             for(unsigned int i = 1; i < enemiesCount; i++)
             {
                 Enemy* testEnemy = mEnemies[i];
+                EnemyComparisonOutput comparisonOutput =
+                        CompareCandidatesAlongTrack(initialEnemy, testEnemy, position, maxDist);
+                if(comparisonOutput == EnemyComparisonOutput::B_BETTER_THAN_A)
+                {
+                    initialEnemy = testEnemy;
+                }
+
+                /*
                 LevelPathNodeData* currentTarget = testEnemy->GetTargetPathNode();
                 if(currentTarget == nullptr)
                 {
@@ -254,12 +237,10 @@ namespace TowerDefense
                 }
 
                 LevelPathNodeData* initialTarget = initialEnemy->GetTargetPathNode();
-                if(initialTarget == nullptr
-                   || currentTarget->nodeIndex > initialTarget->nodeIndex)
+                if((initialTarget == nullptr
+                   || currentTarget->nodeIndex > initialTarget->nodeIndex))
                 {
-                    float currentDistance = Vector2::Distance(
-                            position, testEnemy->GetTransform().GetWorldPosition());
-                    if(currentDistance <= maxDist)
+                    if(IsWithinRange(testEnemy, position, maxDist))
                     {
                         initialEnemy = testEnemy;
                     }
@@ -280,14 +261,12 @@ namespace TowerDefense
                         continue;
                     }
                     // Tests the distance to the position.
-                    float distanceToPosition = Vector2::Distance(
-                            position, testEnemy->GetTransform().GetWorldPosition());
-                    if(distanceToPosition <= maxDist)
+                    if(IsWithinRange(testEnemy, position, maxDist))
                     {
                         initialEnemy = testEnemy;
                         continue;
                     }
-                }
+                } */
             }
         }
 
@@ -298,6 +277,245 @@ namespace TowerDefense
         float currentDistance = Vector2::Distance(
                 position, initialEnemy->GetTransform().GetWorldPosition());
         return currentDistance <= maxDist ? initialEnemy : nullptr;
+    }
+
+    Enemy* EnemyManager::GetStrongestEnemy() const
+    {
+        std::size_t enemiesCount = mEnemies.size();
+        if(enemiesCount <= 0)
+        {
+            return nullptr;
+        }
+
+        if(enemiesCount == 1)
+        {
+            return mEnemies[0];
+        }
+
+        HealthComponent* strongestEnemyHealth = mEnemies[0]
+                ->GetComponent<HealthComponent>();
+        for(int i = 1; i < mEnemies.size(); i++)
+        {
+            HealthComponent* candidate = mEnemies[i]
+                    ->GetComponent<HealthComponent>();
+            if(candidate == nullptr)
+            {
+                continue;
+            }
+            if(strongestEnemyHealth == nullptr
+                || candidate->GetMaxHealth() > strongestEnemyHealth->GetMaxHealth())
+            {
+                strongestEnemyHealth = candidate;
+            }
+        }
+        return dynamic_cast<Enemy*>(strongestEnemyHealth->GetOwner());
+    }
+
+    Enemy* EnemyManager::GetStrongestEnemy(const Vector2 &position, float maxDist) const
+    {
+        std::size_t count = mEnemies.size();
+        if(count <= 0)
+        {
+            return nullptr;
+        }
+        if(count == 1)
+        {
+            return IsWithinRange(mEnemies[0], position, maxDist) ?
+                mEnemies[0] : nullptr;
+        }
+
+        Enemy* strongestEnemy = mEnemies[0];
+        HealthComponent* strongestEnemyHealth
+            = strongestEnemy->GetComponent<HealthComponent>();
+        for(int i = 1; i < count; i++)
+        {
+            // Check if candidate is within range.
+            Enemy* candidateEnemy = mEnemies[i];
+            if(!IsWithinRange(candidateEnemy, position, maxDist))
+            {
+                continue;
+            }
+
+            // If the candidate doesn't have a health component continue.
+            HealthComponent* candidate = candidateEnemy->GetComponent<HealthComponent>();
+            if(candidate == nullptr)
+            {
+                continue;
+            }
+
+            // If the strongest enemy health is null or if its not within range
+            // change it to the candidate.
+            if(strongestEnemyHealth == nullptr
+                || !IsWithinRange(strongestEnemy, position, maxDist))
+            {
+                strongestEnemy = candidateEnemy;
+                strongestEnemyHealth = candidate;
+                continue;
+            }
+
+            // If the candidate health is greater than strongest health,
+            // change it to the candidate.
+            if(candidate->GetMaxHealth() > strongestEnemyHealth->GetMaxHealth())
+            {
+                strongestEnemy = candidateEnemy;
+                strongestEnemyHealth = candidate;
+                continue;
+            }
+
+            // If candidate health is equivalent to strongest health,
+            // check which one is farthest down the path.
+            if(candidate->GetMaxHealth() == strongestEnemyHealth->GetMaxHealth())
+            {
+                EnemyComparisonOutput comparisonOutput = CompareCandidatesAlongTrack(
+                        strongestEnemy, candidateEnemy);
+                if(comparisonOutput == EnemyComparisonOutput::B_BETTER_THAN_A)
+                {
+                    strongestEnemy = candidateEnemy;
+                    strongestEnemyHealth = candidate;
+                }
+            }
+        }
+        return strongestEnemy;
+    }
+
+    EnemyManager::EnemyComparisonOutput EnemyManager::CompareCandidatesAlongTrack(Enemy *a, Enemy *b)
+    {
+        if(a == nullptr && b == nullptr)
+        {
+            return EnemyComparisonOutput::NO_COMPARISON;
+        }
+        if(a == nullptr)
+        {
+            return EnemyComparisonOutput::B_BETTER_THAN_A;
+        }
+        if(b == nullptr)
+        {
+            return EnemyComparisonOutput::A_BETTER_THAN_B;
+        }
+
+        LevelPathNodeData* aTarget = a->GetTargetPathNode();
+        LevelPathNodeData* bTarget = b->GetTargetPathNode();
+        if(aTarget == nullptr && bTarget == nullptr)
+        {
+            return EnemyComparisonOutput::NO_COMPARISON;
+        }
+
+        if(aTarget == nullptr
+            || (bTarget != nullptr && aTarget->nodeIndex > bTarget->nodeIndex))
+        {
+            return EnemyComparisonOutput::A_BETTER_THAN_B;
+        }
+
+        if(bTarget == nullptr
+            || (bTarget->nodeIndex > aTarget->nodeIndex))
+        {
+            return EnemyComparisonOutput::B_BETTER_THAN_A;
+        }
+
+        // Compare distance to the target. (currentTarget == initialTarget)
+        float aDistanceToTarget = Vector2::Distance(
+                a->GetTransform().GetWorldPosition(),
+                aTarget->position);
+        float bDistanceToTarget = Vector2::Distance(
+                b->GetTransform().GetWorldPosition(),
+                bTarget->position);
+        if(aDistanceToTarget < bDistanceToTarget)
+        {
+            return EnemyComparisonOutput::A_BETTER_THAN_B;
+        }
+        if(bDistanceToTarget < aDistanceToTarget)
+        {
+            return EnemyComparisonOutput::B_BETTER_THAN_A;
+        }
+        return EnemyComparisonOutput::NO_COMPARISON;
+    }
+
+    EnemyManager::EnemyComparisonOutput EnemyManager::CompareCandidatesAlongTrack(Enemy* a, Enemy* b, const Vector2& position, float maxDist)
+    {
+        // If a & b are null then there was no comparison.
+        if(a == nullptr && b == nullptr)
+        {
+            return EnemyComparisonOutput::NO_COMPARISON;
+        }
+        // If a is null, b must not so b is better than a.
+        if(a == nullptr)
+        {
+            return EnemyComparisonOutput::B_BETTER_THAN_A;
+        }
+        // If b is null, a must not so a is better than b.
+        if(b == nullptr)
+        {
+            return EnemyComparisonOutput::A_BETTER_THAN_B;
+        }
+
+        LevelPathNodeData* aTarget = a->GetTargetPathNode();
+        LevelPathNodeData* bTarget = b->GetTargetPathNode();
+        // If a target node & b target nodes are null, they both reached the end
+        // so no comparison.
+        if(aTarget == nullptr && bTarget == nullptr)
+        {
+            return EnemyComparisonOutput::NO_COMPARISON;
+        }
+        // If a target node is null (reached end) or b target node is not null && a target index is greater than b target index
+        // a target is further along the path and should be checked if its within range.
+        if(aTarget == nullptr
+            || (bTarget != nullptr && aTarget->nodeIndex > bTarget->nodeIndex))
+        {
+            if(!IsWithinRange(a, position, maxDist))
+            {
+                return EnemyComparisonOutput::NO_COMPARISON;
+            }
+            return EnemyComparisonOutput::A_BETTER_THAN_B;
+        }
+        // If b target node is null (reached end) or b target node index is greater than a target node index
+        // b target is further along the path and should be checked if its within range.
+        if(bTarget == nullptr
+            || (bTarget->nodeIndex > aTarget->nodeIndex))
+        {
+            if(!IsWithinRange(b, position, maxDist))
+            {
+                return EnemyComparisonOutput::NO_COMPARISON;
+            }
+            return EnemyComparisonOutput::B_BETTER_THAN_A;
+        }
+
+        // Compare distance to the target. (currentTarget == initialTarget)
+        float aDistanceToTarget = Vector2::Distance(
+                a->GetTransform().GetWorldPosition(),
+                aTarget->position);
+        float bDistanceToTarget = Vector2::Distance(
+                b->GetTransform().GetWorldPosition(),
+                bTarget->position);
+        // Checks if a is closer to the target.
+        if(aDistanceToTarget < bDistanceToTarget)
+        {
+            if(!IsWithinRange(a, position, maxDist))
+            {
+                return EnemyComparisonOutput::NO_COMPARISON;
+            }
+            return EnemyComparisonOutput::A_BETTER_THAN_B;
+        }
+        // Checks if b is closer to the target.
+        if(bDistanceToTarget < aDistanceToTarget)
+        {
+            if(!IsWithinRange(b, position, maxDist))
+            {
+                return EnemyComparisonOutput::NO_COMPARISON;
+            }
+            return EnemyComparisonOutput::B_BETTER_THAN_A;
+        }
+        return EnemyComparisonOutput::NO_COMPARISON;
+    }
+
+    bool EnemyManager::IsWithinRange(Enemy *enemy, const Vector2 &position, float maxDist)
+    {
+        if(enemy == nullptr)
+        {
+            return false;
+        }
+        float distance = Vector2::Distance(
+                position, enemy->GetTransform().GetWorldPosition());
+        return distance <= maxDist;
     }
 
     const std::vector<Enemy*>& EnemyManager::GetEnemies() const

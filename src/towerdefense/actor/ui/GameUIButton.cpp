@@ -36,22 +36,20 @@ namespace TowerDefense
             && mContainsMouse
             && eventData.buttonType == MouseButtonType::LEFT_CLICK)
         {
-            SDL_Log("Mouse was pressed on button");
-            // TODO: Mouse has been pressed
             mMouseHeld = true;
+            OnMouseDownOnButton(eventData);
         }
     }
 
     void GameUIButton::OnMouseUp(const MouseButtonEventData& eventData)
     {
         if(mRectComponent->ContainsPosition(eventData.mouseWorldPosition)
-            && mContainsMouse
-            // Checks whether the mouse has been clicking on the button.
-            && mMouseHeld
-            && mMouseHeldTime > 0.0f && mMouseHeldTime <= mMaxMouseHeldTime)
+            && mContainsMouse)
         {
-            SDL_Log("Mouse was raised on button.");
-            // TODO: Mouse has been raised on button and clicked.
+            // Checks whether the mouse has been clicking on the button
+            bool clickedSuccessfully = mMouseHeld
+               && mMouseHeldTime > 0.0f && mMouseHeldTime <= mMaxMouseHeldTime;
+            OnMouseUpOnButton(eventData, clickedSuccessfully);
         }
         mMouseHeldTime = 0.0f;
         mMouseHeld = false;
@@ -62,16 +60,14 @@ namespace TowerDefense
         if(mRectComponent->ContainsPosition(eventData.newMouseWorldPos)
             && !mContainsMouse)
         {
-            SDL_Log("Mouse was moved onto button.");
-            // TODO: Mouse has been moved onto button.
             mContainsMouse = true;
+            OnMouseEnter(eventData);
         }
         else if (!mRectComponent->ContainsPosition(eventData.newMouseWorldPos)
             && !mContainsMouse)
         {
-            SDL_Log("Mouse was moved out of button.");
-            // TODO: Mouse has moved out of button
             mContainsMouse = false;
+            OnMouseExit(eventData);
         }
     }
 }
