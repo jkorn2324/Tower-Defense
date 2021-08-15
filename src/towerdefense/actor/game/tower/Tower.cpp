@@ -12,6 +12,7 @@
 #include "SpriteComponent.h"
 #include "MouseObserverComponent.h"
 #include "ScaleSelectAnimationComponent.h"
+#include "GreenCannonTower.h"
 
 #include <functional>
 
@@ -30,12 +31,13 @@ namespace TowerDefense
         mScaleSelectAnimationComponent = new ScaleSelectAnimationComponent(this);
         mScaleSelectAnimationComponent->SetMaxScale(1.1f, 1.1f);
         mScaleSelectAnimationComponent->SetTotalAnimationTime(0.15f);
+        mScaleSelectAnimationComponent->SetEnabled(false);
 
 		mPlaced = false;
 		mHighlighted = false;
 
 		mLevel = game->GetLevelManager()->GetActiveLevel();
-        mName = DEFAULT_TOWER;
+        mTowerType = TowerType::DEFAULT_TOWER_TYPE;
 		mSpriteComponent = new TileSpriteComponent(this,
 			std::bind(&Tower::OnSizeChanged, this, std::placeholders::_1));
 		((SpriteComponent*)mSpriteComponent)->SetTexture(TILESHEET_PATH);
@@ -44,6 +46,7 @@ namespace TowerDefense
 		mSpriteComponent->SetDrawLayer(30.0f);
 
 		mEnemyManager = mLevel->GetEnemyManager();
+		GenerateName();
 		mLevel->GetTowerManager()->AddTower(this);
 	}
 
@@ -64,6 +67,19 @@ namespace TowerDefense
         colorMultiplier.a = 0.2f;
         spriteComponent->SetColorMultiplier(colorMultiplier);
 	    return actor;
+    }
+
+    void Tower::GenerateName()
+    {
+	    switch(mTowerType)
+        {
+            case TowerType::DEFAULT_TOWER_TYPE:
+                mName = "Default Tower";
+                break;
+            case TowerType::GREEN_CANNON_TOWER_TYPE:
+                mName = "Green Cannon Tower";
+                break;
+        }
     }
 
     void Tower::OnSelected()
@@ -178,10 +194,13 @@ namespace TowerDefense
 
     void Tower::PlaceTower()
     {
+	    mScaleSelectAnimationComponent->SetEnabled(true);
 	    mPlaced = true;
     }
 
 	const std::string& Tower::GetName() const { return mName; }
+
+	const TowerType& Tower::GetType() const { return mTowerType; }
 
 	void Tower::OnSizeChanged(const Vector2& vec)
 	{
@@ -189,4 +208,14 @@ namespace TowerDefense
 	}
 
 	CollisionComponent* Tower::GetCollisionComponent() const { return mCollisionComponent; }
+
+	Tower* Tower::CreateTowerFromType(class Game *game, const TowerType &towerType)
+    {
+	    switch(towerType)
+        {
+            case TowerType::GREEN_CANNON_TOWER_TYPE:
+                return new GreenCannonTower(game);
+        }
+        return nullptr;
+    }
 }

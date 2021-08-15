@@ -24,7 +24,6 @@ namespace TowerDefense
                 std::bind(&Player::OnMouseUp, this, std::placeholders::_1));
         mMouseObserverComponent->SetMouseDownCallback(
                 std::bind(&Player::OnMouseDown, this, std::placeholders::_1));
-        SetPlacedTower(new GreenCannonTower(game));
     }
 
     void Player::OnUpdate(float deltaTime)

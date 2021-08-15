@@ -24,8 +24,8 @@ namespace TowerDefense
     protected:
         virtual void OnMouseDownOnButton(const struct MouseButtonEventData& eventData)=0;
         virtual void OnMouseUpOnButton(const struct MouseButtonEventData& eventData, bool clickedSuccessfully)=0;
-        virtual void OnMouseEnter(const struct MouseMoveEventData& eventData)=0;
-        virtual void OnMouseExit(const struct MouseMoveEventData& eventData)=0;
+        virtual void OnMouseEnterButton(const struct MouseMoveEventData& eventData)=0;
+        virtual void OnMouseExitButton(const struct MouseMoveEventData& eventData)=0;
 
     protected:
         class SpriteComponent* mBackgroundSprite;

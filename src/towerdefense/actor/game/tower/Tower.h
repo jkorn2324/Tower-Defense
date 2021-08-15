@@ -20,6 +20,12 @@ namespace TowerDefense
         TARGET_STRONGEST
     };
 
+    enum TowerType
+    {
+        DEFAULT_TOWER_TYPE,
+        GREEN_CANNON_TOWER_TYPE
+    };
+
 
 	class Tower : public Actor
 	{
@@ -43,6 +49,7 @@ namespace TowerDefense
 
 	public:
         const std::string& GetName() const;
+        const TowerType& GetType() const;
         class CollisionComponent* GetCollisionComponent() const;
 
 	protected:
@@ -59,7 +66,8 @@ namespace TowerDefense
         virtual bool ShouldUpdateTarget() const;
 
 	private:
-	    Actor* SetupRangeHighlight();
+        void GenerateName();
+        Actor* SetupRangeHighlight();
 		void OnSizeChanged(const Vector2& vec);
 
 	protected:
@@ -75,8 +83,12 @@ namespace TowerDefense
         class Level* mLevel;
 
 	private:
+	    TowerType mTowerType;
         TowerTargetType mTargetType;
         std::string mName;
 	    bool mPlaced, mHighlighted;
+
+	public:
+	    static Tower* CreateTowerFromType(class Game* game, const TowerType& towerType);
 	};
 }

@@ -61,13 +61,13 @@ namespace TowerDefense
             && !mContainsMouse)
         {
             mContainsMouse = true;
-            OnMouseEnter(eventData);
+            OnMouseEnterButton(eventData);
         }
         else if (!mRectComponent->ContainsPosition(eventData.newMouseWorldPos)
             && !mContainsMouse)
         {
             mContainsMouse = false;
-            OnMouseExit(eventData);
+            OnMouseExitButton(eventData);
         }
     }
 }
