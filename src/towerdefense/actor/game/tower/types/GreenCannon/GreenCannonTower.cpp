@@ -12,11 +12,15 @@
 #include "ScaleSelectAnimationComponent.h"
 #include "MoveComponent.h"
 #include "EnemyManager.h"
+#include "LevelManager.h"
+#include "Level.h"
 
 namespace TowerDefense
 {
     GreenCannonTower::GreenCannonTower(Game *game)
-            : Tower(game)
+            : Tower(game),
+            GenericEventObserver<const struct LevelWaveChangedEventData&>(
+                    game->GetLevelManager()->GetActiveLevel()->GetLevelWaveChangedListener())
     {
         mRange = GREEN_CANNON_ORIGINAL_RANGE;
         mMaxProjectileCooldown = GREEN_CANNON_ORIGINAL_PROJECTILE_COOLDOWN;
@@ -108,5 +112,10 @@ namespace TowerDefense
     void GreenCannonTower::OnDespawn()
     {
         mCannon->Despawn();
+    }
+
+    void GreenCannonTower::OnEventTriggered(const LevelWaveChangedEventData &eventData)
+    {
+        // TODO: Implementation
     }
 }

@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Component.h"
+#include "RectComponent.h"
 #include "Vector2.h"
 
 namespace TowerDefense
@@ -29,32 +29,17 @@ namespace TowerDefense
 		CollisionSide collisionSide;
 	};
 
-	class CollisionComponent : public Component
+	class CollisionComponent : public RectComponent
 	{
 	public:
 		CollisionComponent(class Actor* owner);
 
 	public:
-		void SetSize(float x, float y);
-		void SetSize(const Vector2& size);
-		const Vector2& GetSize() const;
-
-	public:
-		Vector2 GetMin() const;
-		Vector2 GetMax() const;
-
-	public:
 		bool Intersects(CollisionComponent* other, CollisionData& collisionData);
 		bool Intersects(class Actor* other, CollisionData& collisionData);
-        bool ContainsPosition(const Vector2& position) const;
 
 	private:
 		void CalculateCollisionData(CollisionComponent* other, CollisionData& collisionData);
 		void AddMinimumValue(float value, float maxValue, CollisionSide side, std::vector<MinCollisionDiffData>& minValues);
-
-	private:
-		Vector2 mColliderSize;
-		class Transform* mTransform;
-
 	};
 }

@@ -8,53 +8,7 @@ namespace TowerDefense
 {
 
 	CollisionComponent::CollisionComponent(Actor* actor)
-		: Component(actor)
-	{
-		mColliderSize = Vector2::One();
-		mTransform = (Transform*)&actor->GetTransform();
-	}
-
-	void CollisionComponent::SetSize(float x, float y)
-	{
-		mColliderSize.x = x;
-		mColliderSize.y = y;
-	}
-
-	void CollisionComponent::SetSize(const Vector2& size)
-	{
-		mColliderSize = size;
-	}
-
-	const Vector2& CollisionComponent::GetSize() const
-	{
-		return mColliderSize;
-	}
-
-	Vector2 CollisionComponent::GetMin() const
-	{
-		Vector2 scale = mTransform->GetScale();
-		Vector2 transformPosition = mTransform->GetPosition();
-		transformPosition.x -= (mColliderSize.x * 0.5f) * scale.x;
-		transformPosition.y -= (mColliderSize.y * 0.5f) * scale.y;
-		return transformPosition;
-	}
-
-	Vector2 CollisionComponent::GetMax() const
-	{
-		Vector2 scale = mTransform->GetScale();
-		Vector2 transformPosition = mTransform->GetPosition();
-		transformPosition.x += (mColliderSize.x * 0.5f) * scale.x;
-		transformPosition.y += (mColliderSize.y * 0.5f) * scale.y;
-		return transformPosition;
-	}
-
-	bool CollisionComponent::ContainsPosition(const Vector2 &position) const
-	{
-	    Vector2 min = GetMin();
-	    Vector2 max = GetMax();
-        return min.x <= position.x && max.x >= position.x
-            && min.y <= position.y && max.y >= position.y;
-	}
+		: RectComponent(actor) { }
 
 	bool CollisionComponent::Intersects(CollisionComponent* other, CollisionData& collisionData)
 	{

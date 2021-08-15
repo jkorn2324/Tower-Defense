@@ -4,6 +4,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "GameUI.h"
 
 namespace TowerDefense
 {
@@ -40,6 +41,7 @@ namespace TowerDefense
 	void ActorManager::InitActors()
 	{
 	    mPlayer = new Player(mGame);
+
 	}
 
 	Game* ActorManager::GetGame() const

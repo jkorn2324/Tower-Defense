@@ -14,6 +14,11 @@ namespace TowerDefense
         mDeltaPosition = Vector2();
         mPosition = Vector2();
         mHidden = false;
+
+        mMouseButtonsHeld = std::unordered_map<MouseButtonType, bool>();
+        mMouseButtonsHeld.emplace(MouseButtonType::RIGHT_CLICK, false);
+        mMouseButtonsHeld.emplace(MouseButtonType::LEFT_CLICK, false);
+
         mClickListener = new GenericEventListener<MouseButtonEventData>();
         mMoveListener = new GenericEventListener<MouseMoveEventData>();
     }
@@ -77,6 +82,8 @@ namespace TowerDefense
                 eventData.buttonType = MouseButtonType::RIGHT_CLICK;
                 break;
         }
+
+        mMouseButtonsHeld[eventData.buttonType] = true;
         mClickListener->Invoke(eventData);
     }
 
@@ -98,7 +105,13 @@ namespace TowerDefense
                 eventData.buttonType = MouseButtonType::RIGHT_CLICK;
                 break;
         }
+        mMouseButtonsHeld[eventData.buttonType] = false;
         mClickListener->Invoke(eventData);
+    }
+
+    bool Mouse::IsMouseButtonDown(const MouseButtonType &buttonType) const
+    {
+        return mMouseButtonsHeld.at(buttonType);
     }
 
     GenericEventListener<MouseButtonEventData>* Mouse::GetClickListener() const { return mClickListener; }

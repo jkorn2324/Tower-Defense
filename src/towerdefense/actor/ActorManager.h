@@ -23,6 +23,8 @@ namespace TowerDefense
 
 	public:
 		class Game* GetGame() const;
+
+	public:
         class Player* GetPlayer() const;
 
 	private:

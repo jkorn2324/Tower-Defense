@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Vector2.h"
+#include "EventListener.h"
 
 namespace TowerDefense
 {
@@ -33,6 +34,15 @@ namespace TowerDefense
 	};
 
 	/**
+	 * Level wave changed event data.
+	 */
+	struct LevelWaveChangedEventData
+    {
+	    class LevelWave* prevWave;
+	    class LevelWave* nextWave;
+    };
+
+	/**
 	 * The Level Tile Data. 
 	 */
 	class Level
@@ -60,14 +70,14 @@ namespace TowerDefense
 	    void RemoveActor(class Actor* actor);
 
 	public:
-	    class LevelWave* GetCurrentWave() const;
 	    class EnemyManager* GetEnemyManager() const;
 	    class TowerManager* GetTowerManager() const;
 	    class EnemyAffectorManager* GetEnemyAffectorManager() const;
 		const std::string& GetName() const;
+		GenericEventListener<const LevelWaveChangedEventData&>* GetLevelWaveChangedListener() const;
 
 	private:
-	    void OnWaveFinished(LevelWave* waveFinished);
+	    void OnWaveFinished(class LevelWave* waveFinished);
 
 	private:
 		class LevelManager* mLevelManager;
@@ -88,6 +98,7 @@ namespace TowerDefense
 		LevelPathNodeData* mBeginPathNode;
 		std::vector<LevelTileData*> mTiles;
 	    std::vector<class Actor*> mActors;
+	    GenericEventListener<const LevelWaveChangedEventData&>* mLevelWaveChangedListener;
 
 	public:
 	    friend class LevelManager;

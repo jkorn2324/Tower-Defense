@@ -3,6 +3,7 @@
 #include "Vector2.h"
 #include "EventListener.h"
 
+#include <unordered_map>
 #include <SDL2/SDL.h>
 
 namespace TowerDefense
@@ -55,6 +56,9 @@ namespace TowerDefense
         bool IsHidden() const;
         void SetHidden(bool hidden);
 
+    public:
+        bool IsMouseButtonDown(const MouseButtonType& buttonType) const;
+
     private:
         void OnMouseMove(SDL_MouseMotionEvent& event);
         void OnMouseDown(SDL_MouseButtonEvent& button);
@@ -67,6 +71,7 @@ namespace TowerDefense
         GenericEventListener<MouseButtonEventData>* mClickListener;
         GenericEventListener<MouseMoveEventData>* mMoveListener;
         class Game* mGame;
+        std::unordered_map<MouseButtonType, bool> mMouseButtonsHeld;
 
     public:
         friend class Game;

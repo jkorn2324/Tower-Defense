@@ -59,6 +59,10 @@ namespace TowerDefense
 		const GenericEventListener<Actor*>& GetDespawnListener() const;
 
 	private:
+	    void SetParentActive(bool active);
+	    void UpdateChildrenParentActive(bool active);
+
+	private:
 		void AddChild(class Actor* actor);
 		void RemoveChild(class Actor* actor);
 
@@ -67,6 +71,7 @@ namespace TowerDefense
 
 	private:
 		bool mActive;
+		bool mParentActive;
 
 	protected:
 		class ActorManager* mActorManager;

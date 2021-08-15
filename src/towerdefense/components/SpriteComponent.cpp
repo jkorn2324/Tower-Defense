@@ -205,7 +205,8 @@ namespace TowerDefense
 
 	void SpriteComponent::Draw()
 	{
-		if (!IsEnabled())
+		if (!IsEnabled()
+			|| !mOwner->IsActive())
 		{
 			return;
 		}

@@ -36,6 +36,8 @@ namespace TowerDefense
 		mTowerManager = new TowerManager(this);
 		mEnemyAffectorManager = new EnemyAffectorManager(this);
 		mLevelSize = Vector2::Zero();
+        mLevelWaveChangedListener =
+                new GenericEventListener<const LevelWaveChangedEventData&>();
 		mLevelManager->AddLevel(this);
 	}
 
@@ -73,6 +75,7 @@ namespace TowerDefense
         delete mTowerAreaManager;
         delete mTowerManager;
         delete mEnemyAffectorManager;
+        delete mLevelWaveChangedListener;
     }
 
     void Level::Update(float deltaTime)
@@ -99,6 +102,11 @@ namespace TowerDefense
     TowerManager* Level::GetTowerManager() const
     {
 	    return mTowerManager;
+    }
+
+    GenericEventListener<const LevelWaveChangedEventData&>* Level::GetLevelWaveChangedListener() const
+    {
+	    return mLevelWaveChangedListener;
     }
 
     EnemyAffectorManager* Level::GetEnemyAffectorManager() const { return mEnemyAffectorManager; }
@@ -322,14 +330,23 @@ namespace TowerDefense
     {
         waveFinished->SetWaveFinishedCallback(nullptr);
 
+        LevelWaveChangedEventData eventData;
+        eventData.prevWave = waveFinished;
+
         if(waveFinished->HasNext())
         {
             LevelWave* nextWave = (LevelWave*)waveFinished->GetNext();
             mCurrentWave = nextWave;
             mCurrentWave->SetWaveFinishedCallback(
                     std::bind(&Level::OnWaveFinished, this, std::placeholders::_1));
+
+            eventData.nextWave = nextWave;
+            mLevelWaveChangedListener->Invoke(eventData);
             return;
         }
+
+        eventData.nextWave = nullptr;
+        mLevelWaveChangedListener->Invoke(eventData);
         mCurrentWave = nullptr;
     }
 

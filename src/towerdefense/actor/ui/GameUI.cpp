@@ -19,10 +19,6 @@ namespace TowerDefense
 
     GameUI::~GameUI()
     {
-        for(const auto& actor : mUIActors)
-        {
-            delete actor;
-        }
         mUIActors.clear();
     }
 

@@ -54,9 +54,30 @@ namespace TowerDefense
 		mComponents.push_back(component);
 	}
 
-	bool Actor::IsActive() const { return mActive; }
+	bool Actor::IsActive() const { return mActive && mParentActive; }
 
-	void Actor::SetActive(bool active) { mActive = active; }
+	void Actor::SetActive(bool active)
+	{
+        UpdateChildrenParentActive(active);
+	    mActive = active;
+	}
+
+	void Actor::UpdateChildrenParentActive(bool active)
+    {
+	    for(Actor* child : mChildren)
+        {
+	        if(child != nullptr)
+            {
+	            child->SetParentActive(active);
+            }
+        }
+    }
+
+	void Actor::SetParentActive(bool active)
+    {
+        UpdateChildrenParentActive(active);
+	    mParentActive = active;
+    }
 
 	Game* Actor::GetGame() const
 	{
@@ -89,7 +110,10 @@ namespace TowerDefense
 
 	void Actor::SetParent(Actor* actor, bool useScale)
 	{
-	    if(actor == nullptr)
+        SetParentActive(true);
+        UpdateChildrenParentActive(true);
+
+        if(actor == nullptr)
         {
 	        RemoveParent();
 	        return;
@@ -99,6 +123,7 @@ namespace TowerDefense
 		{
 			GetParent()->RemoveChild(this);
 		}
+		actor->AddChild(this);
 		mTransform.SetParent(actor, useScale);
 	}
 
