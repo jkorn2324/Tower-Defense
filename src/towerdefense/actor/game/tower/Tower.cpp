@@ -23,7 +23,7 @@ namespace TowerDefense
 	{
 	    mTarget = nullptr;
 	    mRangeHighlight = SetupRangeHighlight();
-	    mTargetType = TowerTargetType::TARGET_CLOSEST_ENEMY;
+	    mTargetType = TowerTargetType::TARGET_FARTHEST_ALONG_TRACK;
 		mCollisionComponent = new CollisionComponent(this);
 		mCollisionComponent->SetSize(1.0f, 1.0f);
 

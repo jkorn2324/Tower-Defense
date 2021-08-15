@@ -29,9 +29,14 @@ namespace TowerDefense
         class Enemy* GetFarthestEnemy(const Vector2& position) const;
         class Enemy* GetFarthestEnemy(const Vector2& position, float maxDist) const;
         class Enemy* GetFarthestEnemyAlongTrack() const;
+        class Enemy* GetFarthestEnemyAlongTrack(bool countThoseThatReachedEnd) const;
         class Enemy* GetFarthestEnemyAlongTrack(const Vector2& position, float maxDist) const;
+        class Enemy* GetFarthestEnemyAlongTrack(const Vector2& position, float maxDist, bool countThoseThatReachedEnd) const;
         class Enemy* GetStrongestEnemy() const;
+        class Enemy* GetStrongestEnemy(bool countThoseThatReachedEnd) const;
         class Enemy* GetStrongestEnemy(const Vector2& position, float maxDist) const;
+        class Enemy* GetStrongestEnemy(const Vector2& position, float maxDist, bool countThoseThatReachedEnd) const;
+
 
     public:
         const Vector2& GetSpawnPosition() const;
@@ -40,7 +45,9 @@ namespace TowerDefense
     private:
         static bool IsWithinRange(Enemy* enemy, const Vector2& position, float maxDist);
         static EnemyComparisonOutput CompareCandidatesAlongTrack(Enemy* a, Enemy* b);
+        static EnemyComparisonOutput CompareCandidatesAlongTrack(Enemy* a, Enemy* b, bool countThoseThatReachedEnd);
         static EnemyComparisonOutput CompareCandidatesAlongTrack(Enemy* a, Enemy* b, const Vector2& position, float maxDist);
+        static EnemyComparisonOutput CompareCandidatesAlongTrack(Enemy* a, Enemy* b, const Vector2& position, float maxDist, bool countThoseThatReachedEnd);
 
     private:
         void SetSpawnPosition(const Vector2& spawnPosition);

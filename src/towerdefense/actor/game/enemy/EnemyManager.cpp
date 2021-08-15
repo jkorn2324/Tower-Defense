@@ -181,6 +181,11 @@ namespace TowerDefense
 
     Enemy* EnemyManager::GetFarthestEnemyAlongTrack() const
     {
+        return GetFarthestEnemyAlongTrack(false);
+    }
+
+    Enemy* EnemyManager::GetFarthestEnemyAlongTrack(bool countThoseThatReachedEnd) const
+    {
         std::size_t enemiesCount = mEnemies.size();
         if(enemiesCount <= 0)
         {
@@ -198,7 +203,7 @@ namespace TowerDefense
         {
             Enemy* testEnemy = mEnemies[i];
             EnemyComparisonOutput comparisonOutput =
-                    CompareCandidatesAlongTrack(initialEnemy, testEnemy);
+                    CompareCandidatesAlongTrack(initialEnemy, testEnemy, countThoseThatReachedEnd);
             if(comparisonOutput == B_BETTER_THAN_A)
             {
                 initialEnemy = testEnemy;
@@ -207,7 +212,12 @@ namespace TowerDefense
         return initialEnemy;
     }
 
-    Enemy* EnemyManager::GetFarthestEnemyAlongTrack(const Vector2 &position, float maxDist) const
+    Enemy* EnemyManager::GetFarthestEnemyAlongTrack(const Vector2& position, float maxDist) const
+    {
+        return GetFarthestEnemyAlongTrack(position, maxDist, false);
+    }
+
+    Enemy* EnemyManager::GetFarthestEnemyAlongTrack(const Vector2 &position, float maxDist, bool countThoseThatReachedEnd) const
     {
         std::size_t enemiesCount = mEnemies.size();
         if(enemiesCount <= 0)
@@ -223,50 +233,11 @@ namespace TowerDefense
             {
                 Enemy* testEnemy = mEnemies[i];
                 EnemyComparisonOutput comparisonOutput =
-                        CompareCandidatesAlongTrack(initialEnemy, testEnemy, position, maxDist);
+                        CompareCandidatesAlongTrack(initialEnemy, testEnemy, position, maxDist, countThoseThatReachedEnd);
                 if(comparisonOutput == EnemyComparisonOutput::B_BETTER_THAN_A)
                 {
                     initialEnemy = testEnemy;
                 }
-
-                /*
-                LevelPathNodeData* currentTarget = testEnemy->GetTargetPathNode();
-                if(currentTarget == nullptr)
-                {
-                    continue;
-                }
-
-                LevelPathNodeData* initialTarget = initialEnemy->GetTargetPathNode();
-                if((initialTarget == nullptr
-                   || currentTarget->nodeIndex > initialTarget->nodeIndex))
-                {
-                    if(IsWithinRange(testEnemy, position, maxDist))
-                    {
-                        initialEnemy = testEnemy;
-                    }
-                    continue;
-                }
-
-                if(currentTarget->nodeIndex == initialTarget->nodeIndex)
-                {
-                    // Compare distance to the target. (currentTarget == initialTarget)
-                    float testDistanceToTarget = Vector2::Distance(
-                            testEnemy->GetTransform().GetWorldPosition(),
-                            currentTarget->position);
-                    float initialDistanceToTarget = Vector2::Distance(
-                            initialEnemy->GetTransform().GetWorldPosition(),
-                            initialTarget->position);
-                    if(testDistanceToTarget > initialDistanceToTarget)
-                    {
-                        continue;
-                    }
-                    // Tests the distance to the position.
-                    if(IsWithinRange(testEnemy, position, maxDist))
-                    {
-                        initialEnemy = testEnemy;
-                        continue;
-                    }
-                } */
             }
         }
 
@@ -274,12 +245,16 @@ namespace TowerDefense
         {
             return nullptr;
         }
-        float currentDistance = Vector2::Distance(
-                position, initialEnemy->GetTransform().GetWorldPosition());
-        return currentDistance <= maxDist ? initialEnemy : nullptr;
+        return IsWithinRange(initialEnemy, position, maxDist)
+            ? initialEnemy : nullptr;
     }
 
     Enemy* EnemyManager::GetStrongestEnemy() const
+    {
+        return GetStrongestEnemy(false);
+    }
+
+    Enemy* EnemyManager::GetStrongestEnemy(bool countThoseThatReachedEnd) const
     {
         std::size_t enemiesCount = mEnemies.size();
         if(enemiesCount <= 0)
@@ -312,6 +287,11 @@ namespace TowerDefense
     }
 
     Enemy* EnemyManager::GetStrongestEnemy(const Vector2 &position, float maxDist) const
+    {
+        return GetStrongestEnemy(position, maxDist, false);
+    }
+
+    Enemy* EnemyManager::GetStrongestEnemy(const Vector2 &position, float maxDist, bool countThoseThatReachedEnd) const
     {
         std::size_t count = mEnemies.size();
         if(count <= 0)
@@ -367,7 +347,7 @@ namespace TowerDefense
             if(candidate->GetMaxHealth() == strongestEnemyHealth->GetMaxHealth())
             {
                 EnemyComparisonOutput comparisonOutput = CompareCandidatesAlongTrack(
-                        strongestEnemy, candidateEnemy);
+                        strongestEnemy, candidateEnemy, position, maxDist, countThoseThatReachedEnd);
                 if(comparisonOutput == EnemyComparisonOutput::B_BETTER_THAN_A)
                 {
                     strongestEnemy = candidateEnemy;
@@ -379,6 +359,11 @@ namespace TowerDefense
     }
 
     EnemyManager::EnemyComparisonOutput EnemyManager::CompareCandidatesAlongTrack(Enemy *a, Enemy *b)
+    {
+        return CompareCandidatesAlongTrack(a, b, false);
+    }
+
+    EnemyManager::EnemyComparisonOutput EnemyManager::CompareCandidatesAlongTrack(Enemy *a, Enemy *b, bool countThoseThatReachedEnd)
     {
         if(a == nullptr && b == nullptr)
         {
@@ -400,14 +385,24 @@ namespace TowerDefense
             return EnemyComparisonOutput::NO_COMPARISON;
         }
 
-        if(aTarget == nullptr
-            || (bTarget != nullptr && aTarget->nodeIndex > bTarget->nodeIndex))
+        if(aTarget == nullptr)
+        {
+            return countThoseThatReachedEnd ? EnemyComparisonOutput::A_BETTER_THAN_B
+                : EnemyComparisonOutput::B_BETTER_THAN_A;
+        }
+
+        if(bTarget == nullptr)
+        {
+            return countThoseThatReachedEnd ? EnemyComparisonOutput::B_BETTER_THAN_A
+                : EnemyComparisonOutput::A_BETTER_THAN_B;
+        }
+
+        if(aTarget->nodeIndex > bTarget->nodeIndex)
         {
             return EnemyComparisonOutput::A_BETTER_THAN_B;
         }
 
-        if(bTarget == nullptr
-            || (bTarget->nodeIndex > aTarget->nodeIndex))
+        if(bTarget->nodeIndex > aTarget->nodeIndex)
         {
             return EnemyComparisonOutput::B_BETTER_THAN_A;
         }
@@ -432,6 +427,11 @@ namespace TowerDefense
 
     EnemyManager::EnemyComparisonOutput EnemyManager::CompareCandidatesAlongTrack(Enemy* a, Enemy* b, const Vector2& position, float maxDist)
     {
+        return CompareCandidatesAlongTrack(a, b, position, maxDist, false);
+    }
+
+    EnemyManager::EnemyComparisonOutput EnemyManager::CompareCandidatesAlongTrack(Enemy* a, Enemy* b, const Vector2& position, float maxDist, bool countThoseThatReachedEnd)
+    {
         // If a & b are null then there was no comparison.
         if(a == nullptr && b == nullptr)
         {
@@ -448,6 +448,9 @@ namespace TowerDefense
             return EnemyComparisonOutput::A_BETTER_THAN_B;
         }
 
+        bool isAInRange = IsWithinRange(a, position, maxDist);
+        bool isBInRange = IsWithinRange(b, position, maxDist);
+
         LevelPathNodeData* aTarget = a->GetTargetPathNode();
         LevelPathNodeData* bTarget = b->GetTargetPathNode();
         // If a target node & b target nodes are null, they both reached the end
@@ -456,24 +459,80 @@ namespace TowerDefense
         {
             return EnemyComparisonOutput::NO_COMPARISON;
         }
-        // If a target node is null (reached end) or b target node is not null && a target index is greater than b target index
-        // a target is further along the path and should be checked if its within range.
-        if(aTarget == nullptr
-            || (bTarget != nullptr && aTarget->nodeIndex > bTarget->nodeIndex))
+
+        if(aTarget == nullptr)
         {
-            if(!IsWithinRange(a, position, maxDist))
+            bool inverseWithinRange, withinRange;
+            if(countThoseThatReachedEnd)
             {
+                withinRange = isAInRange;
+                inverseWithinRange = isBInRange;
+            }
+            else
+            {
+                withinRange = isBInRange;
+                inverseWithinRange = isAInRange;
+            }
+
+            if(!withinRange)
+            {
+                if(inverseWithinRange)
+                {
+                    return EnemyComparisonOutput::B_BETTER_THAN_A;
+                }
+                return EnemyComparisonOutput::NO_COMPARISON;
+            }
+            return countThoseThatReachedEnd ? EnemyComparisonOutput::A_BETTER_THAN_B
+                : EnemyComparisonOutput::B_BETTER_THAN_A;
+        }
+
+        if(bTarget == nullptr)
+        {
+            bool inverseWithinRange, withinRange;
+            if(countThoseThatReachedEnd)
+            {
+                withinRange = isBInRange;
+                inverseWithinRange = isAInRange;
+            }
+            else
+            {
+                withinRange = isAInRange;
+                inverseWithinRange = isBInRange;
+            }
+
+            if(!withinRange)
+            {
+                if(inverseWithinRange)
+                {
+                    return EnemyComparisonOutput::A_BETTER_THAN_B;
+                }
+                return EnemyComparisonOutput::NO_COMPARISON;
+            }
+            return countThoseThatReachedEnd ? EnemyComparisonOutput::B_BETTER_THAN_A
+                : EnemyComparisonOutput::A_BETTER_THAN_B;
+        }
+
+        if(aTarget->nodeIndex > bTarget->nodeIndex)
+        {
+            if(!isAInRange)
+            {
+                if(isBInRange)
+                {
+                    return EnemyComparisonOutput::B_BETTER_THAN_A;
+                }
                 return EnemyComparisonOutput::NO_COMPARISON;
             }
             return EnemyComparisonOutput::A_BETTER_THAN_B;
         }
-        // If b target node is null (reached end) or b target node index is greater than a target node index
-        // b target is further along the path and should be checked if its within range.
-        if(bTarget == nullptr
-            || (bTarget->nodeIndex > aTarget->nodeIndex))
+
+        if(bTarget->nodeIndex > aTarget->nodeIndex)
         {
-            if(!IsWithinRange(b, position, maxDist))
+            if(!isBInRange)
             {
+                if(isAInRange)
+                {
+                    return EnemyComparisonOutput::B_BETTER_THAN_A;
+                }
                 return EnemyComparisonOutput::NO_COMPARISON;
             }
             return EnemyComparisonOutput::B_BETTER_THAN_A;
@@ -489,8 +548,12 @@ namespace TowerDefense
         // Checks if a is closer to the target.
         if(aDistanceToTarget < bDistanceToTarget)
         {
-            if(!IsWithinRange(a, position, maxDist))
+            if(!isAInRange)
             {
+                if(isBInRange)
+                {
+                    return EnemyComparisonOutput::B_BETTER_THAN_A;
+                }
                 return EnemyComparisonOutput::NO_COMPARISON;
             }
             return EnemyComparisonOutput::A_BETTER_THAN_B;
@@ -498,8 +561,12 @@ namespace TowerDefense
         // Checks if b is closer to the target.
         if(bDistanceToTarget < aDistanceToTarget)
         {
-            if(!IsWithinRange(b, position, maxDist))
+            if(!isBInRange)
             {
+                if(isAInRange)
+                {
+                    return EnemyComparisonOutput::A_BETTER_THAN_B;
+                }
                 return EnemyComparisonOutput::NO_COMPARISON;
             }
             return EnemyComparisonOutput::B_BETTER_THAN_A;
