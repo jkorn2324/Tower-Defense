@@ -5,9 +5,22 @@
 
 #include "Transform.h"
 #include "EventListener.h"
+#include "EventCallback.h"
 
 namespace TowerDefense
 {
+
+#pragma region despawn_observer
+
+    class ActorDespawnObserver : public GenericEventObserverCallback<class Actor*>
+    {
+    public:
+        explicit ActorDespawnObserver(class Actor* actor);
+    };
+
+#pragma endregion
+
+#pragma region actor
 
 	class Actor
 	{
@@ -100,4 +113,6 @@ namespace TowerDefense
 		}
 		return nullptr;
 	}
+
+#pragma endregion
 }

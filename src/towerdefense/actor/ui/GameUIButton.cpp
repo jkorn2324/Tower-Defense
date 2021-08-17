@@ -4,7 +4,7 @@
 
 #include "GameUIButton.h"
 
-#include "SpriteComponent.h"
+#include "UIImageComponent.h"
 #include "RectComponent.h"
 #include "Mouse.h"
 
@@ -18,7 +18,7 @@ namespace TowerDefense
         mMouseHeldTime = 0.0f;
         mMaxMouseHeldTime = 2.0f;
         mMouseHeld = false;
-        mBackgroundSprite = new SpriteComponent(this);
+        mImageComponent = new UIImageComponent(this);
         mRectComponent = new RectComponent(this);
     }
 

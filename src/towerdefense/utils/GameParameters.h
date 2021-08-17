@@ -3,6 +3,7 @@
 #pragma region game_parameters
 
 #define WINDOW_NAME "Tower Defense Game"
+#define DEBUG_MODE false
 
 const unsigned int WINDOW_SIZE_X = 1024;
 const unsigned int WINDOW_SIZE_Y = 768;

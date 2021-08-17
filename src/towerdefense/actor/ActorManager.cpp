@@ -3,8 +3,7 @@
 #include "Actor.h"
 
 #include "Player.h"
-#include "Enemy.h"
-#include "GameUI.h"
+#include "BuildingUI.h"
 
 namespace TowerDefense
 {
@@ -13,6 +12,7 @@ namespace TowerDefense
 	{
 		mGame = game;
         mPlayer = nullptr;
+        mBuildingUI = nullptr;
 		mSpawnActors = std::vector<Actor*>();
 		mDespawnActors = std::vector<Actor*>();
 		mActors = std::vector<Actor*>();
@@ -41,7 +41,7 @@ namespace TowerDefense
 	void ActorManager::InitActors()
 	{
 	    mPlayer = new Player(mGame);
-
+	    mBuildingUI = new BuildingUI(mGame);
 	}
 
 	Game* ActorManager::GetGame() const
@@ -53,6 +53,8 @@ namespace TowerDefense
 	{
 	    return mPlayer;
 	}
+
+	BuildingUI* ActorManager::GetBuildingUI() const { return mBuildingUI; }
 
 	void ActorManager::ProcessInput(const Uint8* keyState)
 	{

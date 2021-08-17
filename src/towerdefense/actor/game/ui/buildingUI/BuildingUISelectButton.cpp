@@ -10,6 +10,8 @@
 #include "ActorManager.h"
 #include "Player.h"
 
+#include "UIImageComponent.h"
+#include "RectComponent.h"
 #include "ScaleSelectAnimationComponent.h"
 
 namespace TowerDefense
@@ -25,7 +27,8 @@ namespace TowerDefense
     void BuildingUISelectButton::SetTowerIconAndType(const std::string &towerIconPath, const TowerType &type)
     {
         mTowerType = type;
-        // TODO: Set Tower icon based upon the path
+        mImageComponent->SetTexture(towerIconPath);
+        mRectComponent->SetSize(mImageComponent->GetSize());
     }
 
     void BuildingUISelectButton::OnMouseDownOnButton(const struct MouseButtonEventData &eventData)

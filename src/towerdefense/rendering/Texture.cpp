@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "GLBuffers.h"
 #include "GameParameters.h"
 
 #include <SDL2/SDL.h>
@@ -8,7 +9,48 @@
 namespace TowerDefense
 {
 
-	Texture::Texture()
+    // ---------------------------- The Texture Coords Implementation -------------------------
+
+    TextureCoords::TextureCoords()
+    {
+        min = Vector2(0.0f, 0.0f);
+        max = Vector2(1.0f, 1.0f);
+    }
+
+    Vector2 TextureCoords::GetCenterPoint() const
+    {
+        return Vector2(
+                (min.x + max.x) / 2.0f,
+                (min.y + max.y) / 2.0f);
+    }
+
+    void TextureCoords::SetTexCoords(VertexBuffer* buffer)
+    {
+        float texVertices[] =
+                {
+                        min.x, min.y,
+                        max.x, min.y,
+                        max.x, max.y,
+                        min.x, max.y
+                };
+        buffer->SetVertices(texVertices, sizeof(texVertices), 4);
+    }
+
+    TextureCoords TextureCoords::CreateTexCoords(const Vector2& centerPoint, const Vector2& size, Texture* texture)
+    {
+        float halfSizeX = size.x * 0.5f;
+        float halfSizeY = size.y * 0.5f;
+        TextureCoords coords;
+        coords.min.x = (centerPoint.x - halfSizeX) / (float)texture->GetWidth();
+        coords.min.y = (centerPoint.y - halfSizeY) / (float)texture->GetHeight();
+        coords.max.x = (centerPoint.x + halfSizeX) / (float)texture->GetWidth();
+        coords.max.y = (centerPoint.y + halfSizeY) / (float)texture->GetHeight();
+        return coords;
+    }
+
+    // ---------------------------- The Texture Implementation -------------------------
+
+    Texture::Texture()
 	{
 		mFileName = "";
 		mLoaded = false;

@@ -4,6 +4,7 @@
 #include "Vector2.h"
 #include "EventCallback.h"
 #include "Color.h"
+#include "Texture.h"
 
 #include <string>
 #include <functional>
@@ -11,30 +12,6 @@
 namespace TowerDefense
 {
 
-	/**
-	 * Sets the sprite texture coords.
-	 */
-	struct SpriteTexCoords
-	{
-	public:
-		SpriteTexCoords();
-
-	public:
-		Vector2 GetCenterPoint() const;
-		void SetTexCoords(class VertexBuffer* vertexArray);
-
-	public:
-		static SpriteTexCoords CreateTexCoords(const Vector2& centerPoint,
-			const Vector2& size, class Texture* texture);
-
-	public:
-		Vector2 min;
-		Vector2 max;
-	};
-
-	/**
-	 * The sprite component. 
-	 */
 	class SpriteComponent : public Component
 	{
 	public:
@@ -66,7 +43,7 @@ namespace TowerDefense
 		float GetRotationOffset() const;
 
 		void SetTexCoords(const Vector2& centerPos, const Vector2& size);
-		const SpriteTexCoords& GetTexCoords() const;
+		const TextureCoords& GetTexCoords() const;
 		unsigned int GetDrawLayer() const;
 		void SetDrawLayer(unsigned int drawLayer);
 
@@ -76,7 +53,7 @@ namespace TowerDefense
 	protected:
 		class TexturesManager* mTexturesManager;
 		class GameRenderer* mRenderer;
-		SpriteTexCoords mTexCoords;
+		TextureCoords mTexCoords;
 
 	private:
 	    unsigned int mDrawLayer;

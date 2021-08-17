@@ -28,6 +28,11 @@ namespace TowerDefense
 		void RemoveSpriteComponent(class SpriteComponent* spriteComponent);
 
 	public:
+        void ReOrderUIImageComponents();
+        void AddUIImageComponent(class UIImageComponent* imageComponent);
+        void RemoveUIImageComponent(class UIImageComponent* imageComponent);
+
+	public:
 	    Vector2 ScreenToWorldPoint(const Vector2& screenCoord);
 	    Vector2 WorldToScreenPoint(const Vector2& worldCoord);
 
@@ -58,6 +63,7 @@ namespace TowerDefense
 	private:
 		class ShaderManager* mShaderManager;
 		std::vector<class SpriteComponent*> mSpriteComponents;
+		std::vector<class UIImageComponent*> mUIImageComponents;
 
 	private:
 		unsigned int mWindowSizeX, mWindowSizeY;

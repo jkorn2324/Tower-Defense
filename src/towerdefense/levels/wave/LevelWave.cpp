@@ -13,10 +13,6 @@
 namespace TowerDefense
 {
 
-    LevelWaveActorDespawnObserver::LevelWaveActorDespawnObserver(class Actor *actor)
-            : GenericEventObserverCallback<class Actor *>(
-                    (GenericEventListener<Actor*>*)&actor->GetDespawnListener()) { }
-
     LevelWave::LevelWave(class Level *level, unsigned int waveID)
     {
         mLevel = level;
@@ -26,7 +22,7 @@ namespace TowerDefense
         mNext = nullptr;
         mEnemiesActive = 0;
         mWaveEnemyData = std::vector<WaveEnemyData>();
-        mActorDespawnedObservers = std::unordered_map<class Actor*, LevelWaveActorDespawnObserver*>();
+        mActorDespawnedObservers = std::unordered_map<class Actor*, ActorDespawnObserver*>();
         mLevelWaveFinished = GenericEventCallback<LevelWave*>();
     }
 
@@ -34,7 +30,7 @@ namespace TowerDefense
     {
         for(auto observerPair : mActorDespawnedObservers)
         {
-            LevelWaveActorDespawnObserver* observer = observerPair.second;
+            ActorDespawnObserver* observer = observerPair.second;
             delete observer;
         }
         mActorDespawnedObservers.clear();
@@ -134,8 +130,8 @@ namespace TowerDefense
 
         if(enemy != nullptr)
         {
-            LevelWaveActorDespawnObserver* despawnObserver =
-                    new LevelWaveActorDespawnObserver(enemy);
+            ActorDespawnObserver* despawnObserver =
+                    new ActorDespawnObserver(enemy);
             despawnObserver->SetCallback(
                     std::bind(&LevelWave::OnEnemyDespawn, this, std::placeholders::_1));
             mActorDespawnedObservers.emplace(
@@ -150,7 +146,7 @@ namespace TowerDefense
                 mActorDespawnedObservers.find(enemy);
         if(searchedIteratedEnemy != mActorDespawnedObservers.end())
         {
-            LevelWaveActorDespawnObserver* observer
+            ActorDespawnObserver* observer
                     = mActorDespawnedObservers[enemy];
             mActorDespawnedObservers.erase(searchedIteratedEnemy);
             delete observer;

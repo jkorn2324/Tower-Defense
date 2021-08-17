@@ -11,6 +11,7 @@
 #include "VertexArray.h"
 #include "GLBuffers.h"
 #include "SpriteComponent.h"
+#include "UIImageComponent.h"
 
 namespace TowerDefense
 {
@@ -24,6 +25,7 @@ namespace TowerDefense
 		mWindowSizeY = WINDOW_SIZE_Y;
 		mWindowName = WINDOW_NAME;
 		mSpriteComponents = std::vector<SpriteComponent*>();
+		mUIImageComponents = std::vector<UIImageComponent*>();
 		mShaderManager = new ShaderManager(game);
 		mDefaultVertexArray = nullptr;
 		mDefaultIndexBuffer = nullptr;
@@ -111,6 +113,28 @@ namespace TowerDefense
 		return mShaderManager;
 	}
 
+	void GameRenderer::ReOrderUIImageComponents()
+    {
+        std::sort(mUIImageComponents.begin(), mUIImageComponents.end(),
+                  [](UIImageComponent* a, UIImageComponent* b) -> bool
+                  {
+                      return a->GetDrawLayer() < b->GetDrawLayer();
+                  });
+    }
+
+    void GameRenderer::AddUIImageComponent(class UIImageComponent *imageComponent)
+    {
+        mUIImageComponents.push_back(imageComponent);
+        ReOrderUIImageComponents();
+    }
+
+    void GameRenderer::RemoveUIImageComponent(class UIImageComponent *imageComponent)
+    {
+        const auto& imageSearched = std::find(mUIImageComponents.begin(),
+                                              mUIImageComponents.end(), imageComponent);
+        mUIImageComponents.erase(imageSearched);
+    }
+
 	void GameRenderer::ReOrderSpriteComponents()
 	{
 	    std::sort(mSpriteComponents.begin(), mSpriteComponents.end(),
@@ -123,6 +147,7 @@ namespace TowerDefense
 	void GameRenderer::AddSpriteComponent(SpriteComponent* spriteComponent)
 	{
 		mSpriteComponents.push_back(spriteComponent);
+		ReOrderSpriteComponents();
 	}
 
 	void GameRenderer::RemoveSpriteComponent(SpriteComponent* spriteComponent)
@@ -149,7 +174,6 @@ namespace TowerDefense
 		{
 			return false;
 		}
-
 		Shader* spriteShader = mShaderManager->GetShader("sprite");
 		spriteShader->Bind();
 		spriteShader->SetMatrix4Uniform("uViewProjection", mViewProjection);
@@ -224,6 +248,12 @@ namespace TowerDefense
 			SetDefaultUVs();
 			spriteComponent->Draw();
 		}
+
+		for(UIImageComponent* imageComponent : mUIImageComponents)
+        {
+		    SetDefaultUVs();
+		    imageComponent->Draw();
+        }
 		SDL_GL_SwapWindow(mWindow);
 	}
 

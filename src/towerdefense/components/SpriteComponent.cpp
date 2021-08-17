@@ -20,45 +20,6 @@
 namespace TowerDefense
 {
 
-	// ---------------------------- The Sprite Texture Coords Implementation -------------------------
-
-	SpriteTexCoords::SpriteTexCoords()
-	{
-		min = Vector2(0.0f, 0.0f);
-		max = Vector2(1.0f, 1.0f);
-	}
-
-	Vector2 SpriteTexCoords::GetCenterPoint() const
-	{
-		return Vector2(
-			(min.x + max.x) / 2.0f,
-			(min.y + max.y) / 2.0f);
-	}
-
-	void SpriteTexCoords::SetTexCoords(VertexBuffer* buffer)
-	{
-		float texVertices[] =
-		{
-			min.x, min.y,
-			max.x, min.y,
-			max.x, max.y,
-			min.x, max.y
-		};
-		buffer->SetVertices(texVertices, sizeof(texVertices), 4);
-	}
-
-	SpriteTexCoords SpriteTexCoords::CreateTexCoords(const Vector2& centerPoint, const Vector2& size, Texture* texture)
-	{
-		float halfSizeX = size.x * 0.5f;
-		float halfSizeY = size.y * 0.5f;
-		SpriteTexCoords coords;
-		coords.min.x = (centerPoint.x - halfSizeX) / texture->GetWidth();
-		coords.min.y = (centerPoint.y - halfSizeY) / texture->GetHeight();
-		coords.max.x = (centerPoint.x + halfSizeX) / texture->GetWidth();
-		coords.max.y = (centerPoint.y + halfSizeY) / texture->GetHeight();
-		return coords;
-	}
-
 	// ------------------- The Sprite Component Definition -------------------
 
 
@@ -72,7 +33,7 @@ namespace TowerDefense
 		mTexture = nullptr;
 		mSize = Vector2::Zero();
 		mRotationOffset = 0.0f;
-		mTexCoords = SpriteTexCoords();
+		mTexCoords = TextureCoords();
 		mSizeChanged = GenericEventCallback<const Vector2&>();
 		mColorMultiplier = Color::GetWhite();
 		mRenderer->AddSpriteComponent(this);
@@ -87,7 +48,7 @@ namespace TowerDefense
 		mShader = mRenderer->GetShaderManager()->GetDefaultShader();
 		mTexture = nullptr;
 		mSize = Vector2::Zero();
-		mTexCoords = SpriteTexCoords();
+		mTexCoords = TextureCoords();
 		mRotationOffset = 0.0f;
 		mSizeChanged = GenericEventCallback<const Vector2&>();
         mColorMultiplier = Color::GetWhite();
@@ -163,10 +124,10 @@ namespace TowerDefense
 	void SpriteComponent::SetTexCoords(const Vector2& center, const Vector2& size)
 	{
 		SetSize(size);
-		mTexCoords = SpriteTexCoords::CreateTexCoords(center, size, mTexture);
+		mTexCoords = TextureCoords::CreateTexCoords(center, size, mTexture);
 	}
 
-	const SpriteTexCoords& SpriteComponent::GetTexCoords() const
+	const TextureCoords& SpriteComponent::GetTexCoords() const
 	{
 		return mTexCoords;
 	}
@@ -180,7 +141,7 @@ namespace TowerDefense
 		mTexture = texture;
         SetSize(static_cast<float>(texture->GetWidth()),
                 static_cast<float>(texture->GetHeight()));
-		mTexCoords = SpriteTexCoords();
+		mTexCoords = TextureCoords();
 	}
 
 	void SpriteComponent::SetTexture(const std::string& file)

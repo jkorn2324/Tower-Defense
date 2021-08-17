@@ -6,6 +6,12 @@
 namespace TowerDefense
 {
 
+    // --------------------------------- Despawn Listener ----------------------------------------
+
+    ActorDespawnObserver::ActorDespawnObserver(class Actor *actor)
+            : GenericEventObserverCallback<class Actor *>(
+                (GenericEventListener<class Actor*>*)&actor->GetDespawnListener()) { }
+
 	Actor::Actor(Game* game)
 	{
 		mChildren = std::vector<Actor*>();

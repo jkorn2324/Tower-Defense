@@ -38,12 +38,6 @@ namespace TowerDefense
         STATE_FINISHED
     };
 
-    class LevelWaveActorDespawnObserver : public GenericEventObserverCallback<class Actor*>
-    {
-    public:
-        explicit LevelWaveActorDespawnObserver(class Actor* actor);
-    };
-
     /**
      * The level wave data.
      */
@@ -90,7 +84,7 @@ namespace TowerDefense
     private:
         LevelWaveState mState;
         GenericEventCallback<class LevelWave*> mLevelWaveFinished;
-        std::unordered_map<class Actor*, class LevelWaveActorDespawnObserver*> mActorDespawnedObservers;
+        std::unordered_map<class Actor*, class ActorDespawnObserver*> mActorDespawnedObservers;
 
     public:
         static LevelWave* Load(unsigned int waveID, class Level* level, const rapidjson::Document& document);

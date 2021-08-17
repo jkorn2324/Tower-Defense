@@ -25,6 +25,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/math")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/components")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/components/enemy")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/components/animations")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/components/ui")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/utils")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/input")
 

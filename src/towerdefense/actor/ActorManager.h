@@ -26,6 +26,7 @@ namespace TowerDefense
 
 	public:
         class Player* GetPlayer() const;
+        class BuildingUI* GetBuildingUI() const;
 
 	private:
 		void HandleSpawn(class Actor* actor);
@@ -38,6 +39,7 @@ namespace TowerDefense
 
 	private:
 	    class Player* mPlayer;
+	    class BuildingUI* mBuildingUI;
 		class Game* mGame;
 	};
 }

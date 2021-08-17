@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TowerProjectile.h"
+#include "EventCallback.h"
 
 namespace TowerDefense
 {
@@ -10,7 +11,7 @@ namespace TowerDefense
     class GreenCannonProjectile : public TowerProjectile
     {
     public:
-        GreenCannonProjectile(class Game* game);
+        explicit GreenCannonProjectile(class Game* game);
         ~GreenCannonProjectile();
 
     public:
@@ -23,8 +24,12 @@ namespace TowerDefense
         virtual void OnEnemyCollision(const struct EnemyCollisionData& collisionData) override;
 
     private:
+        void OnTargetDespawn(class Actor* actor);
+
+    private:
         class Actor* mTarget;
         class TileSpriteComponent* mSpriteComponent;
+        class ActorDespawnObserver* mDespawnObserver;
         bool mHitEnemy;
     };
 }

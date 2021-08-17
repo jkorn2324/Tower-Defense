@@ -28,7 +28,7 @@ namespace TowerDefense
         virtual void OnMouseExitButton(const struct MouseMoveEventData& eventData)=0;
 
     protected:
-        class SpriteComponent* mBackgroundSprite;
+        class UIImageComponent* mImageComponent;
         class RectComponent* mRectComponent;
 
     private:

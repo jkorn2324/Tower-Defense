@@ -116,11 +116,6 @@ namespace TowerDefense
 		}
 
 		const Uint8* state = SDL_GetKeyboardState(nullptr);
-		if (state[SDL_SCANCODE_ESCAPE])
-		{
-			mRunning = false;
-			return;
-		}
 		mActorManager->ProcessInput(state);
 	}
 

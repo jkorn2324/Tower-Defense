@@ -13,5 +13,11 @@ namespace TowerDefense
     {
     public:
         explicit BuildingUI(class Game* game);
+
+    protected:
+        void OnProcessInput(const Uint8* keyState) override;
+
+    private:
+        void InitializeButtons();
     };
 }
