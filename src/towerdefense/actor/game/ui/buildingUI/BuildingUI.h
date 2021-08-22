@@ -5,6 +5,7 @@
 #pragma once
 
 #include "GameUI.h"
+#include "Vector2.h"
 
 namespace TowerDefense
 {
@@ -13,6 +14,7 @@ namespace TowerDefense
     {
     public:
         explicit BuildingUI(class Game* game);
+        BuildingUI(class Game* game, const Vector2& uiSize);
 
     protected:
         void OnProcessInput(const Uint8* keyState) override;

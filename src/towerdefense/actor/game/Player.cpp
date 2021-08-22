@@ -8,6 +8,9 @@
 #include "Level.h"
 #include "Tower.h"
 #include "TowerManager.h"
+#include "ActorManager.h"
+#include "BuildingUI.h"
+#include "GameUIActor.h"
 
 #include "GreenCannonTower.h"
 
@@ -24,6 +27,15 @@ namespace TowerDefense
                 std::bind(&Player::OnMouseUp, this, std::placeholders::_1));
         mMouseObserverComponent->SetMouseDownCallback(
                 std::bind(&Player::OnMouseDown, this, std::placeholders::_1));
+    }
+
+    void Player::OnProcessInput(const Uint8 *key)
+    {
+        if(key[SDL_SCANCODE_ESCAPE]
+            && HasPlacedTower())
+        {
+            SetPlacedTower(nullptr);
+        }
     }
 
     void Player::OnUpdate(float deltaTime)
@@ -92,13 +104,19 @@ namespace TowerDefense
     {
         if(HasPlacedTower())
         {
+            BuildingUI* buildingUI = mGame->GetActorManager()->GetBuildingUI();
             Level* activeLevel = mGame->GetLevelManager()->GetActiveLevel();
             if(!mPlacedTower->IsPlaced()
                 && activeLevel != nullptr
                 && activeLevel->CanPlaceTower(eventData.mouseWorldPosition))
             {
-                mPlacedTower->PlaceTower();
-                mPlacedTower = nullptr;
+                GameUIActor* actor = buildingUI
+                        ->GetActorFromPosition(eventData.mouseWorldPosition);
+                if(actor == nullptr)
+                {
+                    mPlacedTower->PlaceTower();
+                    mPlacedTower = nullptr;
+                }
             }
         }
     }

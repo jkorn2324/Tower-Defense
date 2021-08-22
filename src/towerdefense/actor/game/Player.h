@@ -16,6 +16,7 @@ namespace TowerDefense
         void SetPlacedTower(class Tower* tower);
 
     protected:
+        virtual void OnProcessInput(const Uint8* key) override;
         virtual void OnUpdate(float deltaTime) override;
 
     private:

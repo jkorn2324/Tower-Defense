@@ -42,6 +42,7 @@ namespace TowerDefense
 		class ShaderManager* GetShaderManager() const;
 		unsigned int GetWindowSizeX() const;
 		unsigned int GetWindowSizeY() const;
+		Vector2 GetWindowSize() const;
 		const Matrix4& GetViewProjectionMatrix() const;
 
 	private:

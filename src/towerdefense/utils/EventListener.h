@@ -100,8 +100,8 @@ namespace TowerDefense
         void RemoveObserver(GenericEventObserver<T>& observer);
 
     public:
-        GenericEventObserver<T>& operator+=(GenericEventObserver<T>& observer);
-        GenericEventObserver<T>& operator-=(GenericEventObserver<T>& observer);
+        GenericEventListener<T>& operator+=(GenericEventObserver<T>& observer);
+        GenericEventListener<T>& operator-=(GenericEventObserver<T>& observer);
 
     private:
         std::vector<GenericEventObserver<T>*> mObservers;
@@ -126,19 +126,23 @@ namespace TowerDefense
         int size = static_cast<int>(mObservers.size());
         for(int i = size - 1; i >= 0; i--)
         {
-            mObservers[i]->OnEventTriggered(args);
+            GenericEventObserver<T>* observer = mObservers[i];
+            if(observer != nullptr)
+            {
+                observer->OnEventTriggered(args);
+            }
         }
     }
 
     template<typename T>
-    GenericEventObserver<T>& GenericEventListener<T>::operator+=(GenericEventObserver<T> &observer)
+    GenericEventListener<T>& GenericEventListener<T>::operator+=(GenericEventObserver<T> &observer)
     {
         AddObserver(observer);
         return *this;
     }
 
     template<typename T>
-    GenericEventObserver<T>& GenericEventListener<T>::operator-=(GenericEventObserver<T> &observer)
+    GenericEventListener<T>& GenericEventListener<T>::operator-=(GenericEventObserver<T> &observer)
     {
         RemoveObserver(observer);
         return *this;

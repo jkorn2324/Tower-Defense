@@ -13,6 +13,10 @@ namespace TowerDefense
     public:
         GameUIButton(class GameUI* gameUI);
 
+    public:
+        bool IsWithinActor(const Vector2& position) const override;
+        Vector2 GetButtonSize() const;
+
     protected:
         void OnUpdate(float deltaTime) override;
 

@@ -22,6 +22,16 @@ namespace TowerDefense
         mRectComponent = new RectComponent(this);
     }
 
+    bool GameUIButton::IsWithinActor(const Vector2 &position) const
+    {
+        return mRectComponent->ContainsPosition(position);
+    }
+
+    Vector2 GameUIButton::GetButtonSize() const
+    {
+        return mTransform.GetScale() * mImageComponent->GetSize();
+    }
+
     void GameUIButton::OnUpdate(float deltaTime)
     {
         if(mMouseHeld)

@@ -62,6 +62,7 @@ namespace TowerDefense
 	    virtual void UpdateNonPlacedTower(float deltaTime)=0;
 	    virtual void UpdatePlacedTower(float deltaTime)=0;
 	    virtual void OnSpawn() override;
+	    virtual void OnDespawn() override;
 	    virtual void OnUpdate(float deltaTime) override;
         virtual bool ShouldUpdateTarget() const;
 

@@ -15,6 +15,9 @@ namespace TowerDefense
         GameUIActor(class GameUI* ui);
         virtual ~GameUIActor();
 
+    public:
+        virtual bool IsWithinActor(const Vector2& position) const =0;
+
     protected:
         virtual void OnMouseDown(const struct MouseButtonEventData& eventData)=0;
         virtual void OnMouseUp(const struct MouseButtonEventData& eventData)=0;

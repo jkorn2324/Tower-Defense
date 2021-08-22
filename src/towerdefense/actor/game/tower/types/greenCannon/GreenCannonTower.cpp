@@ -111,6 +111,7 @@ namespace TowerDefense
 
     void GreenCannonTower::OnDespawn()
     {
+        Tower::OnDespawn();
         mCannon->Despawn();
     }
 

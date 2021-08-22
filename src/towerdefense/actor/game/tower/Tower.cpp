@@ -53,7 +53,6 @@ namespace TowerDefense
     Tower::~Tower()
     {
 	    mRangeHighlight->Despawn();
-        mLevel->GetTowerManager()->RemoveTower(this);
     }
 
     Actor* Tower::SetupRangeHighlight()
@@ -90,6 +89,11 @@ namespace TowerDefense
     void Tower::OnSpawn()
     {
         HighlightTowerRange(mHighlighted);
+    }
+
+    void Tower::OnDespawn()
+    {
+        mLevel->GetTowerManager()->RemoveTower(this);
     }
 
     void Tower::HighlightTowerRange(bool highlight)

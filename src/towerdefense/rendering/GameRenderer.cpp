@@ -103,6 +103,13 @@ namespace TowerDefense
 		return mWindowSizeY;
 	}
 
+	Vector2 GameRenderer::GetWindowSize() const
+	{
+		return Vector2(
+				static_cast<float>(mWindowSizeX),
+				static_cast<float>(mWindowSizeY));
+	}
+
 	const Matrix4& GameRenderer::GetViewProjectionMatrix() const
 	{
 		return mViewProjection;

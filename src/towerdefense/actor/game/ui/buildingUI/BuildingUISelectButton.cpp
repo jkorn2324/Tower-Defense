@@ -28,7 +28,7 @@ namespace TowerDefense
     {
         mTowerType = type;
         mImageComponent->SetTexture(towerIconPath);
-        mRectComponent->SetSize(mImageComponent->GetSize());
+        mRectComponent->SetSize(GetButtonSize());
     }
 
     void BuildingUISelectButton::OnMouseDownOnButton(const struct MouseButtonEventData &eventData)
@@ -43,6 +43,8 @@ namespace TowerDefense
             Tower* tower = Tower::CreateTowerFromType(mGame, mTowerType);
             if(tower != nullptr)
             {
+                Transform& transform = (Transform&)tower->GetTransform();
+                transform.SetPosition(eventData.mouseWorldPosition);
                 mPlayer->SetPlacedTower(tower);
             }
         }
