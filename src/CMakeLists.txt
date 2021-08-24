@@ -21,6 +21,8 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/actor/game/enemy/t
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/actor/game/tower")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/actor/game/tower/types")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/actor/game/tower/types/greenCannon")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/game")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/game/upgrades")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/math")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/components")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/towerdefense/components/enemy")

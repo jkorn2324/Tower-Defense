@@ -7,6 +7,7 @@
 #include "JSONHelper.h"
 #include "Mouse.h"
 #include "Camera.h"
+#include "UpgradesManager.h"
 #include "MixChunkAudioManager.h"
 
 namespace TowerDefense
@@ -22,6 +23,7 @@ namespace TowerDefense
 		mLevelManager = new LevelManager(this);
 		mMouse = new Mouse(this);
 		mMixChunkAudioManager = new MixChunkAudioManager();
+		mUpgradesManager = new UpgradesManager(this);
 		mRunning = false;
 		mPrevGameTick = SDL_GetTicks();
 	}
@@ -42,6 +44,8 @@ namespace TowerDefense
 	Camera* Game::GetCamera() const { return mCamera; }
 
 	MixChunkAudioManager* Game::GetMixChunkAudioManager() const { return mMixChunkAudioManager; }
+
+	UpgradesManager* Game::GetUpgradesManager() const { return mUpgradesManager; }
 
 	bool Game::InitializeGame()
 	{
@@ -142,6 +146,6 @@ namespace TowerDefense
 		}
 		mRenderer->Uninitialize();
 		delete mRenderer, mActorManager, mTextureManager,
-		    mMouse, mLevelManager, mCamera, mMixChunkAudioManager;
+		    mMouse, mLevelManager, mCamera, mMixChunkAudioManager, mUpgradesManager;
 	}
 }

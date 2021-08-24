@@ -15,6 +15,10 @@ namespace TowerDefense
         bool HasPlacedTower() const;
         void SetPlacedTower(class Tower* tower);
 
+    public:
+        unsigned int GetMoney() const;
+        void SetMoney(unsigned int money);
+
     protected:
         virtual void OnProcessInput(const Uint8* key) override;
         virtual void OnUpdate(float deltaTime) override;
@@ -31,5 +35,8 @@ namespace TowerDefense
         class MouseObserverComponent* mMouseObserverComponent;
         class Tower* mPlacedTower;
         class Tower* mSelectedTower;
+
+    private:
+        unsigned int mMoney;
     };
 }

@@ -28,6 +28,7 @@ namespace TowerDefense
 		class GameRenderer* GetRenderer() const;
 		class ActorManager* GetActorManager() const;
 		class TexturesManager* GetTexturesManager() const;
+		class UpgradesManager* GetUpgradesManager() const;
         class Mouse* GetMouse() const;
         class Camera* GetCamera() const;
         class MixChunkAudioManager* GetMixChunkAudioManager() const;
@@ -42,6 +43,7 @@ namespace TowerDefense
 		class ActorManager* mActorManager;
 		class LevelManager* mLevelManager;
 		class MixChunkAudioManager* mMixChunkAudioManager;
+		class UpgradesManager* mUpgradesManager;
 		class Mouse* mMouse;
 		class Camera* mCamera;
 	};

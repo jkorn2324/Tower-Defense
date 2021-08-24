@@ -20,6 +20,7 @@ namespace TowerDefense
     Player::Player(Game* game)
         : Actor(game)
     {
+        mMoney = 0;
         mPlacedTower = nullptr;
         mSelectedTower = nullptr;
         mMouseObserverComponent = new MouseObserverComponent(this);
@@ -37,6 +38,10 @@ namespace TowerDefense
             SetPlacedTower(nullptr);
         }
     }
+
+    unsigned int Player::GetMoney() const { return mMoney; }
+
+    void Player::SetMoney(unsigned int money) { mMoney = money; }
 
     void Player::OnUpdate(float deltaTime)
     {
