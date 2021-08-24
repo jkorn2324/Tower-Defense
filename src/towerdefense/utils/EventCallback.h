@@ -54,7 +54,7 @@ namespace TowerDefense
     {
     public:
         GenericEventCallback() { mFunc = nullptr; }
-        GenericEventCallback(std::function<void(T)> func) { mFunc = func; }
+        explicit GenericEventCallback(std::function<void(T)> func) { mFunc = func; }
         ~GenericEventCallback() = default;
 
     public:
@@ -76,7 +76,7 @@ namespace TowerDefense
      class GenericEventObserverCallback : public GenericEventObserver<T>
      {
      public:
-         GenericEventObserverCallback<T>(GenericEventListener<T>* listener)
+         explicit GenericEventObserverCallback<T>(GenericEventListener<T>* listener)
                  : GenericEventObserver<T>(listener)
          {
              mFunc = nullptr;
